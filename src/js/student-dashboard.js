@@ -1,4 +1,3 @@
-```javascript
 // Student Dashboard Logic
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -7,7 +6,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Load User Data
     const user = getCurrentUser();
-    document.getElementById('welcomeName').textContent = `Hello, ${ user.name.split(' ')[0] } !`;
+    document.getElementById('welcomeName').textContent = `Hello, ${user.name.split(' ')[0]}!`;
     const headerImg = document.getElementById('headerProfileImg');
     if (headerImg) headerImg.src = user.profileImage || 'https://via.placeholder.com/150';
 
@@ -21,57 +20,130 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // Modal For Student Profile
-    window.openStudentProfileModal = function() {
+    window.openStudentProfileModal = function () {
         const u = getCurrentUser();
-        
+
         const modalContent = `
-    < div style = "text-align: center; margin-bottom: 2rem;" >
-                 <img src="${u.profileImage || 'https://via.placeholder.com/150'}" 
-                      style="width: 100px; height: 100px; border-radius: 50%; object-fit: cover; border: 4px solid white; box-shadow: var(--shadow-md);">
-                 <h3 style="margin-top: 1rem;">${u.name}</h3>
-                 <p style="color: var(--text-muted);">Student ID: ${u.id}</p>
+            <button onclick="closeModal()" style="position: absolute; top: 1rem; right: 1rem; background: none; border: none; font-size: 1.5rem; color: var(--text-muted); cursor: pointer; padding: 0.5rem; line-height: 1;">
+                &times;
+            </button>
+
+            <div style="display: flex; align-items: center; gap: 1.5rem; margin-bottom: 2rem; padding-top: 1rem;">
+                 <div style="position: relative;">
+                    <img src="${u.profileImage || 'https://via.placeholder.com/150'}" 
+                         id="previewProfileImage"
+                         style="width: 100px; height: 100px; border-radius: 50%; object-fit: cover; border: 4px solid white; box-shadow: var(--shadow-md);">
+                    <button onclick="triggerPhotoUpload()" title="Change Photo" style="position: absolute; bottom: 0; right: 0; background: var(--primary-main); color: white; border: none; width: 32px; height: 32px; border-radius: 50%; cursor: pointer; display: flex; align-items: center; justify-content: center; box-shadow: 0 2px 4px rgba(0,0,0,0.2);">
+                        <svg width="14" height="14" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"></path></svg>
+                    </button>
+                    <input type="file" id="photoUploadInput" style="display: none;" accept="image/*" onchange="handlePhotoPreview(this)">
+                 </div>
+                 <div>
+                     <h3 style="margin-bottom: 0.25rem;">${u.name}</h3>
+                     <p style="color: var(--text-muted); margin-bottom: 0.5rem;">Student ID: ${u.id}</p>
+                     <button onclick="logout()" class="btn btn-sm btn-outline-danger" style="font-size: 0.75rem; padding: 0.25rem 0.75rem; border-color: #fca5a5; color: #ef4444; background: white;">
+                        Log Out
+                     </button>
+                 </div>
             </div>
 
-            <div style="background: #f8fafc; padding: 1.5rem; border-radius: var(--radius-lg); border: 1px solid #f1f5f9;">
-                <div style="margin-bottom: 1rem;">
-                    <label style="display: block; font-size: 0.85rem; color: var(--text-muted); margin-bottom: 0.25rem;">My Phone Number</label>
-                    <div style="font-size: 1.1rem; font-weight: 600; color: var(--text-main); display: flex; align-items: center;">
-                        <span style="font-size: 1.2rem; margin-right: 0.5rem;">📱</span> ${u.phone || 'Not set'}
+            <form id="studentProfileForm" onsubmit="event.preventDefault();">
+                <div style="background: #f8fafc; padding: 1.5rem; border-radius: var(--radius-lg); border: 1px solid #f1f5f9;">
+                    <div style="margin-bottom: 1rem;">
+                        <label class="form-label" style="display: block; font-size: 0.85rem; color: var(--text-muted); margin-bottom: 0.5rem;">My Phone Number</label>
+                        <input type="tel" id="editStudentPhone" class="form-input" value="${u.phone || ''}" placeholder="+976 8888-8888" 
+                            style="width: 100%; padding: 0.75rem; border: 1px solid #e2e8f0; border-radius: var(--radius-md); transition: all 0.2s;"
+                            onchange="saveStudentProfile(true)">
+                    </div>
+                    
+                    <div style="border-top: 1px solid #e2e8f0; margin: 1rem 0;"></div>
+                    
+                    <div>
+                        <label class="form-label" style="display: block; font-size: 0.85rem; color: var(--text-muted); margin-bottom: 0.5rem; color: var(--secondary-dark);">Parent's Contact</label>
+                        <input type="tel" id="editParentPhone" class="form-input" value="${u.parentPhone || ''}" placeholder="+976 9999-9999" 
+                            style="width: 100%; padding: 0.75rem; border: 1px solid #e2e8f0; border-radius: var(--radius-md); transition: all 0.2s;"
+                            onchange="saveStudentProfile(true)">
+                        <small style="color: var(--text-muted); display: block; margin-top: 0.5rem;">Emergency contact & updates will be sent here.</small>
                     </div>
                 </div>
-                
-                <div style="border-top: 1px solid #e2e8f0; margin: 1rem 0;"></div>
-                
-                <div>
-                    <label style="display: block; font-size: 0.85rem; color: var(--text-muted); margin-bottom: 0.25rem; color: var(--secondary-dark);">Parent's Contact</label>
-                    <div style="font-size: 1.1rem; font-weight: 600; color: var(--text-main); display: flex; align-items: center;">
-                        <span style="font-size: 1.2rem; margin-right: 0.5rem;">👨‍👩‍👦</span> ${u.parentPhone || 'Not connected'}
-                    </div>
-                    <small style="color: var(--text-muted); display: block; margin-top: 0.25rem;">Emergency contact & updates will be sent here.</small>
-                </div>
+            </form>
+            <div id="saveIndicator" style="text-align: center; color: var(--success); font-size: 0.85rem; height: 1.5rem; margin-top: 0.5rem; opacity: 0; transition: opacity 0.3s;">
+                <span style="display: inline-flex; align-items: center; gap: 0.25rem;">
+                    <svg width="12" height="12" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+                    Saved
+                </span>
             </div>
-            
-            <div style="text-align: center; margin-top: 2rem;">
-                <button onclick="closeModal()" class="btn btn-secondary" style="width: 100%;">Close Profile</button>
-            </div>
-`;
-        
-        // Using customized 'showModal' but since we have custom close button in HTML, we can pass null actions or just use it as 'info' type
-        showModal('Student Profile', modalContent, 'info');
-        
-        // Remove default actions footer if we want cleaner look since we added our own close button
+        `;
+
+        showModal('Edit Profile', modalContent, 'info');
+
+        // Hide default footer globally for this modal
         const footer = document.querySelector('#globalModal .modal-actions');
         if (footer) footer.style.display = 'none';
-        
-        // Restore footer on close logic if needed? 
-        // Better architecture: Let showModal handle it. 
-        // Reverting: I will use standard showModal actions.
-        if (footer) footer.style.display = 'flex';
+
+        // Safety: Ensure footer is restored when other modals might use it (though simplified here)
+    };
+
+    window.triggerPhotoUpload = function () {
+        document.getElementById('photoUploadInput').click();
+    };
+
+    window.handlePhotoPreview = function (input) {
+        if (input.files && input.files[0]) {
+            const reader = new FileReader();
+            reader.onload = function (e) {
+                document.getElementById('previewProfileImage').src = e.target.result;
+                saveStudentProfile(true); // Autosave image immediately
+            };
+            reader.readAsDataURL(input.files[0]);
+        }
+    };
+
+    window.saveStudentProfile = function (silent = false) {
+        const phone = document.getElementById('editStudentPhone').value;
+        const parentPhone = document.getElementById('editParentPhone').value;
+        const profileImgSrc = document.getElementById('previewProfileImage').src;
+
+        const user = getCurrentUser();
+
+        // Update User Object
+        user.phone = phone;
+        user.parentPhone = parentPhone;
+
+        if (profileImgSrc && !profileImgSrc.includes('via.placeholder.com')) {
+            user.profileImage = profileImgSrc;
+        }
+
+        // Save
+        setCurrentUser(user);
+
+        // Update Global Users List
+        const users = JSON.parse(localStorage.getItem('users') || '[]');
+        const idx = users.findIndex(u => u.id === user.id);
+        if (idx !== -1) {
+            users[idx] = user;
+            localStorage.setItem('users', JSON.stringify(users));
+        }
+
+        // Update UI
+        refreshDashboard(user);
+        const headerImg = document.getElementById('headerProfileImg');
+        if (headerImg) headerImg.src = user.profileImage || 'https://via.placeholder.com/150';
+
+        // Feedback
+        if (silent) {
+            const indicator = document.getElementById('saveIndicator');
+            if (indicator) {
+                indicator.style.opacity = '1';
+                setTimeout(() => { if (indicator) indicator.style.opacity = '0'; }, 2000);
+            }
+        } else {
+            showToast('Profile saved', 'success');
+            closeModal();
+        }
     };
 
     // Initial Load
-    // These functions would need to be defined elsewhere or replace refreshDashboard/loadTeachers
-    // For now, keeping the original calls as the instruction implies adding to, not fully replacing, the initial load.
     refreshDashboard(user);
     loadTeachers();
 });
@@ -82,69 +154,73 @@ function switchTab(tabId) {
     document.querySelectorAll('.nav-link').forEach(el => el.classList.remove('active'));
 
     // Show Target
-    document.getElementById(`tab - ${ tabId } `).style.display = 'block';
+    const target = document.getElementById(`tab-${tabId}`);
+    if (target) target.style.display = 'block';
 
-    // Highlight Nav (Simple match)
-    const navLink = document.querySelector(`.nav - link[onclick = "switchTab('${tabId}')"]`);
+    // Highlight Nav
+    const navLink = document.querySelector(`.nav-link[onclick="switchTab('${tabId}')"]`);
     if (navLink) navLink.classList.add('active');
 
     // Close mobile sidebar if open
-    document.getElementById('sidebar').classList.remove('active');
+    const sidebar = document.getElementById('sidebar');
+    if (sidebar) sidebar.classList.remove('active');
 }
 
 function refreshDashboard(user) {
-    // Calc Stats
+    // Stats
     const totalHours = user.completedHours || 0;
     const maxHours = 75;
     const percentage = Math.min(100, Math.round((totalHours / maxHours) * 100));
 
-    document.getElementById('totalHours').textContent = totalHours;
-    document.getElementById('hoursRemaining').textContent = Math.max(0, maxHours - totalHours);
-    document.getElementById('mainProgressBar').style.width = `${ percentage }% `;
-    document.getElementById('progressPercentage').textContent = `${ percentage }% `;
+    const elTotal = document.getElementById('totalHours');
+    if (elTotal) elTotal.textContent = totalHours;
+
+    const elRem = document.getElementById('hoursRemaining');
+    if (elRem) elRem.textContent = Math.max(0, maxHours - totalHours);
+
+    const elProgBar = document.getElementById('mainProgressBar');
+    if (elProgBar) elProgBar.style.width = `${percentage}%`;
+
+    const elProgPerc = document.getElementById('progressPercentage');
+    if (elProgPerc) elProgPerc.textContent = `${percentage}%`;
 
     // Active Courses
     const enrolledIds = user.enrolledCourses || [];
-    document.getElementById('activeCoursesCount').textContent = enrolledIds.length;
+    const elActiveCount = document.getElementById('activeCoursesCount');
+    if (elActiveCount) elActiveCount.textContent = enrolledIds.length;
 
     // Load Enrolled List
     const coursesEl = document.getElementById('myCoursesList');
+    if (!coursesEl) return;
+
     coursesEl.innerHTML = '';
 
     if (enrolledIds.length === 0) {
         coursesEl.innerHTML = `
-    < div style = "grid-column: 1/-1; text-align: center; padding: 3rem; background: white; border-radius: var(--radius-lg);" >
+            <div style="grid-column: 1/-1; text-align: center; padding: 3rem; background: white; border-radius: var(--radius-lg);">
                 <p>You haven't enrolled in any courses yet.</p>
                 <button class="btn btn-primary" style="margin-top: 1rem;" onclick="switchTab('teachers')">Find a Teacher</button>
-            </div >
-    `;
+            </div>
+        `;
     } else {
         const teachers = JSON.parse(localStorage.getItem('teachers') || '[]');
         enrolledIds.forEach(courseId => {
-            // In this schema, enrollment is implied by teacher/course selection. 
-            // Simplified: "Course" = "Teacher's Class". 
-            // Let's assume courseId refers to a teacher ID for simplicity if specific course objects aren't granular enough, 
-            // OR find the course in 'programs'.
-            // Based on earlier logic: Single teacher selection? 
-            // RULES: "Each student can attend only one teacher’s course". 
-            // So if enrolled, it's basically "Enrolled with Teacher X".
-
             const teacher = teachers.find(t => t.id === courseId) || { name: 'Unknown', specialization: [] };
 
             const card = document.createElement('div');
             card.className = 'course-card';
             card.innerHTML = `
-    < div class="course-header" >
+                <div class="course-header">
                     <h3>Course with ${teacher.name}</h3>
                     <div style="margin-top: 0.5rem; color: var(--text-muted);">${teacher.specialization.join(', ')}</div>
-                </div >
-    <div class="course-body">
-        <p>Status: <span style="color: var(--success); font-weight: 600;">Active</span></p>
-        <div style="margin-top: 1rem;">
-            <button class="btn btn-secondary" style="width: 100%;">View Assignments</button>
-        </div>
-    </div>
-`;
+                </div>
+                <div class="course-body">
+                    <p>Status: <span style="color: var(--success); font-weight: 600;">Active</span></p>
+                    <div style="margin-top: 1rem;">
+                        <button class="btn btn-secondary" style="width: 100%;">View Assignments</button>
+                    </div>
+                </div>
+            `;
             coursesEl.appendChild(card);
         });
     }
@@ -152,44 +228,44 @@ function refreshDashboard(user) {
 
 function loadTeachers() {
     const grid = document.getElementById('teachersGrid');
+    if (!grid) return;
+
     const teachers = JSON.parse(localStorage.getItem('teachers') || '[]');
-    const user = getCurrentUser();
 
     grid.innerHTML = teachers.map(t => `
-    < div class="course-card" >
-        <div style="padding: 1.5rem; text-align: center;">
-            <img src="${t.photo}" alt="${t.name}" style="width: 100px; height: 100px; border-radius: 50%; object-fit: cover; margin-bottom: 1rem;">
+        <div class="course-card">
+            <div style="padding: 1.5rem; text-align: center;">
+                <img src="${t.photo}" alt="${t.name}" style="width: 100px; height: 100px; border-radius: 50%; object-fit: cover; margin-bottom: 1rem;">
                 <h3>${t.name}</h3>
                 <p style="color: var(--primary-main); font-size: 0.9rem; margin-bottom: 0.5rem;">${t.specialization.join(', ')}</p>
                 <div style="color: var(--text-muted); font-size: 0.9rem; margin-bottom: 1.5rem;">
                     ⭐ ${t.rating} | 🎓 ${t.experience}
                 </div>
                 <button class="btn btn-secondary" onclick="viewTeacherProfile('${t.id}')">View Profile</button>
+            </div>
         </div>
-        </div >
     `).join('');
 }
 
 function viewTeacherProfile(teacherId) {
     const teachers = JSON.parse(localStorage.getItem('teachers') || '[]');
-    const user = getCurrentUser();
     const t = teachers.find(x => x.id === teacherId);
     if (!t) return;
 
     // Render Reviews
     const reviewsHtml = (t.reviews || []).map(r => `
-    < div style = "background: #f8fafc; padding: 1rem; border-radius: var(--radius-md); margin-bottom: 0.75rem;" >
+        <div style="background: #f8fafc; padding: 1rem; border-radius: var(--radius-md); margin-bottom: 0.75rem;">
             <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;">
                 <strong style="font-size: 0.9rem;">${r.studentName}</strong>
                 <span style="color: #fbbf24;">${'★'.repeat(r.rating)}${'☆'.repeat(5 - r.rating)}</span>
                 <span style="font-size: 0.8rem; color: var(--text-muted); margin-left: auto; padding-left: 1rem;">${formatDate(r.date)}</span>
             </div>
             <p style="color: var(--text-muted); font-size: 0.9rem; margin: 0;">${r.comment}</p>
-        </div >
+        </div>
     `).join('') || '<p style="color: var(--text-muted); font-style: italic;">No reviews yet.</p>';
 
     const modalContent = `
-    < div style = "text-align: center;" >
+        <div style="text-align: center;">
             <div style="display: flex; align-items: center; gap: 1.5rem; text-align: left; margin-bottom: 1.5rem;">
                 <img src="${t.photo}" style="width: 80px; height: 80px; border-radius: 50%; object-fit: cover; flex-shrink: 0; box-shadow: var(--shadow-sm);">
                 <div>
@@ -230,7 +306,7 @@ function viewTeacherProfile(teacherId) {
                     ${reviewsHtml}
                 </div>
             </div>
-        </div >
+        </div>
     `;
 
     showModal(`Teacher Profile`, modalContent, 'info', () => {
@@ -245,19 +321,21 @@ function viewTeacherProfile(teacherId) {
     }, 0);
 }
 
-// Global functions for inline event handlers (since modularity is simple here)
+// Global functions for inline event handlers
 window.toggleReviewForm = function (id) {
-    const form = document.getElementById(`reviewForm - ${ id } `);
-    form.style.display = form.style.display === 'none' ? 'block' : 'none';
+    const form = document.getElementById(`reviewForm-${id}`);
+    if (form) form.style.display = form.style.display === 'none' ? 'block' : 'none';
 };
 
 window.submitReview = function (teacherId) {
-    const rating = parseInt(document.getElementById(`reviewRating - ${ teacherId } `).value);
-    const comment = document.getElementById(`reviewComment - ${ teacherId } `).value;
+    const elRating = document.getElementById(`reviewRating-${teacherId}`);
+    const elComment = document.getElementById(`reviewComment-${teacherId}`);
+
+    if (!elRating) return;
+
+    const rating = parseInt(elRating.value);
+    const comment = elComment ? elComment.value : '';
     const user = getCurrentUser();
-
-    // Comment is now optional
-
 
     const teachers = JSON.parse(localStorage.getItem('teachers') || '[]');
     const idx = teachers.findIndex(t => t.id === teacherId);
@@ -275,8 +353,6 @@ window.submitReview = function (teacherId) {
         localStorage.setItem('teachers', JSON.stringify(teachers));
         showToast('Review submitted!', 'success');
 
-        // Refresh modal content by re-opening (simple hack) or manual DOM update
-        // Let's just reload the list for now or close modal
         closeModal();
         viewTeacherProfile(teacherId);
     }
@@ -312,30 +388,27 @@ function enrollInCourse(teacherId) {
 }
 
 function filterTeachers(type) {
-    // Basic filter logic placeholder
-    // In real app, filter 'teachers' array by specialization type if we added that metadata
-    // For now, just re-render all or show toast
     if (type === 'all') {
         loadTeachers();
     } else {
-        // Demo filter
         const teachers = JSON.parse(localStorage.getItem('teachers') || '[]');
-        // Let's assume some keywords map to International vs National
         const keywords = type === 'International' ? ['SAT', 'IB', 'IGCSE', 'ACT'] : ['National', 'Olympiad', 'EEC'];
 
         const filtered = teachers.filter(t => t.specialization.some(s => keywords.some(k => s.includes(k))));
 
         const grid = document.getElementById('teachersGrid');
-        grid.innerHTML = filtered.length ? filtered.map(t => `
-    < div class="course-card" >
-        <div style="padding: 1.5rem; text-align: center;">
-            <img src="${t.photo}" alt="${t.name}" style="width: 100px; height: 100px; border-radius: 50%; object-fit: cover; margin-bottom: 1rem;">
-                <h3>${t.name}</h3>
-                <p style="color: var(--primary-main); font-size: 0.9rem; margin-bottom: 0.5rem;">${t.specialization.join(', ')}</p>
-                <button class="btn btn-secondary" onclick="viewTeacherProfile('${t.id}')">View Profile</button>
-        </div>
-            </div >
-    `).join('') : '<p class="col-span-full text-center text-muted">No teachers found for this category.</p>';
+        if (grid) {
+            grid.innerHTML = filtered.length ? filtered.map(t => `
+                <div class="course-card">
+                    <div style="padding: 1.5rem; text-align: center;">
+                        <img src="${t.photo}" alt="${t.name}" style="width: 100px; height: 100px; border-radius: 50%; object-fit: cover; margin-bottom: 1rem;">
+                        <h3>${t.name}</h3>
+                        <p style="color: var(--primary-main); font-size: 0.9rem; margin-bottom: 0.5rem;">${t.specialization.join(', ')}</p>
+                        <button class="btn btn-secondary" onclick="viewTeacherProfile('${t.id}')">View Profile</button>
+                    </div>
+                </div>
+            `).join('') : '<p class="col-span-full text-center text-muted">No teachers found for this category.</p>';
+        }
     }
 
     // Update active button

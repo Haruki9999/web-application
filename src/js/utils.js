@@ -42,12 +42,29 @@ function setCurrentUser(user) {
 }
 
 // Logout function
+// Logout function
 function logout() {
-    showModal('Confirm Logout', 'Are you sure you want to log out?', 'warning', () => {
-        localStorage.removeItem('currentUser');
-        window.location.href = 'login.html';
-    });
+    const content = `
+        <div style="text-align: center; padding: 1rem 0;">
+            <p style="margin-bottom: 2rem; color: var(--text-muted); font-size: 1.1rem;">Are you sure you want to end your session?</p>
+            <div style="display: flex; gap: 1rem; justify-content: center;">
+                <button onclick="closeModal()" class="btn btn-secondary" style="min-width: 120px;">Cancel</button>
+                <button onclick="performLogout()" class="btn" style="min-width: 120px; background-color: #ef4444; color: white; border: none; box-shadow: var(--shadow-sm);">Log Out</button>
+            </div>
+        </div>
+    `;
+
+    showModal('Confirm Logout', content, 'warning');
+
+    // Hide default footer since we have custom buttons
+    const footer = document.querySelector('#globalModal .modal-actions');
+    if (footer) footer.style.display = 'none';
 }
+
+window.performLogout = function () {
+    localStorage.removeItem('currentUser');
+    window.location.href = 'login.html';
+};
 
 // Check authentication and redirect
 function checkAuth(requiredRole = null) {

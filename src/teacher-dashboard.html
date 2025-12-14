@@ -30,12 +30,7 @@
                 <!-- Future features -->
                 <!-- Create Class moved to separate modal within My Classes -->
             </nav>
-            <div class="sidebar-footer">
-                <button onclick="logout()" class="btn btn-secondary"
-                    style="width: 100%; border-color: #fca5a5; color: #ef4444;">
-                    Logout
-                </button>
-            </div>
+            <!-- Sidebar Footer Removed (Logout moved to Profile Modal) -->
         </aside>
 
         <!-- Main Content -->
@@ -129,6 +124,25 @@
                                 About Me</h4>
                             <p id="viewProfileBio" style="line-height: 1.6; color: var(--text-main);">No bio added yet.
                             </p>
+                        </div>
+
+                        <!-- Student Reviews Section -->
+                        <div
+                            style="text-align: left; max-width: 600px; margin: 2rem auto 0; background: white; padding: 2rem; border-radius: var(--radius-lg); border: 1px solid #e2e8f0;">
+                            <div
+                                style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+                                <h4 style="margin: 0; font-size: 1.1rem; color: var(--text-main);">Student Reviews</h4>
+                                <div style="display: flex; align-items: center; gap: 0.5rem;">
+                                    <span style="color: #fbbf24; font-size: 1.2rem;">★</span>
+                                    <span id="averageRating" style="font-weight: 600; font-size: 1.1rem;">0.0</span>
+                                    <span id="reviewCount" style="color: var(--text-muted); font-size: 0.9rem;">(0
+                                        reviews)</span>
+                                </div>
+                            </div>
+                            <div id="teacherReviewsList" style="max-height: 400px; overflow-y: auto;">
+                                <p style="color: var(--text-muted); text-align: center; padding: 2rem;">No reviews yet.
+                                </p>
+                            </div>
                         </div>
                     </div>
                 </div>

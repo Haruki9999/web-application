@@ -33,6 +33,217 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 });
 
+// Profile Functions
+function loadProfile() {
+    const currentUser = getCurrentUser();
+    if (!currentUser) return;
+
+    // Header Icon
+    const headerImg = document.getElementById('headerProfileImg');
+    if (headerImg) headerImg.src = currentUser.profileImage || 'https://via.placeholder.com/150';
+
+    // Populate Read-Only View (Sidebar Section)
+    const img = document.getElementById('viewProfileImg');
+    const name = document.getElementById('viewProfileName');
+    const specs = document.getElementById('viewProfileSpecs');
+    const bio = document.getElementById('viewProfileBio');
+
+    if (img) img.src = currentUser.profileImage || 'https://via.placeholder.com/150';
+    if (name) name.textContent = currentUser.name;
+    if (specs) specs.textContent = currentUser.specialization || 'General Mathematics';
+    if (bio) bio.textContent = currentUser.bio || 'Welcome to my profile! I am excited to teach at Pi Math Center.';
+
+    // Load Reviews
+    loadTeacherReviews();
+}
+
+function loadTeacherReviews() {
+    const currentUser = getCurrentUser();
+    const teachers = JSON.parse(localStorage.getItem('teachers') || '[]');
+    const teacher = teachers.find(t => t.id === currentUser.id);
+
+    if (!teacher || !teacher.reviews || teacher.reviews.length === 0) {
+        const reviewsList = document.getElementById('teacherReviewsList');
+        const avgRating = document.getElementById('averageRating');
+        const reviewCount = document.getElementById('reviewCount');
+
+        if (reviewsList) reviewsList.innerHTML = '<p style="color: var(--text-muted); text-align: center; padding: 2rem;">No reviews yet.</p>';
+        if (avgRating) avgRating.textContent = '0.0';
+        if (reviewCount) reviewCount.textContent = '(0 reviews)';
+        return;
+    }
+
+    const reviews = teacher.reviews;
+
+    // Calculate average rating
+    const avgRating = reviews.reduce((sum, r) => sum + r.rating, 0) / reviews.length;
+
+    // Update UI
+    const avgRatingEl = document.getElementById('averageRating');
+    const reviewCountEl = document.getElementById('reviewCount');
+    const reviewsList = document.getElementById('teacherReviewsList');
+
+    if (avgRatingEl) avgRatingEl.textContent = avgRating.toFixed(1);
+    if (reviewCountEl) reviewCountEl.textContent = `(${reviews.length} review${reviews.length !== 1 ? 's' : ''})`;
+
+    if (reviewsList) {
+        reviewsList.innerHTML = reviews.map(r => `
+            <div style="background: #f8fafc; padding: 1rem; border-radius: var(--radius-md); margin-bottom: 0.75rem; position: relative;">
+                <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 0.5rem;">
+                    <div style="flex: 1;">
+                        <div style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.25rem;">
+                            <strong style="font-size: 0.9rem;">${r.studentName}</strong>
+                            <span style="color: #fbbf24;">${'★'.repeat(r.rating)}${'☆'.repeat(5 - r.rating)}</span>
+                        </div>
+                        <span style="font-size: 0.8rem; color: var(--text-muted);">${r.date || formatDate(new Date().toISOString())}</span>
+                    </div>
+                    <button onclick="deleteReview('${r.id}')" class="btn btn-sm" style="padding: 0.25rem 0.5rem; background: #fee; color: #ef4444; border: 1px solid #fca5a5; font-size: 0.75rem;">
+                        Delete
+                    </button>
+                </div>
+                <p style="color: var(--text-muted); font-size: 0.9rem; margin: 0;">${r.comment || 'No comment provided.'}</p>
+            </div>
+        `).join('');
+    }
+}
+
+window.deleteReview = function (reviewId) {
+    showModal('Delete Review', 'Are you sure you want to delete this review? This action cannot be undone.', 'warning', () => {
+        const currentUser = getCurrentUser();
+        const teachers = JSON.parse(localStorage.getItem('teachers') || '[]');
+        const teacherIdx = teachers.findIndex(t => t.id === currentUser.id);
+
+        if (teacherIdx !== -1 && teachers[teacherIdx].reviews) {
+            teachers[teacherIdx].reviews = teachers[teacherIdx].reviews.filter(r => r.id !== reviewId);
+            localStorage.setItem('teachers', JSON.stringify(teachers));
+
+            showToast('Review deleted successfully', 'success');
+            loadTeacherReviews();
+        }
+    });
+};
+
+window.openEditProfileModal = function () {
+    const currentUser = getCurrentUser();
+
+    const modalContent = `
+        <button onclick="closeModal()" style="position: absolute; top: 1rem; right: 1rem; background: none; border: none; font-size: 1.5rem; color: var(--text-muted); cursor: pointer; padding: 0.5rem; line-height: 1;">
+            &times;
+        </button>
+
+        <div style="display: flex; align-items: center; gap: 1.5rem; margin-bottom: 2rem; padding-top: 1rem;">
+             <div style="position: relative;">
+                <img src="${currentUser.profileImage || 'https://via.placeholder.com/150'}" 
+                     id="previewProfileImage"
+                     style="width: 100px; height: 100px; border-radius: 50%; object-fit: cover; border: 4px solid white; box-shadow: var(--shadow-md);">
+                <button onclick="triggerPhotoUpload()" title="Change Photo" style="position: absolute; bottom: 0; right: 0; background: var(--primary-main); color: white; border: none; width: 32px; height: 32px; border-radius: 50%; cursor: pointer; display: flex; align-items: center; justify-content: center; box-shadow: 0 2px 4px rgba(0,0,0,0.2);">
+                    <svg width="14" height="14" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"></path></svg>
+                </button>
+                <input type="file" id="photoUploadInput" style="display: none;" accept="image/*" onchange="handlePhotoPreview(this)">
+             </div>
+             <div>
+                 <h3 style="margin-bottom: 0.25rem;">${currentUser.name}</h3>
+                 <p style="color: var(--text-muted); margin-bottom: 0.5rem;">Teacher ID: ${currentUser.id}</p>
+                 <button onclick="logout()" class="btn btn-sm btn-outline-danger" style="font-size: 0.75rem; padding: 0.25rem 0.75rem; border-color: #fca5a5; color: #ef4444; background: white;">
+                    Log Out
+                 </button>
+             </div>
+        </div>
+
+        <form id="modalProfileForm" onsubmit="event.preventDefault();">
+            <div style="background: #f8fafc; padding: 1.5rem; border-radius: var(--radius-lg); border: 1px solid #f1f5f9;">
+                <div style="margin-bottom: 1rem;">
+                    <label class="form-label" style="display: block; font-size: 0.85rem; color: var(--text-muted); margin-bottom: 0.5rem;">My Phone Number</label>
+                    <input type="tel" id="editTeacherPhone" class="form-input" value="${currentUser.phone || ''}" placeholder="+976 8888-8888" 
+                        style="width: 100%; padding: 0.75rem; border: 1px solid #e2e8f0; border-radius: var(--radius-md); transition: all 0.2s;"
+                        onchange="saveTeacherProfile(true)">
+                </div>
+                
+                <div style="border-top: 1px solid #e2e8f0; margin: 1rem 0;"></div>
+                
+                <div>
+                    <label class="form-label" style="display: block; font-size: 0.85rem; color: var(--text-muted); margin-bottom: 0.5rem; color: var(--secondary-dark);">Email Address</label>
+                    <input type="email" id="editTeacherEmail" class="form-input" value="${currentUser.email || ''}" placeholder="teacher@pimath.edu" 
+                        style="width: 100%; padding: 0.75rem; border: 1px solid #e2e8f0; border-radius: var(--radius-md); transition: all 0.2s;"
+                        onchange="saveTeacherProfile(true)">
+                    <small style="color: var(--text-muted); display: block; margin-top: 0.5rem;">For official communications & updates.</small>
+                </div>
+            </div>
+        </form>
+        <div id="saveIndicator" style="text-align: center; color: var(--success); font-size: 0.85rem; height: 1.5rem; margin-top: 0.5rem; opacity: 0; transition: opacity 0.3s;">
+            <span style="display: inline-flex; align-items: center; gap: 0.25rem;">
+                <svg width="12" height="12" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+                Saved
+            </span>
+        </div>
+    `;
+
+    showModal('Edit Profile', modalContent, 'info');
+
+    const footer = document.querySelector('#globalModal .modal-actions');
+    if (footer) footer.style.display = 'none';
+};
+
+window.triggerPhotoUpload = function () {
+    document.getElementById('photoUploadInput').click();
+};
+
+window.handlePhotoPreview = function (input) {
+    if (input.files && input.files[0]) {
+        const reader = new FileReader();
+        reader.onload = function (e) {
+            document.getElementById('previewProfileImage').src = e.target.result;
+            saveTeacherProfile(true);
+        };
+        reader.readAsDataURL(input.files[0]);
+    }
+};
+
+window.saveTeacherProfile = function (silent = false) {
+    const phone = document.getElementById('editTeacherPhone').value;
+    const email = document.getElementById('editTeacherEmail').value;
+    const profileImgSrc = document.getElementById('previewProfileImage').src;
+
+    const currentUser = getCurrentUser();
+
+    currentUser.phone = phone;
+    currentUser.email = email;
+
+    if (profileImgSrc && !profileImgSrc.includes('via.placeholder.com')) {
+        currentUser.profileImage = profileImgSrc;
+    }
+
+    setCurrentUser(currentUser);
+
+    const users = JSON.parse(localStorage.getItem('users') || '[]');
+    const userIdx = users.findIndex(u => u.id === currentUser.id);
+    if (userIdx !== -1) {
+        users[userIdx] = { ...users[userIdx], ...currentUser };
+        localStorage.setItem('users', JSON.stringify(users));
+    }
+
+    const teachers = JSON.parse(localStorage.getItem('teachers') || '[]');
+    const tIdx = teachers.findIndex(t => t.id === currentUser.id);
+    if (tIdx !== -1) {
+        teachers[tIdx] = { ...teachers[tIdx], photo: currentUser.profileImage, email: currentUser.email };
+        localStorage.setItem('teachers', JSON.stringify(teachers));
+    }
+
+    loadProfile();
+
+    if (silent) {
+        const indicator = document.getElementById('saveIndicator');
+        if (indicator) {
+            indicator.style.opacity = '1';
+            setTimeout(() => { if (indicator) indicator.style.opacity = '0'; }, 2000);
+        }
+    } else {
+        showToast('Profile saved', 'success');
+        closeModal();
+    }
+};
+
+
 // Open Create Class Modal
 window.openCreateClassModal = function () {
     const modalContent = `
@@ -310,65 +521,126 @@ function handleCreateClass(e) {
         const currentUser = getCurrentUser();
 
         const modalContent = `
-            <form id="modalProfileForm" style="padding: 0.5rem 0;">
-                <div style="text-align: center; margin-bottom: 2rem;">
-                     <div style="position: relative; display: inline-block;">
-                        <img src="${currentUser.profileImage || 'https://via.placeholder.com/150'}" 
-                             style="width: 100px; height: 100px; border-radius: 50%; object-fit: cover; border: 2px solid white; box-shadow: var(--shadow-md);"
-                             id="modalAvatarPreview">
-                        <button type="button" style="position: absolute; bottom: 0; right: 0; background: var(--primary-main); color: white; border: none; border-radius: 50%; width: 32px; height: 32px; cursor: pointer; display: flex; align-items: center; justify-content: center;" onclick="alert('Photo upload simulation')">
-                            <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 13a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
-                        </button>
-                     </div>
-                </div>
+            <button onclick="closeModal()" style="position: absolute; top: 1rem; right: 1rem; background: none; border: none; font-size: 1.5rem; color: var(--text-muted); cursor: pointer; padding: 0.5rem; line-height: 1;">
+                &times;
+            </button>
 
-                <div class="form-group">
-                    <label class="form-label">Full Name</label>
-                    <input type="text" class="form-input" value="${currentUser.name}" readonly style="background: #f1f5f9;">
-                </div>
+            <div style="display: flex; align-items: center; gap: 1.5rem; margin-bottom: 2rem; padding-top: 1rem;">
+                 <div style="position: relative;">
+                    <img src="${currentUser.profileImage || 'https://via.placeholder.com/150'}" 
+                         id="previewProfileImage"
+                         style="width: 100px; height: 100px; border-radius: 50%; object-fit: cover; border: 4px solid white; box-shadow: var(--shadow-md);">
+                    <button onclick="triggerPhotoUpload()" title="Change Photo" style="position: absolute; bottom: 0; right: 0; background: var(--primary-main); color: white; border: none; width: 32px; height: 32px; border-radius: 50%; cursor: pointer; display: flex; align-items: center; justify-content: center; box-shadow: 0 2px 4px rgba(0,0,0,0.2);">
+                        <svg width="14" height="14" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"></path></svg>
+                    </button>
+                    <input type="file" id="photoUploadInput" style="display: none;" accept="image/*" onchange="handlePhotoPreview(this)">
+                 </div>
+                 <div>
+                     <h3 style="margin-bottom: 0.25rem;">${currentUser.name}</h3>
+                     <p style="color: var(--text-muted); margin-bottom: 0.5rem;">Teacher ID: ${currentUser.id}</p>
+                     <button onclick="logout()" class="btn btn-sm btn-outline-danger" style="font-size: 0.75rem; padding: 0.25rem 0.75rem; border-color: #fca5a5; color: #ef4444; background: white;">
+                        Log Out
+                     </button>
+                 </div>
+            </div>
 
-                <div class="form-group">
-                    <label class="form-label">Phone Number</label>
-                    <input type="text" class="form-input" value="${currentUser.phone || ''}" readonly style="background: #f1f5f9;">
-                </div>
-                
-                <div class="form-group">
-                    <label class="form-label">Specializations</label>
-                    <input type="text" id="editSpecs" class="form-input" value="${currentUser.specialization || ''}" placeholder="e.g. SAT, Calculus">
-                </div>
-                
-                <div class="form-group">
-                    <label class="form-label">Bio / Introduction</label>
-                    <textarea id="editBio" class="form-input" rows="4">${currentUser.bio || ''}</textarea>
+            <form id="modalProfileForm" onsubmit="event.preventDefault();">
+                <div style="background: #f8fafc; padding: 1.5rem; border-radius: var(--radius-lg); border: 1px solid #f1f5f9;">
+                    <div style="margin-bottom: 1rem;">
+                        <label class="form-label" style="display: block; font-size: 0.85rem; color: var(--text-muted); margin-bottom: 0.5rem;">My Phone Number</label>
+                        <input type="tel" id="editTeacherPhone" class="form-input" value="${currentUser.phone || ''}" placeholder="+976 8888-8888" 
+                            style="width: 100%; padding: 0.75rem; border: 1px solid #e2e8f0; border-radius: var(--radius-md); transition: all 0.2s;"
+                            onchange="saveTeacherProfile(true)">
+                    </div>
+                    
+                    <div style="border-top: 1px solid #e2e8f0; margin: 1rem 0;"></div>
+                    
+                    <div>
+                        <label class="form-label" style="display: block; font-size: 0.85rem; color: var(--text-muted); margin-bottom: 0.5rem; color: var(--secondary-dark);">Email Address</label>
+                        <input type="email" id="editTeacherEmail" class="form-input" value="${currentUser.email || ''}" placeholder="teacher@pimath.edu" 
+                            style="width: 100%; padding: 0.75rem; border: 1px solid #e2e8f0; border-radius: var(--radius-md); transition: all 0.2s;"
+                            onchange="saveTeacherProfile(true)">
+                        <small style="color: var(--text-muted); display: block; margin-top: 0.5rem;">For official communications & updates.</small>
+                    </div>
                 </div>
             </form>
+            <div id="saveIndicator" style="text-align: center; color: var(--success); font-size: 0.85rem; height: 1.5rem; margin-top: 0.5rem; opacity: 0; transition: opacity 0.3s;">
+                <span style="display: inline-flex; align-items: center; gap: 0.25rem;">
+                    <svg width="12" height="12" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+                    Saved
+                </span>
+            </div>
         `;
 
-        showModal('Edit Profile', modalContent, 'primary', () => {
-            // Save Function
-            const form = document.getElementById('modalProfileForm');
-            const newSpecs = form.querySelector('#editSpecs').value;
-            const newBio = form.querySelector('#editBio').value;
+        showModal('Edit Profile', modalContent, 'info');
 
-            // Update User Object
-            currentUser.specialization = newSpecs;
-            currentUser.bio = newBio;
+        // Hide default footer globally for this modal
+        const footer = document.querySelector('#globalModal .modal-actions');
+        if (footer) footer.style.display = 'none';
+    };
 
-            // Save to LocalStorage
-            setCurrentUser(currentUser);
+    window.triggerPhotoUpload = function () {
+        document.getElementById('photoUploadInput').click();
+    };
 
-            const users = JSON.parse(localStorage.getItem('users') || '[]');
-            const userIdx = users.findIndex(u => u.id === currentUser.id);
-            if (userIdx !== -1) {
-                users[userIdx] = { ...users[userIdx], ...currentUser };
-                localStorage.setItem('users', JSON.stringify(users));
+    window.handlePhotoPreview = function (input) {
+        if (input.files && input.files[0]) {
+            const reader = new FileReader();
+            reader.onload = function (e) {
+                document.getElementById('previewProfileImage').src = e.target.result;
+                saveTeacherProfile(true); // Autosave image
+            };
+            reader.readAsDataURL(input.files[0]);
+        }
+    };
+
+    window.saveTeacherProfile = function (silent = false) {
+        const phone = document.getElementById('editTeacherPhone').value;
+        const email = document.getElementById('editTeacherEmail').value;
+        const profileImgSrc = document.getElementById('previewProfileImage').src;
+
+        const currentUser = getCurrentUser();
+
+        // Update User Object
+        currentUser.phone = phone;
+        currentUser.email = email;
+
+        if (profileImgSrc && !profileImgSrc.includes('via.placeholder.com')) {
+            currentUser.profileImage = profileImgSrc;
+        }
+
+        // Save
+        setCurrentUser(currentUser);
+
+        const users = JSON.parse(localStorage.getItem('users') || '[]');
+        const userIdx = users.findIndex(u => u.id === currentUser.id);
+        if (userIdx !== -1) {
+            users[userIdx] = { ...users[userIdx], ...currentUser };
+            localStorage.setItem('users', JSON.stringify(users));
+        }
+
+        // Also update teacher list for students (crucial for finding teachers)
+        const teachers = JSON.parse(localStorage.getItem('teachers') || '[]');
+        const tIdx = teachers.findIndex(t => t.id === currentUser.id);
+        if (tIdx !== -1) {
+            teachers[tIdx] = { ...teachers[tIdx], photo: currentUser.profileImage, email: currentUser.email };
+            localStorage.setItem('teachers', JSON.stringify(teachers));
+        }
+
+        // Refresh Views
+        loadProfile();
+
+        // Feedback
+        if (silent) {
+            const indicator = document.getElementById('saveIndicator');
+            if (indicator) {
+                indicator.style.opacity = '1';
+                setTimeout(() => { if (indicator) indicator.style.opacity = '0'; }, 2000);
             }
-
-            // Refresh View
-            loadProfile();
-            showToast('Profile updated!', 'success');
-            return true;
-        });
+        } else {
+            showToast('Profile saved', 'success');
+            closeModal();
+        }
     };
 }
 

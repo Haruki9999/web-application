@@ -52,7 +52,7 @@
     --radius-lg: 0.75rem;
     --radius-xl: 1rem;
 
-    --font-heading: 'Outfit', 'Inter', sans-serif;
+    --font-heading: 'Inter', -apple-system, sans-serif;
     --font-body: 'Inter', -apple-system, sans-serif;
 }
 

@@ -281,12 +281,16 @@ function handleCreateClass(e) {
     e.target.reset();
 
     // Refresh
-    // Load Profile View (Read Only)
+    // Load Profile View (Read Only) & Header Image
     function loadProfile() {
         const currentUser = getCurrentUser();
         if (!currentUser) return;
 
-        // Populate Read-Only View
+        // Header Icon
+        const headerImg = document.getElementById('headerProfileImg');
+        if (headerImg) headerImg.src = currentUser.profileImage || 'https://via.placeholder.com/150';
+
+        // Populate Read-Only View (Sidebar Section)
         const img = document.getElementById('viewProfileImg');
         const name = document.getElementById('viewProfileName');
         const specs = document.getElementById('viewProfileSpecs');
@@ -312,7 +316,7 @@ function handleCreateClass(e) {
                         <img src="${currentUser.profileImage || 'https://via.placeholder.com/150'}" 
                              style="width: 100px; height: 100px; border-radius: 50%; object-fit: cover; border: 2px solid white; box-shadow: var(--shadow-md);"
                              id="modalAvatarPreview">
-                        <button type="button" style="position: absolute; bottom: 0; right: 0; background: var(--primary-main); color: white; border: none; border-radius: 50%; width: 32px; height: 32px; cursor: pointer; display: flex; align-items: center; justify-content: center;" onclick="alert('Photo upload simulation - in real app this opens file picker')">
+                        <button type="button" style="position: absolute; bottom: 0; right: 0; background: var(--primary-main); color: white; border: none; border-radius: 50%; width: 32px; height: 32px; cursor: pointer; display: flex; align-items: center; justify-content: center;" onclick="alert('Photo upload simulation')">
                             <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 13a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
                         </button>
                      </div>
@@ -320,8 +324,12 @@ function handleCreateClass(e) {
 
                 <div class="form-group">
                     <label class="form-label">Full Name</label>
-                    <input type="text" id="editName" class="form-input" value="${currentUser.name}" readonly style="background: #f1f5f9; cursor: not-allowed;">
-                    <small style="color: var(--text-muted);">Name change requires admin approval.</small>
+                    <input type="text" class="form-input" value="${currentUser.name}" readonly style="background: #f1f5f9;">
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Phone Number</label>
+                    <input type="text" class="form-input" value="${currentUser.phone || ''}" readonly style="background: #f1f5f9;">
                 </div>
                 
                 <div class="form-group">
@@ -331,7 +339,7 @@ function handleCreateClass(e) {
                 
                 <div class="form-group">
                     <label class="form-label">Bio / Introduction</label>
-                    <textarea id="editBio" class="form-input" rows="5">${currentUser.bio || ''}</textarea>
+                    <textarea id="editBio" class="form-input" rows="4">${currentUser.bio || ''}</textarea>
                 </div>
             </form>
         `;
@@ -349,8 +357,6 @@ function handleCreateClass(e) {
             // Save to LocalStorage
             setCurrentUser(currentUser);
 
-            // Also update in the global 'pendingTeachers' or 'users' list if needed for consistency, 
-            // but usually currentUser is the session. We should update the main 'users' array too.
             const users = JSON.parse(localStorage.getItem('users') || '[]');
             const userIdx = users.findIndex(u => u.id === currentUser.id);
             if (userIdx !== -1) {
@@ -360,8 +366,8 @@ function handleCreateClass(e) {
 
             // Refresh View
             loadProfile();
-            showToast('Profile updated successfully!', 'success');
-            return true; // Close modal
+            showToast('Profile updated!', 'success');
+            return true;
         });
     };
 }

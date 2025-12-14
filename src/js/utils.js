@@ -127,8 +127,18 @@ function showModal(title, message, type = 'info', onConfirm = null) {
         confirmBtn.className = 'btn btn-primary';
         confirmBtn.textContent = 'Confirm';
         confirmBtn.onclick = () => {
+            if (onConfirm) {
+                try {
+                    console.log('Modal confirm clicked');
+                    const result = onConfirm();
+                    // If callback explicitly returns false, do not close (e.g. validation failed)
+                    if (result === false) return;
+                } catch (err) {
+                    console.error('Error in modal confirm:', err);
+                    alert('An error occurred: ' + err.message); // Fallback for visibility
+                }
+            }
             closeModal();
-            onConfirm();
         };
         actionsEl.appendChild(confirmBtn);
     }

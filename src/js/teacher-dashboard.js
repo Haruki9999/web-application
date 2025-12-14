@@ -34,7 +34,6 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 // Open Create Class Modal
-// Open Create Class Modal
 window.openCreateClassModal = function () {
     const modalContent = `
         <form id="modalCreateClassForm" style="padding: 0.5rem 0;">
@@ -118,7 +117,7 @@ window.submitClassCreation = function () {
 
     if (!subject || !date || !time) {
         showToast('Please fill all fields', 'error');
-        return;
+        return false; // Keep modal open
     }
 
     const currentUser = getCurrentUser();
@@ -128,7 +127,10 @@ window.submitClassCreation = function () {
     if (teacherIdx === -1) return;
 
     // Add to upcoming classes
-    if (!users[teacherIdx].upcomingClasses) users[teacherIdx].upcomingClasses = [];
+    // Fix: Check if it's not an array (e.g. legacy number from mock stats)
+    if (!Array.isArray(users[teacherIdx].upcomingClasses)) {
+        users[teacherIdx].upcomingClasses = [];
+    }
 
     const newClass = {
         id: Date.now().toString(),
@@ -149,12 +151,18 @@ window.submitClassCreation = function () {
 
     // 2. Update Global Classes List (CRITICAL for Dashboard Display)
     const classes = JSON.parse(localStorage.getItem('classes') || '[]');
+    console.log('Before push, classes:', classes); // Debug
     classes.push(newClass);
     localStorage.setItem('classes', JSON.stringify(classes));
+    console.log('After push, classes:', classes); // Debug
 
     showToast('Class Scheduled Successfully!', 'success');
-    loadClasses(currentUser); // Refresh list
-    loadDashboardStats(currentUser); // Update stats
+
+    // Slight delay to ensure storage write (rarely needed but safer)
+    setTimeout(() => {
+        loadClasses(currentUser);
+        loadDashboardStats(currentUser);
+    }, 50);
 };
 
 function showSection(sectionId) {
@@ -167,7 +175,10 @@ function showSection(sectionId) {
     const link = document.querySelector(`.nav-link[onclick="showSection('${sectionId}')"]`);
     if (link) link.classList.add('active');
 
-    if (window.innerWidth < 1024) document.getElementById('sidebar').classList.remove('active');
+    if (window.innerWidth < 1024) {
+        const sb = document.getElementById('sidebar');
+        if (sb) sb.classList.remove('active');
+    }
 }
 
 function loadDashboardStats(user) {
@@ -182,6 +193,7 @@ function loadDashboardStats(user) {
 
     // Today Schedule
     const today = new Date().toISOString().split('T')[0];
+    // Fix: Ensure date comparison works with string formats if needed, but ISO YYYY-MM-DD should match
     const todaysClasses = myClasses.filter(c => c.date === today);
     const todayContainer = document.getElementById('todaySchedule');
 
@@ -197,18 +209,27 @@ function loadDashboardStats(user) {
                 </div>
             </div>
         `).join('');
+    } else {
+        // Optional: clear if empty
+        // todayContainer.innerHTML = '...'; 
     }
 }
 
 function loadClasses(user) {
+    console.log('Loading classes for user:', user.id);
     const list = document.getElementById('classesList');
     const classes = JSON.parse(localStorage.getItem('classes') || '[]');
+    console.log('All classes:', classes);
+
+    // Filter by teacherId matches user.id
     const myClasses = classes.filter(c => c.teacherId === user.id);
+    console.log('Filtered classes:', myClasses);
 
     if (myClasses.length === 0) {
         list.innerHTML = '<p class="text-muted">No classes scheduled.</p>';
         return;
     }
+    // ... rest of map
 
     list.innerHTML = myClasses.map(c => `
         <div class="class-card">

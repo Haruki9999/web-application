@@ -162,7 +162,7 @@ function initializeData() {
                 teacherId: '1',
                 isApproved: true,
                 totalStudents: 24,
-                upcomingClasses: 8,
+                upcomingClasses: [], // Changed from number 8 to empty array
                 materialsUploaded: 15,
                 reviews: [
                     { id: 'r1', studentName: 'John Student', rating: 5, comment: 'Dr. Sarah makes complex algebra so easy to understand! Highly recommended.', date: '2025-11-15' },
@@ -191,6 +191,33 @@ function initializeData() {
                 appliedDate: '2025-11-28'
             }
         ]));
+    }
+
+    // Check and Sync Classes Global List
+    // This ensures that the classes defined in 'upcomingClasses' user objects are also available in the 'classes' global list for the dashboard logic.
+    const storedClasses = JSON.parse(localStorage.getItem('classes') || '[]');
+    if (storedClasses.length === 0) {
+        // Extract from users if available
+        const users = JSON.parse(localStorage.getItem('users') || '[]');
+        const allNewClasses = [];
+
+        users.forEach(u => {
+            if (u.role === 'teacher' && u.upcomingClasses && u.upcomingClasses.length > 0) {
+                u.upcomingClasses.forEach(c => {
+                    // Ensure each class has the teacherId for correct filtering
+                    allNewClasses.push({
+                        ...c,
+                        teacherId: u.id,
+                        attendanceTaken: false, // Default
+                        students: c.students ? c.students.length : 0
+                    });
+                });
+            }
+        });
+
+        if (allNewClasses.length > 0) {
+            localStorage.setItem('classes', JSON.stringify(allNewClasses));
+        }
     }
 }
 

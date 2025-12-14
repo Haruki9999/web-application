@@ -127,6 +127,7 @@ function viewTeacherProfile(teacherId) {
             <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;">
                 <strong style="font-size: 0.9rem;">${r.studentName}</strong>
                 <span style="color: #fbbf24;">${'★'.repeat(r.rating)}${'☆'.repeat(5 - r.rating)}</span>
+                <span style="font-size: 0.8rem; color: var(--text-muted); margin-left: auto; padding-left: 1rem;">${formatDate(r.date)}</span>
             </div>
             <p style="color: var(--text-muted); font-size: 0.9rem; margin: 0;">${r.comment}</p>
         </div>
@@ -213,7 +214,7 @@ window.submitReview = function (teacherId) {
             studentName: user.name || 'Anonymous',
             rating,
             comment,
-            date: new Date().toISOString().split('T')[0]
+            date: formatDate(new Date().toISOString().split('T')[0])
         });
 
         localStorage.setItem('teachers', JSON.stringify(teachers));

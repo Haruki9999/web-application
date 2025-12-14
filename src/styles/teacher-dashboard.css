@@ -7,7 +7,7 @@
     background: var(--bg-body);
 }
 
-/* Sidebar Styling is redundant if we share styles, but let's keep it specific for adjustments */
+/* Sidebar */
 .sidebar {
     width: 280px;
     background: white;
@@ -37,11 +37,35 @@
     /* Pink for Teachers */
 }
 
+.sidebar-nav {
+    flex: 1;
+    padding: 1.5rem 1rem;
+    overflow-y: auto;
+}
+
+.nav-link {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.75rem 1rem;
+    color: var(--text-muted);
+    border-radius: var(--radius-md);
+    transition: all 0.2s;
+    font-weight: 500;
+    margin-bottom: 0.5rem;
+    text-decoration: none;
+}
+
 .nav-link:hover,
 .nav-link.active {
     background: #fce7f3;
     /* Pink Light */
     color: var(--secondary-main);
+}
+
+.sidebar-footer {
+    padding: 1.5rem;
+    border-top: 1px solid #f1f5f9;
 }
 
 /* Main Content */
@@ -52,12 +76,55 @@
     width: calc(100% - 280px);
 }
 
-/* Dashboard Grid */
+.dashboard-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2rem;
+}
+
+.welcome-text h1 {
+    font-size: 1.75rem;
+    margin-bottom: 0.25rem;
+}
+
+.welcome-text p {
+    color: var(--text-muted);
+}
+
+/* Dashboard Grid / Stats */
 .dashboard-grid-3 {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-    gap: 2rem;
-    margin-bottom: 2rem;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    /* Adjusted min-width */
+    gap: 1.5rem;
+    margin-bottom: 2.5rem;
+}
+
+.stat-card {
+    background: white;
+    padding: 1.5rem;
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-sm);
+    border: 1px solid #f1f5f9;
+    transition: transform 0.2s;
+}
+
+.stat-card:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-md);
+}
+
+.stat-label {
+    color: var(--text-muted);
+    font-size: 0.9rem;
+    margin-bottom: 0.5rem;
+}
+
+.stat-value {
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--text-main);
 }
 
 /* Class Card */
@@ -69,6 +136,7 @@
     transition: all 0.2s;
     position: relative;
     overflow: hidden;
+    margin-bottom: 1.5rem;
 }
 
 .class-card:hover {
@@ -94,27 +162,6 @@
     display: flex;
     justify-content: flex-end;
     gap: 0.5rem;
-}
-
-/* Attendance Table */
-.attendance-table {
-    width: 100%;
-    border-collapse: collapse;
-    margin-top: 1rem;
-}
-
-.attendance-table th,
-.attendance-table td {
-    padding: 1rem;
-    text-align: left;
-    border-bottom: 1px solid #f1f5f9;
-}
-
-.attendance-table th {
-    background: #f8fafc;
-    color: var(--text-muted);
-    font-weight: 600;
-    font-size: 0.9rem;
 }
 
 /* Profile Section */
@@ -152,5 +199,10 @@
     .main-content {
         margin-left: 0;
         width: 100%;
+    }
+
+    .profile-form-grid {
+        grid-template-columns: 1fr;
+        justify-items: center;
     }
 }

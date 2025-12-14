@@ -33,6 +33,130 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 });
 
+// Open Create Class Modal
+// Open Create Class Modal
+window.openCreateClassModal = function () {
+    const modalContent = `
+        <form id="modalCreateClassForm" style="padding: 0.5rem 0;">
+            <div style="background: #fdf2f8; border-radius: var(--radius-md); padding: 1rem; margin-bottom: 1.5rem; border: 1px solid #fce7f3;">
+                <p style="color: var(--secondary-main); font-size: 0.9rem; margin: 0;">
+                    <strong>✨ Schedule a New Session</strong><br>
+                    Create a new class for your students. The session will immediately appear in their upcoming schedule.
+                </p>
+            </div>
+
+            <div class="form-group" style="margin-bottom: 1.25rem;">
+                <label class="form-label" style="display: block; margin-bottom: 0.5rem; font-weight: 600; color: var(--text-main);">Subject / Topic</label>
+                <div style="position: relative;">
+                    <span style="position: absolute; left: 1rem; top: 50%; transform: translateY(-50%); opacity: 0.5;">📚</span>
+                    <input type="text" id="mSubject" class="form-input" placeholder="e.g. Advanced Calculus Review" required 
+                           style="padding-left: 2.5rem; width: 100%; border: 1px solid #e2e8f0; border-radius: var(--radius-md); height: 45px;">
+                </div>
+            </div>
+
+            <div style="display: grid; grid-template-columns: 1.5fr 1fr; gap: 1rem; margin-bottom: 1.25rem;">
+                <div class="form-group">
+                    <label class="form-label" style="display: block; margin-bottom: 0.5rem; font-weight: 600; color: var(--text-main);">Date</label>
+                    <input type="date" id="mDate" class="form-input" required 
+                           style="width: 100%; border: 1px solid #e2e8f0; border-radius: var(--radius-md); height: 45px;">
+                </div>
+                <div class="form-group">
+                    <label class="form-label" style="display: block; margin-bottom: 0.5rem; font-weight: 600; color: var(--text-main);">Time</label>
+                    <input type="time" id="mTime" class="form-input" required
+                           style="width: 100%; border: 1px solid #e2e8f0; border-radius: var(--radius-md); height: 45px;">
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label" style="display: block; margin-bottom: 0.5rem; font-weight: 600; color: var(--text-main);">Duration & Credits</label>
+                <div style="position: relative;">
+                    <span style="position: absolute; left: 1rem; top: 50%; transform: translateY(-50%); opacity: 0.5;">⏱️</span>
+                    <select id="mUnits" class="form-input" style="padding-left: 2.5rem; width: 100%; border: 1px solid #e2e8f0; border-radius: var(--radius-md); height: 45px; background-color: white;">
+                        <option value="3">3 Hours (Standard Session)</option>
+                        <option value="1.5">1.5 Hours (Short Session)</option>
+                        <option value="1">1 Hour (Quick Review)</option>
+                        <option value="4">4 Hours (Intensive)</option>
+                    </select>
+                </div>
+                <small style="display: block; margin-top: 0.5rem; color: var(--text-muted); font-size: 0.8rem;">
+                    * 3 Hours is the standard credit for main curriculum classes.
+                </small>
+            </div>
+        </form>
+    `;
+
+    showModal('Schedule Class', modalContent, 'primary', () => {
+        submitClassCreation();
+    });
+
+    // Rename Modal Button
+    setTimeout(() => {
+        const btn = document.querySelector('#globalModal .btn-primary');
+        if (btn) {
+            btn.textContent = 'Confirm Schedule';
+            btn.style.background = 'var(--secondary-main)';
+            btn.style.borderColor = 'var(--secondary-main)';
+        }
+    }, 0);
+};
+
+// ... keep submitClassCreation (it calls loadDashboardStats/loadClasses) ...
+
+// ... (logic for submitClassCreation is skipped in replacement unless specific lines targeted) ... 
+// Wait, I must ensure I don't delete submitClassCreation if I am replacing a block.
+// The previous block for openCreateClassModal ended at line 71.
+// I will target lines 37 to 71.
+
+// Also need to update loadDashboardStats (line 146) to use formatDate
+// And loadClasses (line 169) to use formatDate
+
+window.submitClassCreation = function () {
+    const subject = document.getElementById('mSubject').value;
+    const date = document.getElementById('mDate').value;
+    const time = document.getElementById('mTime').value;
+    const duration = document.getElementById('mUnits').value;
+
+    if (!subject || !date || !time) {
+        showToast('Please fill all fields', 'error');
+        return;
+    }
+
+    const currentUser = getCurrentUser();
+    const users = JSON.parse(localStorage.getItem('users') || '[]');
+    const teacherIdx = users.findIndex(u => u.phone === currentUser.phone);
+
+    if (teacherIdx === -1) return;
+
+    // Add to upcoming classes
+    if (!users[teacherIdx].upcomingClasses) users[teacherIdx].upcomingClasses = [];
+
+    const newClass = {
+        id: Date.now().toString(),
+        teacherId: currentUser.id, // Important for filtering
+        subject,
+        teacher: currentUser.name,
+        date,
+        time,
+        duration: parseFloat(duration),
+        students: 0,
+        attendanceTaken: false
+    };
+
+    // 1. Update User's local history (optional but good for syncing)
+    users[teacherIdx].upcomingClasses.push(newClass);
+    localStorage.setItem('users', JSON.stringify(users));
+    setCurrentUser(users[teacherIdx]);
+
+    // 2. Update Global Classes List (CRITICAL for Dashboard Display)
+    const classes = JSON.parse(localStorage.getItem('classes') || '[]');
+    classes.push(newClass);
+    localStorage.setItem('classes', JSON.stringify(classes));
+
+    showToast('Class Scheduled Successfully!', 'success');
+    loadClasses(currentUser); // Refresh list
+    loadDashboardStats(currentUser); // Update stats
+};
+
 function showSection(sectionId) {
     document.querySelectorAll('.dashboard-section').forEach(el => el.style.display = 'none');
     document.querySelectorAll('.nav-link').forEach(el => el.classList.remove('active'));
@@ -67,7 +191,7 @@ function loadDashboardStats(user) {
                 <div class="class-body" style="display: flex; justify-content: space-between; align-items: center;">
                     <div>
                         <h4 style="margin-bottom: 0.25rem;">${c.subject}</h4>
-                        <p style="color: var(--text-muted); font-size: 0.9rem;">${c.time} | 3 Hours</p>
+                        <p style="color: var(--text-muted); font-size: 0.9rem;">${formatDate(c.date)} @ ${c.time} | 3 Hours</p>
                     </div>
                     <button class="btn btn-primary btn-sm" onclick="openAttendanceModal('${c.id}')">Take Attendance</button>
                 </div>
@@ -90,7 +214,7 @@ function loadClasses(user) {
         <div class="class-card">
             <div class="class-header">
                 <h3>${c.subject}</h3>
-                <span style="font-size: 0.9rem; color: var(--text-muted);">${c.date} @ ${c.time}</span>
+                <span style="font-size: 0.9rem; color: var(--text-muted);">${formatDate(c.date)} @ ${c.time}</span>
             </div>
             <div class="class-body">
                 <p>Enrolled Students: ${c.students || 0}</p>

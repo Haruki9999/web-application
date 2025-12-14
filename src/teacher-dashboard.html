@@ -28,9 +28,7 @@
                     Profile & CV
                 </a>
                 <!-- Future features -->
-                <a href="#" class="nav-link" onclick="showSection('createClass')">
-                    Create Class
-                </a>
+                <!-- Create Class moved to separate modal within My Classes -->
             </nav>
             <div class="sidebar-footer">
                 <button onclick="logout()" class="btn btn-secondary"
@@ -52,6 +50,7 @@
 
             <!-- 1. OVERVIEW -->
             <div id="section-overview" class="dashboard-section">
+                <!-- ... content ... -->
                 <div class="dashboard-grid-3">
                     <div class="stat-card">
                         <div class="stat-label">Total Students</div>
@@ -80,7 +79,10 @@
 
             <!-- 2. MY CLASSES -->
             <div id="section-classes" class="dashboard-section" style="display: none;">
-                <h2 class="section-title">My Teaching Schedule</h2>
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
+                    <h2 class="section-title" style="margin: 0;">My Teaching Schedule</h2>
+                    <button class="btn btn-primary" onclick="openCreateClassModal()">+ Schedule Class</button>
+                </div>
                 <div id="classesList" style="display: grid; gap: 1.5rem;">
                     <!-- Injected JS -->
                 </div>
@@ -122,33 +124,38 @@
                 </div>
             </div>
 
-            <!-- 4. CREATE CLASS (Hidden/Optional per updated plan but good to have) -->
-            <div id="section-createClass" class="dashboard-section" style="display: none;">
-                <h2 class="section-title">Schedule New Class</h2>
-                <div class="class-card" style="max-width: 600px;">
+            <!-- 4. PROFILE -->
+            <div id="section-profile" class="dashboard-section" style="display: none;">
+                <!-- ... Content moved/kept same ... -->
+                <h2 class="section-title">Teacher Profile</h2>
+                <div class="class-card">
                     <div class="class-body">
-                        <form id="createClassForm">
-                            <div class="form-group">
-                                <label class="form-label">Subject</label>
-                                <input type="text" id="newClassSubject" class="form-input" required>
+                        <form id="profileForm" class="profile-form-grid">
+                            <div class="profile-avatar-upload">
+                                <img src="https://via.placeholder.com/150" alt="Profile" class="avatar-preview"
+                                    id="profilePreview">
+                                <button type="button" class="btn btn-secondary btn-sm">Change Photo</button>
                             </div>
-                            <div class="form-group">
-                                <label class="form-label">Date & Time</label>
-                                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
-                                    <input type="date" id="newClassDate" class="form-input" required>
-                                    <input type="time" id="newClassTime" class="form-input" required>
+                            <div style="display: grid; gap: 1.5rem;">
+                                <div class="form-group">
+                                    <label class="form-label">Full Name</label>
+                                    <input type="text" id="profileName" class="form-input" readonly>
                                 </div>
+                                <div class="form-group">
+                                    <label class="form-label">Specializations</label>
+                                    <input type="text" id="profileSpecs" class="form-input"
+                                        placeholder="e.g. SAT, Calculus">
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">Bio</label>
+                                    <textarea id="profileBio" class="form-input" rows="4"></textarea>
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">CV / Resume (PDF)</label>
+                                    <input type="file" id="profileCV" class="form-input" accept=".pdf">
+                                </div>
+                                <button type="submit" class="btn btn-primary">Save Profile</button>
                             </div>
-                            <div class="form-group">
-                                <label class="form-label">Academic Hours (1 unit = 3 real hours usually, but flexibility
-                                    needed)</label>
-                                <!-- User requirement: 1 attendance = 3 hours. -->
-                                <select id="newClassUnits" class="form-input">
-                                    <option value="3">3 Hours (Standard)</option>
-                                    <option value="1">1 Hour</option>
-                                </select>
-                            </div>
-                            <button type="submit" class="btn btn-primary">Schedule Class</button>
                         </form>
                     </div>
                 </div>

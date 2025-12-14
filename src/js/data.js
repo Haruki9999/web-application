@@ -134,13 +134,15 @@ function initializeData() {
     if (!localStorage.getItem('teachers')) {
         localStorage.setItem('teachers', JSON.stringify(teachers));
     }
-    if (!localStorage.getItem('users')) {
+    const storedUsers = JSON.parse(localStorage.getItem('users') || 'null');
+    // Force re-init if users don't exist, OR missing phone, OR password is the old 'password' instead of '123456'
+    if (!storedUsers || (storedUsers.length > 0 && (!storedUsers[0].phone || storedUsers[0].password === 'password'))) {
         localStorage.setItem('users', JSON.stringify([
             {
                 id: '1',
                 email: 'student@test.com',
                 phone: '88888888',
-                password: 'password',
+                password: '123456',
                 role: 'student',
                 name: 'John Student',
                 enrolledPrograms: ['1', '2'],
@@ -154,7 +156,7 @@ function initializeData() {
                 id: '2',
                 email: 'teacher@test.com',
                 phone: '99999999',
-                password: 'password',
+                password: '123456',
                 role: 'teacher',
                 name: 'Dr. Sarah Johnson',
                 teacherId: '1',
@@ -171,7 +173,7 @@ function initializeData() {
                 id: '3',
                 email: 'admin@test.com',
                 phone: '11111111',
-                password: 'password',
+                password: '123456',
                 role: 'admin',
                 name: 'Admin User'
             }

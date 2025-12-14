@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard - Mathematics Training Center</title>
+    <link rel="stylesheet" href="styles/base.css">
+    <link rel="stylesheet" href="styles/admin-dashboard.css">
+</head>
+
+<body>
+    <div class="dashboard">
+        <!-- Sidebar -->
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <h2>Admin Portal</h2>
+            </div>
+            <ul class="sidebar-nav">
+                <li>
+                    <a href="#" class="active" onclick="showSection('overview')">
+                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
+                        </svg>
+                        Dashboard
+                    </a>
+                </li>
+                <li>
+                    <a href="#" onclick="showSection('pendingTeachers')">
+                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
+                        </svg>
+                        Pending Teachers
+                    </a>
+                </li>
+                <li>
+                    <a href="#" onclick="showSection('allUsers')">
+                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+                        </svg>
+                        All Users
+                    </a>
+                </li>
+                <li>
+                    <a href="#" onclick="showSection('allClasses')">
+                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
+                        </svg>
+                        All Classes
+                    </a>
+                </li>
+                <li>
+                    <a href="#" onclick="showSection('reports')">
+                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+                        </svg>
+                        Reports
+                    </a>
+                </li>
+                <li>
+                    <a href="#" onclick="logout()">
+                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+                        </svg>
+                        Logout
+                    </a>
+                </li>
+            </ul>
+        </aside>
+
+        <!-- Main Content -->
+        <div class="dashboard-content">
+            <button class="sidebar-toggle" id="sidebarToggle">☰</button>
+
+            <div class="dashboard-header">
+                <h1>Admin Dashboard</h1>
+            </div>
+
+            <div class="dashboard-main">
+                <!-- Overview Section -->
+                <div id="overview" class="dashboard-section">
+                    <div class="dashboard-welcome">
+                        <h1>System Overview</h1>
+                        <p>Monitor and manage the entire platform</p>
+                    </div>
+
+                    <!-- Stats -->
+                    <div class="stats-grid">
+                        <div class="stat-card primary">
+                            <h3>Total Students</h3>
+                            <p id="totalStudents">0</p>
+                        </div>
+                        <div class="stat-card success">
+                            <h3>Total Teachers</h3>
+                            <p id="totalTeachers">0</p>
+                        </div>
+                        <div class="stat-card warning">
+                            <h3>Pending Approvals</h3>
+                            <p id="pendingApprovals">0</p>
+                        </div>
+                        <div class="stat-card">
+                            <h3>Active Classes</h3>
+                            <p id="activeClasses">0</p>
+                        </div>
+                    </div>
+
+                    <!-- Recent Registrations -->
+                    <div class="card">
+                        <h3 style="margin-bottom: 1.5rem;">Recent Registrations</h3>
+                        <div id="recentRegistrations"></div>
+                    </div>
+
+                    <!-- System Activity -->
+                    <div class="card">
+                        <h3 style="margin-bottom: 1.5rem;">System Activity</h3>
+                        <div id="systemActivity">
+                            <p style="color: #6B7280;">No recent activity</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Pending Teachers Section -->
+                <div id="pendingTeachers" class="dashboard-section" style="display: none;">
+                    <h2 class="mb-4">Pending Teacher Approvals</h2>
+                    <div id="pendingTeachersList"></div>
+                </div>
+
+                <!-- All Users Section -->
+                <div id="allUsers" class="dashboard-section" style="display: none;">
+                    <h2 class="mb-4">All Users</h2>
+
+                    <div class="filter-bar">
+                        <label for="userRoleFilter">Filter by role:</label>
+                        <select id="userRoleFilter" class="form-select" onchange="loadAllUsers()">
+                            <option value="all">All Users</option>
+                            <option value="student">Students</option>
+                            <option value="teacher">Teachers</option>
+                            <option value="admin">Admins</option>
+                        </select>
+                    </div>
+
+                    <div id="usersList"></div>
+                </div>
+
+                <!-- All Classes Section -->
+                <div id="allClasses" class="dashboard-section" style="display: none;">
+                    <h2 class="mb-4">All Classes</h2>
+                    <div id="classesList"></div>
+                </div>
+
+                <!-- Reports Section -->
+                <div id="reports" class="dashboard-section" style="display: none;">
+                    <h2 class="mb-4">Reports & Analytics</h2>
+
+                    <div class="grid" style="margin-bottom: 2rem;">
+                        <div class="card">
+                            <h3>Student Enrollment</h3>
+                            <p style="font-size: 2rem; font-weight: 700; color: #3B82F6; margin: 1rem 0;">156</p>
+                            <p style="color: #10B981; font-size: 0.875rem;">↑ 12% from last month</p>
+                        </div>
+
+                        <div class="card">
+                            <h3>Class Completion Rate</h3>
+                            <p style="font-size: 2rem; font-weight: 700; color: #10B981; margin: 1rem 0;">94%</p>
+                            <p style="color: #10B981; font-size: 0.875rem;">↑ 3% from last month</p>
+                        </div>
+
+                        <div class="card">
+                            <h3>Average Rating</h3>
+                            <p style="font-size: 2rem; font-weight: 700; color: #F59E0B; margin: 1rem 0;">4.8</p>
+                            <p style="color: #6B7280; font-size: 0.875rem;">⭐ Excellent</p>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <h3 style="margin-bottom: 1.5rem;">Revenue Overview</h3>
+                        <p style="color: #6B7280;">Revenue tracking and analytics would be displayed here.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/data.js"></script>
+    <script src="js/main.js"></script>
+    <script src="js/admin-dashboard.js"></script>
+</body>
+
+</html>

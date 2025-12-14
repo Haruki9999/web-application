@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mathematics Training Center - Expert Exam Preparation</title>
+    <link rel="stylesheet" href="styles/base.css">
+    <link rel="stylesheet" href="styles/index.css">
+</head>
+
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="container">
+            <div class="nav-content">
+                <a href="index.html" class="logo">Math Training Center</a>
+                <div class="nav-links">
+                    <a href="programs.html">Programs</a>
+                    <a href="teachers.html">Teachers</a>
+                    <a href="login.html" class="btn-secondary">Login</a>
+                    <a href="register.html" class="btn-primary">Register</a>
+                </div>
+                <button class="mobile-menu-btn" id="mobileMenuBtn">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Mobile Menu -->
+    <div class="mobile-menu" id="mobileMenu">
+        <a href="programs.html">Programs</a>
+        <a href="teachers.html">Teachers</a>
+        <a href="login.html">Login</a>
+        <a href="register.html">Register</a>
+    </div>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="container">
+            <h1>Excel in Your Mathematics Exams</h1>
+            <p class="hero-subtitle">Expert tutoring for SAT, IGCSE, AS/A Level, ACT, and IB qualifications</p>
+            <div class="hero-buttons">
+                <a href="programs.html" class="btn-primary btn-lg">Browse Programs</a>
+                <a href="teachers.html" class="btn-secondary btn-lg">Find Teachers</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Search Section -->
+    <section class="search-section">
+        <div class="container">
+            <div class="search-wrapper">
+                <div class="search-container">
+                    <svg class="search-icon" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2">
+                        <circle cx="11" cy="11" r="8"></circle>
+                        <path d="m21 21-4.35-4.35"></path>
+                    </svg>
+                    <input type="text" class="search-input" id="searchInput"
+                        placeholder="Search for programs or teachers...">
+                    <button class="search-clear" id="searchClear">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2">
+                            <line x1="18" y1="6" x2="6" y2="18"></line>
+                            <line x1="6" y1="6" x2="18" y2="18"></line>
+                        </svg>
+                    </button>
+                </div>
+                <div class="search-results" id="searchResults"></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Featured Programs -->
+    <section class="section">
+        <div class="container">
+            <h2 class="section-title">Featured Programs</h2>
+            <div class="grid" id="featuredPrograms"></div>
+        </div>
+    </section>
+
+    <!-- Featured Teachers -->
+    <section class="section bg-gray">
+        <div class="container">
+            <h2 class="section-title">Our Expert Teachers</h2>
+            <div class="grid" id="featuredTeachers"></div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>Math Training Center</h3>
+                    <p>Expert exam preparation for mathematics students worldwide.</p>
+                </div>
+                <div class="footer-section">
+                    <h4>Quick Links</h4>
+                    <a href="programs.html">Programs</a>
+                    <a href="teachers.html">Teachers</a>
+                    <a href="login.html">Login</a>
+                    <a href="register.html">Register</a>
+                </div>
+                <div class="footer-section">
+                    <h4>Contact</h4>
+                    <p>Email: info@mathtraining.com</p>
+                    <p>Phone: +1 (555) 123-4567</p>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2025 Mathematics Training Center. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="js/data.js"></script>
+    <script src="js/components/search.component.js"></script>
+    <script src="js/components/homepage.component.js"></script>
+    <script src="js/utils.js"></script>
+</body>
+
+</html>

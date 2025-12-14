@@ -1,0 +1,132 @@
+/* Register Page Specific Styles */
+
+/* Auth Pages */
+.auth-page {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    padding: 2rem 1rem;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+}
+
+.auth-card {
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(10px);
+    padding: 3rem;
+    border-radius: 1rem;
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+    max-width: 500px;
+    width: 100%;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+/* Responsive Auth Pages */
+@media (max-width: 768px) {
+    .auth-page {
+        padding: 1.5rem 1rem;
+    }
+
+    .auth-card {
+        padding: 2rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .auth-page {
+        padding: 1rem 0.75rem;
+    }
+
+    .auth-card {
+        padding: 1.5rem;
+        border-radius: 0.75rem;
+    }
+}
+
+.auth-header {
+    text-align: center;
+    margin-bottom: 2rem;
+}
+
+.auth-header h1 {
+    color: #1a202c;
+    margin-bottom: 0.5rem;
+    font-size: 2rem;
+    letter-spacing: -0.025em;
+}
+
+.auth-header p {
+    color: #718096;
+}
+
+.auth-footer {
+    text-align: center;
+    margin-top: 2rem;
+    color: #718096;
+    font-size: 0.95rem;
+}
+
+.auth-footer a {
+    color: #667eea;
+    text-decoration: none;
+    font-weight: 600;
+    transition: color 0.2s;
+}
+
+.auth-footer a:hover {
+    color: #764ba2;
+    text-decoration: underline;
+}
+
+/* Input Enhancements */
+.form-group {
+    margin-bottom: 1.25rem;
+}
+
+.form-label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-weight: 600;
+    color: #4a5568;
+    font-size: 0.9rem;
+}
+
+.form-input,
+.form-select {
+    width: 100%;
+    padding: 0.75rem 1rem;
+    border: 2px solid #e2e8f0;
+    border-radius: 0.5rem;
+    font-size: 1rem;
+    transition: all 0.2s ease;
+    background: #f7fafc;
+}
+
+.form-input:focus,
+.form-select:focus {
+    outline: none;
+    border-color: #667eea;
+    background: white;
+    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+}
+
+.btn-primary.btn-full {
+    width: 100%;
+    padding: 1rem;
+    font-size: 1.1rem;
+    font-weight: 600;
+    background: linear-gradient(to right, #667eea, #764ba2);
+    border: none;
+    transition: opacity 0.2s, transform 0.1s;
+    margin-top: 1rem;
+}
+
+.btn-primary.btn-full:hover {
+    opacity: 0.9;
+    transform: translateY(-1px);
+}
+
+.btn-primary.btn-full:active {
+    transform: translateY(0);
+}

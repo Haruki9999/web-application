@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Parent Portal - Mathematics Training Center</title>
+    <link rel="stylesheet" href="styles/base.css">
+    <link rel="stylesheet" href="styles/login.css">
+    <style>
+        .parent-dashboard {
+            max-width: 1000px;
+            margin: 2rem auto;
+            padding: 2rem;
+            background: white;
+            border-radius: 1rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            display: none;
+        }
+
+        .student-info-card {
+            background: #F3F4F6;
+            padding: 1.5rem;
+            border-radius: 0.5rem;
+            margin-bottom: 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .progress-stat {
+            text-align: center;
+        }
+
+        .progress-stat .value {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #4F46E5;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Login Section -->
+    <div class="auth-page" id="parentLogin">
+        <div class="auth-card">
+            <div class="auth-header">
+                <h2>Parent Portal</h2>
+                <p>Track your child's progress</p>
+            </div>
+
+            <form onsubmit="handleParentLogin(event)">
+                <div class="form-group">
+                    <label class="form-label">Child's Student Email</label>
+                    <input type="email" id="childEmail" class="form-input" required placeholder="student@test.com">
+                </div>
+                <button type="submit" class="btn-primary" style="width: 100%;">View Progress</button>
+                <div class="auth-footer">
+                    <a href="index.html">Back to Home</a>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Dashboard Section -->
+    <div class="parent-dashboard" id="parentDashboard">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
+            <h2>Student Progress Report</h2>
+            <button onclick="logoutParent()" class="btn-secondary">Exit</button>
+        </div>
+
+        <div class="student-info-card">
+            <div>
+                <h3 id="childName" style="margin-bottom: 0.5rem;">Student Name</h3>
+                <p id="childEmailDisplay" style="color: #6B7280;">email@example.com</p>
+            </div>
+            <div class="progress-stat">
+                <div class="value" id="progressValue">0%</div>
+                <div class="label">Course Completion</div>
+            </div>
+            <div class="progress-stat">
+                <div class="value" id="hoursValue">0/75</div>
+                <div class="label">Academic Hours</div>
+            </div>
+        </div>
+
+        <h3>Attendance & Assignments History</h3>
+        <div class="table-container" style="margin-top: 1rem;">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Date</th>
+                        <th>Subject</th>
+                        <th>Status</th>
+                        <th>Time</th>
+                        <th>Assessment/Note</th>
+                    </tr>
+                </thead>
+                <tbody id="attendanceList">
+                    <!-- Populated by JS -->
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <script src="js/data.js"></script>
+    <script>
+        function handleParentLogin(e) {
+            e.preventDefault();
+            const email = document.getElementById('childEmail').value;
+
+            // Find student
+            const users = JSON.parse(localStorage.getItem('users') || '[]');
+            const student = users.find(u => u.email === email && u.role === 'student');
+
+            if (!student) {
+                alert('Student not found with this email.');
+                return;
+            }
+
+            showDashboard(student);
+        }
+
+        function showDashboard(student) {
+            document.getElementById('parentLogin').style.display = 'none';
+            document.getElementById('parentDashboard').style.display = 'block';
+
+            // Populate Info
+            document.getElementById('childName').textContent = student.name;
+            document.getElementById('childEmailDisplay').textContent = student.email;
+
+            // Calc Progress (75 hours)
+            const hours = student.completedHours || 0;
+            const percentage = Math.min((hours / 75) * 100, 100).toFixed(1);
+
+            document.getElementById('progressValue').textContent = `${percentage}%`;
+            document.getElementById('hoursValue').textContent = `${hours.toFixed(1)}/75`;
+
+            // Populate History
+            const container = document.getElementById('attendanceList');
+            const history = student.attendanceHistory || [];
+
+            if (history.length === 0) {
+                container.innerHTML = '<tr><td colspan="5" style="text-align:center; padding: 2rem;">No attendance records found yet.</td></tr>';
+            } else {
+                // Sort newest first
+                history.sort((a, b) => new Date(b.date) - new Date(a.date));
+
+                container.innerHTML = history.map(h => `
+                    <tr>
+                        <td>${h.date}</td>
+                        <td>${h.subject}</td>
+                        <td><span style="color: green; font-weight: bold;">${h.status}</span> (+${h.units.toFixed(1)} hrs)</td>
+                        <td>-</td>
+                        <td>${h.assignment ? '📝 ' + h.assignment : '-'}</td>
+                    </tr>
+                `).join('');
+            }
+        }
+
+        function logoutParent() {
+            document.getElementById('parentLogin').style.display = 'flex';
+            document.getElementById('parentDashboard').style.display = 'none';
+            document.getElementById('childEmail').value = '';
+        }
+    </script>
+</body>
+
+</html>

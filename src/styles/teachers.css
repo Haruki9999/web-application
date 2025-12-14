@@ -1,0 +1,143 @@
+/* Teachers Page Specific Styles */
+
+/* Hero Section */
+.hero.hero-small {
+    background: linear-gradient(135deg, #3B82F6 0%, #2563EB 100%);
+    color: white;
+    padding: 3rem 0;
+    text-align: center;
+}
+
+.hero.hero-small h1 {
+    color: white;
+    margin-bottom: 1rem;
+}
+
+.hero-subtitle {
+    font-size: 1.25rem;
+    margin-bottom: 2rem;
+    opacity: 0.95;
+}
+
+/* Responsive Hero */
+@media (max-width: 768px) {
+    .hero.hero-small {
+        padding: 2rem 0;
+    }
+    
+    .hero-subtitle {
+        font-size: 1.125rem;
+        margin-bottom: 1.5rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .hero.hero-small {
+        padding: 1.5rem 0;
+    }
+    
+    .hero-subtitle {
+        font-size: 1rem;
+        margin-bottom: 1rem;
+    }
+}
+
+/* Filter Bar */
+.filter-bar {
+    background: white;
+    padding: 1.5rem;
+    border-radius: 0.75rem;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    margin-bottom: 2rem;
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+    align-items: center;
+}
+
+.filter-bar label {
+    font-weight: 500;
+    color: #374151;
+}
+
+.filter-bar select {
+    padding: 0.5rem 1rem;
+    border: 1px solid #D1D5DB;
+    border-radius: 0.5rem;
+    font-size: 0.875rem;
+}
+
+/* Responsive Filter Bar */
+@media (max-width: 768px) {
+    .filter-bar {
+        padding: 1rem;
+        flex-direction: column;
+        align-items: stretch;
+    }
+    
+    .filter-bar label {
+        margin-bottom: 0.5rem;
+    }
+    
+    .filter-bar select {
+        width: 100%;
+    }
+}
+
+@media (max-width: 480px) {
+    .filter-bar {
+        padding: 0.875rem;
+        margin-bottom: 1.5rem;
+    }
+}
+
+/* Teacher Card */
+.teacher-card {
+    text-align: center;
+}
+
+.teacher-photo {
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    margin: 0 auto 1rem;
+    object-fit: cover;
+    background: #E5E7EB;
+}
+
+.teacher-name {
+    font-size: 1.25rem;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+}
+
+.teacher-specialization {
+    color: #6B7280;
+    margin-bottom: 1rem;
+}
+
+.teacher-rating {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    color: #F59E0B;
+    margin-bottom: 0.5rem;
+}
+
+.teacher-experience {
+    color: #4B5563;
+    font-size: 0.875rem;
+}
+
+@media (max-width: 480px) {
+    .teacher-photo {
+        width: 80px;
+        height: 80px;
+    }
+    
+    .teacher-name {
+        font-size: 1.125rem;
+    }
+}
+

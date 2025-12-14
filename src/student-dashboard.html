@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Dashboard - Mathematics Training Center</title>
+    <link rel="stylesheet" href="styles/base.css">
+    <link rel="stylesheet" href="styles/student-dashboard.css">
+</head>
+
+<body>
+    <div class="dashboard">
+        <!-- Sidebar -->
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <h2>Student Portal</h2>
+            </div>
+            <ul class="sidebar-nav">
+                <li>
+                    <a href="#" class="active" onclick="showSection('overview')">
+                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
+                        </svg>
+                        Dashboard
+                    </a>
+                </li>
+                <li>
+                    <a href="#" onclick="showSection('classes')">
+                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+                        </svg>
+                        My Classes
+                    </a>
+                </li>
+                <li>
+                    <a href="programs.html">
+                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
+                        </svg>
+                        Browse Programs
+                    </a>
+                </li>
+                <li>
+                    <a href="teachers.html">
+                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+                        </svg>
+                        Find Teachers
+                    </a>
+                </li>
+                <li>
+                    <a href="#" onclick="showSection('progress')">
+                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+                        </svg>
+                        Progress
+                    </a>
+                </li>
+                <li>
+                    <a href="#" onclick="logout()">
+                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+                        </svg>
+                        Logout
+                    </a>
+                </li>
+            </ul>
+        </aside>
+
+        <!-- Main Content -->
+        <div class="dashboard-content">
+            <button class="sidebar-toggle" id="sidebarToggle">☰</button>
+
+            <div class="dashboard-header">
+                <h1>Student Dashboard</h1>
+            </div>
+
+            <div class="dashboard-main">
+                <!-- Overview Section -->
+                <div id="overview" class="dashboard-section">
+                    <div class="dashboard-welcome">
+                        <h1>Welcome back, <span id="studentName"></span>!</h1>
+                        <p>Track your progress and manage your classes</p>
+                    </div>
+
+                    <!-- Stats -->
+                    <div class="stats-grid">
+                        <div class="stat-card primary">
+                            <h3>Hours Completed</h3>
+                            <p id="completedHours">0</p>
+                        </div>
+                        <div class="stat-card success">
+                            <h3>Hours Remaining</h3>
+                            <p id="remainingHours">75</p>
+                        </div>
+                        <div class="stat-card warning">
+                            <h3>Enrolled Programs</h3>
+                            <p id="enrolledCount">0</p>
+                        </div>
+                        <div class="stat-card">
+                            <h3>Upcoming Classes</h3>
+                            <p id="upcomingCount">0</p>
+                        </div>
+                    </div>
+
+                    <!-- Progress Bar -->
+                    <div class="card">
+                        <h3>Overall Progress (75 hours required)</h3>
+                        <div
+                            style="background: #E5E7EB; height: 24px; border-radius: 12px; overflow: hidden; margin: 1rem 0;">
+                            <div id="progressBar"
+                                style="background: linear-gradient(90deg, #3B82F6, #10B981); height: 100%; width: 0%; transition: width 0.5s;">
+                            </div>
+                        </div>
+                        <p id="progressText" style="color: #6B7280;"></p>
+                    </div>
+
+                    <!-- Upcoming Classes -->
+                    <div class="card">
+                        <h3 style="margin-bottom: 1.5rem;">Upcoming Classes</h3>
+                        <div id="upcomingClassesList"></div>
+                    </div>
+
+                    <!-- Enrolled Programs -->
+                    <div>
+                        <h2 style="margin-bottom: 1rem;">My Enrolled Programs</h2>
+                        <div class="grid" id="enrolledProgramsList"></div>
+                    </div>
+                </div>
+
+                <!-- Classes Section -->
+                <div id="classes" class="dashboard-section" style="display: none;">
+                    <h2 class="mb-4">My Classes</h2>
+                    <div id="allClassesList"></div>
+                </div>
+
+                <!-- Progress Section -->
+                <div id="progress" class="dashboard-section" style="display: none;">
+                    <h2 class="mb-4">My Progress</h2>
+                    <div class="card">
+                        <h3>Learning Statistics</h3>
+                        <div style="margin-top: 2rem;">
+                            <div style="display: flex; justify-content: space-between; margin-bottom: 1rem;">
+                                <span>Total Hours</span>
+                                <span id="totalHours" style="font-weight: 600;">0 / 75 hours</span>
+                            </div>
+                            <div style="background: #E5E7EB; height: 12px; border-radius: 6px; overflow: hidden;">
+                                <div id="progressBarFull"
+                                    style="background: #3B82F6; height: 100%; width: 0%; transition: width 0.5s;"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/data.js"></script>
+    <script src="js/main.js"></script>
+    <script src="js/student-dashboard.js"></script>
+</body>
+
+</html>

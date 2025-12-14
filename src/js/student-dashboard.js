@@ -19,11 +19,24 @@ document.addEventListener('DOMContentLoaded', () => {
     // Sidebar Toggle
     const sidebar = document.getElementById('sidebar');
     const toggle = document.getElementById('sidebarToggle');
+
+    // Start sidebar expanded
+    sidebar.classList.add('active');
+
     if (toggle) {
         toggle.addEventListener('click', () => {
             sidebar.classList.toggle('active');
         });
     }
+
+    // Global function for sidebar brand toggle
+    window.toggleSidebar = function () {
+        const sidebarEl = document.getElementById('sidebar');
+        if (sidebarEl) {
+            sidebarEl.classList.toggle('active');
+        }
+    };
+
 
     // Modal For Student Profile
     window.openStudentProfileModal = function () {

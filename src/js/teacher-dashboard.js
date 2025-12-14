@@ -21,11 +21,24 @@ document.addEventListener('DOMContentLoaded', () => {
     // Sidebar
     const sidebar = document.getElementById('sidebar');
     const toggle = document.getElementById('sidebarToggle');
+
+    // Start sidebar expanded
+    sidebar.classList.add('active');
+
     if (toggle) {
         toggle.addEventListener('click', () => {
             sidebar.classList.toggle('active');
         });
     }
+
+    // Global function for sidebar brand toggle
+    window.toggleSidebar = function () {
+        const sidebarEl = document.getElementById('sidebar');
+        if (sidebarEl) {
+            sidebarEl.classList.toggle('active');
+        }
+    };
+
 
     // Forms
     const createClassForm = document.getElementById('createClassForm');

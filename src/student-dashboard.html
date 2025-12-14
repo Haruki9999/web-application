@@ -13,9 +13,20 @@
 <body>
     <div class="dashboard">
         <!-- Sidebar -->
-        <aside class="sidebar" id="sidebar">
+        <aside class="sidebar active" id="sidebar">
             <div class="sidebar-header">
-                <div class="sidebar-brand">Pi Student</div>
+                <div style="display: flex; align-items: center; gap: 1rem; width: 100%;">
+                    <button onclick="document.getElementById('sidebar').classList.toggle('active')"
+                        style="background: #e0e7ff; border: none; cursor: pointer; padding: 0.5rem; color: var(--primary-main); display: flex; align-items: center; justify-content: center; border-radius: 6px; transition: all 0.2s; flex-shrink: 0;"
+                        onmouseover="this.style.background='#c7d2fe'" onmouseout="this.style.background='#e0e7ff'"
+                        title="Toggle Sidebar">
+                        <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+                            stroke-width="2.5">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16" />
+                        </svg>
+                    </button>
+                    <div class="sidebar-brand">Pi Student</div>
+                </div>
             </div>
             <nav class="sidebar-nav">
                 <a href="#" class="nav-link active" onclick="switchTab('dashboard')">
@@ -157,6 +168,24 @@
             <!-- End Main Content Wrapper -->
 
         </main>
+
+        <!-- Bottom Navbar -->
+        <div
+            style="position: fixed; bottom: 0; left: 0; right: 0; background: white; border-top: 1px solid #e2e8f0; padding: 1rem 2rem; display: flex; align-items: center; gap: 1rem; z-index: 40; box-shadow: 0 -2px 10px rgba(0,0,0,0.1);">
+            <button onclick="document.getElementById('sidebar').classList.toggle('active')"
+                style="background: #e0e7ff; border: none; cursor: pointer; padding: 0.75rem; color: var(--primary-main); display: flex; align-items: center; justify-content: center; border-radius: 6px; transition: all 0.2s;"
+                onmouseover="this.style.background='#c7d2fe'" onmouseout="this.style.background='#e0e7ff'"
+                title="Toggle Sidebar">
+                <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16" />
+                </svg>
+            </button>
+            <div style="flex: 1;">
+                <h3 style="margin: 0; font-size: 1.1rem; color: var(--text-main);">Student Dashboard</h3>
+                <p style="margin: 0; font-size: 0.85rem; color: var(--text-muted);">Track your progress and assignments
+                </p>
+            </div>
+        </div>
     </div>
 
     <!-- Teacher Detail Modal Template (Hidden) -->

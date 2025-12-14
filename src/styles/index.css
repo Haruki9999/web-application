@@ -1,199 +1,145 @@
-/* Homepage Specific Styles */
-
-/* Hero Section */
+/* Landing Page Premium Styles */
 .hero {
-    background: linear-gradient(135deg, #3B82F6 0%, #2563EB 100%);
-    color: white;
-    padding: 5rem 0;
+    padding: 8rem 0 6rem;
     text-align: center;
+    background: radial-gradient(circle at top right, rgba(99, 102, 241, 0.1), transparent 40%),
+        radial-gradient(circle at bottom left, rgba(236, 72, 153, 0.1), transparent 40%);
+    overflow: hidden;
 }
 
 .hero h1 {
-    color: white;
-    margin-bottom: 1rem;
+    font-size: 3.5rem;
+    font-weight: 800;
+    margin-bottom: 1.5rem;
+    background: var(--gradient-primary);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    letter-spacing: -0.02em;
 }
 
 .hero-subtitle {
     font-size: 1.25rem;
-    margin-bottom: 2rem;
-    opacity: 0.95;
+    color: var(--text-muted);
+    max-width: 600px;
+    margin: 0 auto 3rem;
 }
 
-.hero-buttons {
-    display: flex;
-    gap: 1rem;
-    justify-content: center;
-    flex-wrap: wrap;
-}
-
-/* Responsive Hero */
-@media (max-width: 768px) {
-    .hero {
-        padding: 3rem 0;
-    }
-    
-    .hero-subtitle {
-        font-size: 1.125rem;
-        margin-bottom: 1.5rem;
-    }
-    
-    .hero-buttons {
-        flex-direction: column;
-        align-items: stretch;
-        max-width: 300px;
-        margin: 0 auto;
-    }
-    
-    .hero-buttons a {
-        width: 100%;
-        text-align: center;
-    }
-}
-
-@media (max-width: 480px) {
-    .hero {
-        padding: 2rem 0;
-    }
-    
-    .hero-subtitle {
-        font-size: 1rem;
-        margin-bottom: 1rem;
-    }
-    
-    .hero-buttons a.btn-lg {
-        font-size: 1rem;
-        padding: 0.75rem 1.5rem;
-    }
-}
-
-/* Search Section */
-.search-section {
-    padding: 3rem 0;
-    background: #F9FAFB;
-}
-
-.search-wrapper {
-    max-width: 800px;
-    margin: 0 auto;
-    position: relative;
-}
-
-/* Responsive Search */
-@media (max-width: 768px) {
-    .search-section {
-        padding: 2rem 0;
-    }
-}
-
-@media (max-width: 480px) {
-    .search-section {
-        padding: 1.5rem 0;
-    }
-    
-    .search-input {
-        padding: 0.875rem 2.5rem 0.875rem 2.5rem !important;
-        font-size: 0.9375rem;
-    }
-}
-
-.search-container {
-    position: relative;
-    display: flex;
-    align-items: center;
-}
-
-.search-icon {
-    position: absolute;
-    left: 1rem;
-    color: #9CA3AF;
-    pointer-events: none;
-}
-
-.search-input {
+.hero-image {
+    margin: 3rem auto 0;
+    border-radius: var(--radius-xl);
+    box-shadow: var(--shadow-premium);
+    max-width: 900px;
     width: 100%;
-    padding: 1rem 3rem 1rem 3rem;
-    border: 2px solid #E5E7EB;
-    border-radius: 0.75rem;
-    font-size: 1rem;
-    transition: all 0.2s;
+    overflow: hidden;
+    position: relative;
 }
 
-.search-input:focus {
-    outline: none;
-    border-color: #3B82F6;
-    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+.hero-image img {
+    width: 100%;
+    height: auto;
+    object-fit: cover;
 }
 
-.search-clear {
-    position: absolute;
-    right: 1rem;
-    background: none;
-    border: none;
-    cursor: pointer;
-    color: #9CA3AF;
-    padding: 0.25rem;
+/* Sections */
+.section-title {
+    text-align: center;
+    font-size: 2.5rem;
+    font-weight: 700;
+    margin-bottom: 3rem;
+    color: var(--text-main);
+}
+
+.card {
+    background: var(--bg-card);
+    border-radius: var(--radius-xl);
+    padding: 2rem;
+    box-shadow: var(--shadow-md);
+    transition: all 0.3s ease;
+    border: 1px solid rgba(0, 0, 0, 0.05);
+    height: 100%;
+}
+
+.card:hover {
+    transform: translateY(-5px);
+    box-shadow: var(--shadow-lg);
+    border-color: var(--primary-light);
+}
+
+/* Exam Types Grid */
+.exam-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 2rem;
+    margin-top: 2rem;
+}
+
+.exam-card-header {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 1rem;
+}
+
+.exam-icon {
+    width: 48px;
+    height: 48px;
+    border-radius: 12px;
+    background: rgba(99, 102, 241, 0.1);
+    color: var(--primary-main);
     display: flex;
     align-items: center;
     justify-content: center;
-    transition: color 0.2s;
 }
 
-.search-clear:hover {
-    color: #4B5563;
+/* Teacher Preview */
+.teacher-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 2rem;
 }
 
-.search-results {
-    position: absolute;
-    top: calc(100% + 0.5rem);
-    left: 0;
-    right: 0;
-    background: white;
-    border-radius: 0.75rem;
-    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
-    max-height: 500px;
-    overflow-y: auto;
-    z-index: 50;
-}
-
-.search-category {
-    padding: 0.75rem 1rem;
-    background: #F3F4F6;
-    font-weight: 600;
-    color: #4B5563;
-    font-size: 0.875rem;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-}
-
-.search-item {
-    padding: 1rem;
-    border-bottom: 1px solid #E5E7EB;
-    cursor: pointer;
-    transition: background 0.2s;
-}
-
-.search-item:hover {
-    background: #F9FAFB;
-}
-
-.search-item:last-child {
-    border-bottom: none;
-}
-
-.search-item h4 {
-    color: #1F2937;
-    margin-bottom: 0.25rem;
-}
-
-.search-item p {
-    color: #6B7280;
-    font-size: 0.875rem;
-    margin: 0;
-}
-
-.search-no-results {
-    padding: 2rem;
+.teacher-card {
     text-align: center;
-    color: #6B7280;
 }
 
+.teacher-photo {
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    object-fit: cover;
+    margin: 0 auto 1.5rem;
+    border: 4px solid white;
+    box-shadow: var(--shadow-md);
+}
+
+/* Footer */
+.footer {
+    background: var(--text-main);
+    /* Dark background */
+    color: #f8fafc;
+    padding: 4rem 0 2rem;
+    margin-top: 4rem;
+}
+
+.footer h3,
+.footer h4 {
+    color: white;
+}
+
+.footer-content {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 3rem;
+    margin-bottom: 3rem;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .hero h1 {
+        font-size: 2.5rem;
+    }
+
+    .hero {
+        padding: 4rem 0;
+    }
+}

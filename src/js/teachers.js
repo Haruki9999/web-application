@@ -1,8 +1,8 @@
 // Teachers page JavaScript
 
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', function () {
     loadTeachers();
-    
+
     const filterSelect = document.getElementById('filterSpecialization');
     if (filterSelect) {
         filterSelect.addEventListener('change', loadTeachers);
@@ -12,13 +12,13 @@ document.addEventListener('DOMContentLoaded', function() {
 function loadTeachers() {
     const teachers = JSON.parse(localStorage.getItem('teachers') || '[]');
     const filterValue = document.getElementById('filterSpecialization')?.value || 'all';
-    
-    const filteredTeachers = filterValue === 'all' 
+
+    const filteredTeachers = filterValue === 'all'
         ? teachers.filter(t => t.isApproved)
         : teachers.filter(t => t.isApproved && t.specialization.includes(filterValue));
-    
+
     const container = document.getElementById('teachersGrid');
-    
+
     if (filteredTeachers.length === 0) {
         container.innerHTML = `
             <div style="grid-column: 1/-1; text-align: center; padding: 3rem;">
@@ -28,7 +28,7 @@ function loadTeachers() {
         `;
         return;
     }
-    
+
     container.innerHTML = filteredTeachers.map(teacher => `
         <div class="card teacher-card" id="${teacher.id}">
             <img src="${teacher.photo}" alt="${teacher.name}" class="teacher-photo">
@@ -46,7 +46,7 @@ function loadTeachers() {
             </div>
         </div>
     `).join('');
-    
+
     // Scroll to teacher if hash exists
     if (window.location.hash) {
         const id = window.location.hash.substring(1);
@@ -61,32 +61,33 @@ function loadTeachers() {
 }
 
 function bookClass(teacherId) {
-    const currentUser = JSON.parse(localStorage.getItem('currentUser') || 'null');
-    
-    if (!currentUser) {
-        alert('Please login as a student to book classes.');
-        window.location.href = '/login.html';
+
+    if (!checkAuth('student')) {
+        showModal('Login Required', 'Please login as a student to book classes.', 'warning', () => {
+            window.location.href = '/login.html';
+        });
         return;
     }
-    
-    if (currentUser.role !== 'student') {
-        alert('Only students can book classes.');
+
+    const user = getCurrentUser();
+    if (user.role !== 'student') {
+        showModal('Access Denied', 'Only students can book classes.', 'error');
         return;
     }
-    
+
     const teachers = JSON.parse(localStorage.getItem('teachers') || '[]');
     const teacher = teachers.find(t => t.id === teacherId);
-    
+
     // Simple booking confirmation
     const date = prompt('Enter preferred date (YYYY-MM-DD):', '2025-12-05');
     if (!date) return;
-    
+
     const time = prompt('Enter preferred time (HH:MM):', '14:00');
     if (!time) return;
-    
+
     const subject = prompt('Enter subject/topic:', teacher.specialization[0]);
     if (!subject) return;
-    
+
     if (confirm(`Book class with ${teacher.name}?\n\nDate: ${date}\nTime: ${time}\nSubject: ${subject}`)) {
         const newClass = {
             id: Date.now().toString(),
@@ -96,16 +97,16 @@ function bookClass(teacherId) {
             time: time,
             duration: 1.5
         };
-        
+
         currentUser.upcomingClasses.push(newClass);
-        
+
         // Update user in storage
         const users = JSON.parse(localStorage.getItem('users') || '[]');
         const userIndex = users.findIndex(u => u.id === currentUser.id);
         users[userIndex] = currentUser;
         localStorage.setItem('users', JSON.stringify(users));
         localStorage.setItem('currentUser', JSON.stringify(currentUser));
-        
+
         alert('Class booked successfully! Check your dashboard.');
         window.location.href = '/student-dashboard.html';
     }
@@ -114,7 +115,7 @@ function bookClass(teacherId) {
 function viewTeacherProfile(teacherId) {
     const teachers = JSON.parse(localStorage.getItem('teachers') || '[]');
     const teacher = teachers.find(t => t.id === teacherId);
-    
+
     alert(`
 ${teacher.name}
 

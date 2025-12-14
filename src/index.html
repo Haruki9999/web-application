@@ -4,90 +4,148 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mathematics Training Center - Expert Exam Preparation</title>
+    <title>Pi Math Center - Excellence in Mathematics</title>
     <link rel="stylesheet" href="styles/base.css">
     <link rel="stylesheet" href="styles/index.css">
 </head>
 
 <body>
-    <!-- Navigation -->
+    <!-- Navbar -->
     <nav class="navbar">
-        <div class="container">
-            <div class="nav-content">
-                <a href="index.html" class="logo">Math Training Center</a>
-                <div class="nav-links">
-                    <a href="programs.html">Programs</a>
-                    <a href="teachers.html">Teachers</a>
-                    <a href="login.html" class="btn-secondary">Login</a>
-                    <a href="register.html" class="btn-primary">Register</a>
-                </div>
-                <button class="mobile-menu-btn" id="mobileMenuBtn">
-                    <span></span>
-                    <span></span>
-                    <span></span>
-                </button>
+        <div class="container"
+            style="display: flex; justify-content: space-between; align-items: center; padding: 1.5rem 1rem;">
+            <a href="index.html"
+                style="font-size: 1.5rem; font-weight: 800; font-family: var(--font-heading); color: var(--primary-main);">Pi
+                Math Center</a>
+
+            <div class="nav-links" style="display: flex; gap: 2rem; align-items: center;">
+                <a href="#about">About</a>
+                <a href="#programs">Exams</a>
+                <a href="teachers.html">Teachers</a>
+                <a href="login.html" class="btn btn-primary">Login</a>
             </div>
+
+            <button id="mobileMenuBtn"
+                style="display: none; background: none; border: none; font-size: 1.5rem;">☰</button>
         </div>
     </nav>
-
-    <!-- Mobile Menu -->
-    <div class="mobile-menu" id="mobileMenu">
-        <a href="programs.html">Programs</a>
-        <a href="teachers.html">Teachers</a>
-        <a href="login.html">Login</a>
-        <a href="register.html">Register</a>
-    </div>
 
     <!-- Hero Section -->
     <section class="hero">
         <div class="container">
-            <h1>Excel in Your Mathematics Exams</h1>
-            <p class="hero-subtitle">Expert tutoring for SAT, IGCSE, AS/A Level, ACT, and IB qualifications</p>
-            <div class="hero-buttons">
-                <a href="programs.html" class="btn-primary btn-lg">Browse Programs</a>
-                <a href="teachers.html" class="btn-secondary btn-lg">Find Teachers</a>
-            </div>
-        </div>
-    </section>
+            <h1>Master Mathematics with<br>Expert Guidance</h1>
+            <p class="hero-subtitle">Specialized preparation for International (SAT, Cambridge) and National Mathematics
+                Exams.</p>
 
-    <!-- Search Section -->
-    <section class="search-section">
-        <div class="container">
-            <div class="search-wrapper">
-                <div class="search-container">
-                    <svg class="search-icon" width="20" height="20" viewBox="0 0 24 24" fill="none"
-                        stroke="currentColor" stroke-width="2">
-                        <circle cx="11" cy="11" r="8"></circle>
-                        <path d="m21 21-4.35-4.35"></path>
-                    </svg>
-                    <input type="text" class="search-input" id="searchInput"
-                        placeholder="Search for programs or teachers...">
-                    <button class="search-clear" id="searchClear">
-                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                            stroke-width="2">
-                            <line x1="18" y1="6" x2="6" y2="18"></line>
-                            <line x1="6" y1="6" x2="18" y2="18"></line>
-                        </svg>
-                    </button>
+            <div style="display: flex; gap: 1rem; justify-content: center; margin-bottom: 3rem;">
+                <a href="login.html" class="btn btn-primary btn-lg">Start Learning</a>
+                <a href="teachers.html" class="btn btn-secondary btn-lg">Meet Teachers</a>
+            </div>
+
+            <div class="hero-image">
+                <!-- Using a placeholder using generate_image tool later if needed, but for now a gradient box or static image -->
+                <div
+                    style="background: linear-gradient(to right, #e0e7ff, #f3e8ff); height: 400px; display: flex; align-items: center; justify-content: center; color: var(--text-muted);">
+                    <img src="https://images.unsplash.com/photo-1524178232363-1fb2b075b655?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80"
+                        alt="Students Learning" style="width: 100%; height: 100%; object-fit: cover;">
                 </div>
-                <div class="search-results" id="searchResults"></div>
             </div>
         </div>
     </section>
 
-    <!-- Featured Programs -->
-    <section class="section">
+    <!-- About Section -->
+    <section id="about" class="section" style="padding: 6rem 0;">
         <div class="container">
-            <h2 class="section-title">Featured Programs</h2>
-            <div class="grid" id="featuredPrograms"></div>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 4rem; align-items: center;">
+                <div>
+                    <h2 class="section-title" style="text-align: left; margin-bottom: 1.5rem;">About Pi Center</h2>
+                    <p style="font-size: 1.1rem; color: var(--text-muted); margin-bottom: 1.5rem;">
+                        We are a dedicated mathematics training center focused on helping students achieve their highest
+                        potential.
+                        Whether you are aiming for top scores in international exams or mastering the national
+                        curriculum, our expert
+                        teachers are here to guide you.
+                    </p>
+                    <ul style="display: grid; gap: 1rem;">
+                        <li style="display: flex; align-items: center; gap: 0.5rem;">
+                            <span style="color: var(--success);">✓</span> Expert Instructors
+                        </li>
+                        <li style="display: flex; align-items: center; gap: 0.5rem;">
+                            <span style="color: var(--success);">✓</span> Proven Track Record
+                        </li>
+                        <li style="display: flex; align-items: center; gap: 0.5rem;">
+                            <span style="color: var(--success);">✓</span> Personalized Learning Path
+                        </li>
+                    </ul>
+                </div>
+                <!-- Interactive decorative element -->
+                <div
+                    style="background: white; padding: 2rem; border-radius: var(--radius-xl); box-shadow: var(--shadow-premium);">
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 1rem;">
+                        <strong>Student Success Rate</strong>
+                        <span style="color: var(--primary-main); font-weight: bold;">98%</span>
+                    </div>
+                    <div style="background: #f1f5f9; height: 10px; border-radius: 5px; overflow: hidden;">
+                        <div style="background: var(--primary-main); width: 98%; height: 100%;"></div>
+                    </div>
+                    <p style="margin-top: 2rem; color: var(--text-muted); font-size: 0.9rem;">
+                        "The best decision I made for my math studies." - Recent Graduate
+                    </p>
+                </div>
+            </div>
         </div>
     </section>
 
-    <!-- Featured Teachers -->
-    <section class="section bg-gray">
+    <!-- Programs (Exams) -->
+    <section id="programs" class="section" style="background: #f8fafc; padding: 6rem 0;">
         <div class="container">
-            <h2 class="section-title">Our Expert Teachers</h2>
-            <div class="grid" id="featuredTeachers"></div>
+            <h2 class="section-title">Exam Preparation</h2>
+            <div class="exam-grid">
+                <!-- International -->
+                <div class="card">
+                    <div class="exam-card-header">
+                        <div class="exam-icon">🌐</div>
+                        <h3>International Exams</h3>
+                    </div>
+                    <p style="color: var(--text-muted); margin-bottom: 1.5rem;">Comprehensive preparation for global
+                        standards.</p>
+                    <ul style="margin-bottom: 2rem; display: grid; gap: 0.5rem; color: var(--text-muted);">
+                        <li>• Cambridge IGCSE / A-Level</li>
+                        <li>• SAT Mathematics</li>
+                        <li>• IB Diploma Math</li>
+                    </ul>
+                    <a href="login.html" class="btn btn-secondary" style="width: 100%;">View Courses</a>
+                </div>
+
+                <!-- National -->
+                <div class="card">
+                    <div class="exam-card-header">
+                        <div class="exam-icon">🇲🇳</div>
+                        <h3>National Exams</h3>
+                    </div>
+                    <p style="color: var(--text-muted); margin-bottom: 1.5rem;">Excellence in the national curriculum
+                        requirements.</p>
+                    <ul style="margin-bottom: 2rem; display: grid; gap: 0.5rem; color: var(--text-muted);">
+                        <li>• National Entrance Exam (EEC)</li>
+                        <li>• Primary / Secondary Math</li>
+                        <li>• Olympiad Preparation</li>
+                    </ul>
+                    <a href="login.html" class="btn btn-secondary" style="width: 100%;">View Courses</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Teachers Preview -->
+    <section class="section" style="padding: 6rem 0;">
+        <div class="container">
+            <h2 class="section-title">Meet Our Teachers</h2>
+            <div class="teacher-grid" id="featuredTeachers">
+                <!-- Populated by JS -->
+            </div>
+            <div style="text-align: center; margin-top: 3rem;">
+                <a href="teachers.html" class="btn btn-secondary">View All Teachers</a>
+            </div>
         </div>
     </section>
 
@@ -95,33 +153,56 @@
     <footer class="footer">
         <div class="container">
             <div class="footer-content">
-                <div class="footer-section">
-                    <h3>Math Training Center</h3>
-                    <p>Expert exam preparation for mathematics students worldwide.</p>
+                <div>
+                    <h3 style="margin-bottom: 1rem;">Pi Math Center</h3>
+                    <p style="opacity: 0.7;">Empowering students to master the language of the universe.</p>
                 </div>
-                <div class="footer-section">
-                    <h4>Quick Links</h4>
-                    <a href="programs.html">Programs</a>
-                    <a href="teachers.html">Teachers</a>
-                    <a href="login.html">Login</a>
-                    <a href="register.html">Register</a>
+                <div>
+                    <h4 style="margin-bottom: 1rem;">Quick Links</h4>
+                    <div style="display: grid; gap: 0.5rem; opacity: 0.7;">
+                        <a href="index.html">Home</a>
+                        <a href="teachers.html">Teachers</a>
+                        <a href="login.html">Login</a>
+                    </div>
                 </div>
-                <div class="footer-section">
-                    <h4>Contact</h4>
-                    <p>Email: info@mathtraining.com</p>
-                    <p>Phone: +1 (555) 123-4567</p>
+                <div>
+                    <h4 style="margin-bottom: 1rem;">Contact</h4>
+                    <div style="display: grid; gap: 0.5rem; opacity: 0.7;">
+                        <p>📍 Ulaanbaatar, Mongolia</p>
+                        <p>📞 +976 9911-2233</p>
+                        <p>📧 info@picenter.edu.mn</p>
+                    </div>
                 </div>
             </div>
-            <div class="footer-bottom">
-                <p>&copy; 2025 Mathematics Training Center. All rights reserved.</p>
+            <div
+                style="text-align: center; opacity: 0.5; font-size: 0.9rem; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 2rem;">
+                &copy; 2025 Pi Mathematics Training Center. All rights reserved.
             </div>
         </div>
     </footer>
 
-    <script src="js/data.js"></script>
-    <script src="js/components/search.component.js"></script>
-    <script src="js/components/homepage.component.js"></script>
     <script src="js/utils.js"></script>
+    <script src="js/data.js"></script>
+    <script>
+        // Use dummy data to populate teachers
+        /* Assuming js/data.js will provide this or we mock it here for Index */
+        document.addEventListener('DOMContentLoaded', () => {
+            const grid = document.getElementById('featuredTeachers');
+            const teachers = [
+                { name: "Sarah Johnson", subject: "SAT & Cambridge", image: "https://randomuser.me/api/portraits/women/44.jpg" },
+                { name: "B. Bat-Erdene", subject: "National Math", image: "https://randomuser.me/api/portraits/men/32.jpg" },
+                { name: "Emily Chen", subject: "Olympiad Math", image: "https://randomuser.me/api/portraits/women/68.jpg" }
+            ];
+
+            grid.innerHTML = teachers.map(t => `
+                <div class="card teacher-card">
+                    <img src="${t.image}" alt="${t.name}" class="teacher-photo">
+                    <h3 style="font-size: 1.25rem; margin-bottom: 0.5rem;">${t.name}</h3>
+                    <p style="color: var(--primary-main); font-weight: 500;">${t.subject}</p>
+                </div>
+            `).join('');
+        });
+    </script>
 </body>
 
 </html>

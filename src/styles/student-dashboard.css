@@ -1,308 +1,210 @@
-/* Student Dashboard Specific Styles */
-
-/* Dashboard Layout */
+/* Student Dashboard Premium Styles */
 .dashboard {
     display: flex;
     min-height: 100vh;
+    background: var(--bg-body);
 }
 
+/* Sidebar */
 .sidebar {
-    width: 260px;
-    background: #1F2937;
-    color: white;
-    padding: 1.5rem 0;
+    width: 280px;
+    background: white;
+    border-right: 1px solid #e2e8f0;
+    display: flex;
+    flex-direction: column;
     position: fixed;
     height: 100vh;
-    overflow-y: auto;
-    transition: transform 0.3s;
+    transition: transform 0.3s ease;
+    z-index: 50;
+}
+
+.sidebar.active {
+    transform: translateX(0);
 }
 
 .sidebar-header {
-    padding: 0 1.5rem 1.5rem;
-    border-bottom: 1px solid #374151;
-    margin-bottom: 1rem;
+    padding: 2rem;
+    border-bottom: 1px solid #f1f5f9;
 }
 
-.sidebar-header h2 {
-    color: white;
-    font-size: 1.25rem;
-}
-
-/* Responsive Sidebar */
-@media (max-width: 768px) {
-    .sidebar {
-        width: 280px;
-        transform: translateX(-100%);
-        z-index: 100;
-    }
-    
-    .sidebar.active {
-        transform: translateX(0);
-    }
-    
-    .sidebar-header {
-        padding: 0 1rem 1rem;
-    }
-    
-    .sidebar-header h2 {
-        font-size: 1.125rem;
-    }
-    
-    .sidebar-nav a {
-        padding: 0.75rem 1rem;
-        font-size: 0.9375rem;
-    }
-}
-
-@media (max-width: 480px) {
-    .sidebar {
-        width: 100%;
-    }
+.sidebar-brand {
+    font-family: var(--font-heading);
+    font-size: 1.5rem;
+    font-weight: 800;
+    color: var(--primary-main);
 }
 
 .sidebar-nav {
-    list-style: none;
+    flex: 1;
+    padding: 1.5rem 1rem;
+    overflow-y: auto;
 }
 
-.sidebar-nav a {
+.nav-item {
+    margin-bottom: 0.5rem;
+}
+
+.nav-link {
     display: flex;
     align-items: center;
     gap: 0.75rem;
-    padding: 0.875rem 1.5rem;
-    color: #D1D5DB;
-    text-decoration: none;
+    padding: 0.75rem 1rem;
+    color: var(--text-muted);
+    border-radius: var(--radius-md);
     transition: all 0.2s;
+    font-weight: 500;
 }
 
-.sidebar-nav a:hover,
-.sidebar-nav a.active {
-    background: #374151;
-    color: white;
+.nav-link:hover,
+.nav-link.active {
+    background: #e0e7ff;
+    color: var(--primary-main);
 }
 
-.sidebar-nav svg {
+.nav-link svg {
     width: 20px;
     height: 20px;
 }
 
-.dashboard-content {
+.sidebar-footer {
+    padding: 1.5rem;
+    border-top: 1px solid #f1f5f9;
+}
+
+/* Main Content */
+.main-content {
     flex: 1;
-    margin-left: 260px;
-    background: #F9FAFB;
+    margin-left: 280px;
+    padding: 2rem;
+    width: calc(100% - 280px);
 }
 
 .dashboard-header {
-    background: white;
-    padding: 1.5rem;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-}
-
-.dashboard-main {
-    padding: 2rem;
-}
-
-/* Responsive Dashboard */
-@media (max-width: 1024px) {
-    .dashboard-main {
-        padding: 1.5rem;
-    }
-}
-
-@media (max-width: 768px) {
-    .dashboard-main {
-        padding: 1rem;
-    }
-    
-    .dashboard-content {
-        margin-left: 0;
-    }
-    
-    .dashboard-header {
-        padding: 1rem;
-    }
-    
-    .dashboard-header h1 {
-        font-size: 1.5rem;
-    }
-}
-
-@media (max-width: 480px) {
-    .dashboard-main {
-        padding: 0.75rem;
-    }
-    
-    .dashboard-header {
-        padding: 0.875rem;
-    }
-    
-    .dashboard-header h1 {
-        font-size: 1.25rem;
-    }
-}
-
-.dashboard-welcome {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
     margin-bottom: 2rem;
 }
 
-.dashboard-welcome h1 {
-    color: #1F2937;
+.welcome-text h1 {
+    font-size: 1.75rem;
+    margin-bottom: 0.25rem;
 }
 
-.dashboard-welcome p {
-    color: #6B7280;
+.welcome-text p {
+    color: var(--text-muted);
 }
 
+/* Stats Grid */
 .stats-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
     gap: 1.5rem;
-    margin-bottom: 2rem;
-}
-
-/* Responsive Stats Grid */
-@media (max-width: 768px) {
-    .stats-grid {
-        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-        gap: 1rem;
-    }
-}
-
-@media (max-width: 480px) {
-    .stats-grid {
-        grid-template-columns: 1fr;
-        gap: 0.875rem;
-    }
-    
-    .stat-card {
-        padding: 1rem;
-    }
-    
-    .stat-card p {
-        font-size: 1.5rem;
-    }
+    margin-bottom: 2.5rem;
 }
 
 .stat-card {
     background: white;
     padding: 1.5rem;
-    border-radius: 0.75rem;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-sm);
+    border: 1px solid #f1f5f9;
+    transition: transform 0.2s;
 }
 
-.stat-card h3 {
-    color: #6B7280;
-    font-size: 0.875rem;
-    font-weight: 500;
+.stat-card:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-md);
+}
+
+.stat-label {
+    color: var(--text-muted);
+    font-size: 0.9rem;
     margin-bottom: 0.5rem;
 }
 
-.stat-card p {
+.stat-value {
     font-size: 2rem;
     font-weight: 700;
-    color: #1F2937;
+    color: var(--text-main);
 }
 
-.stat-card.primary p {
-    color: #3B82F6;
+/* Progress Section */
+.progress-card {
+    background: white;
+    padding: 2rem;
+    border-radius: var(--radius-xl);
+    box-shadow: var(--shadow-md);
+    margin-bottom: 2rem;
 }
 
-.stat-card.success p {
-    color: #10B981;
+.progress-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
 }
 
-.stat-card.warning p {
-    color: #F59E0B;
+.progress-bar-container {
+    height: 12px;
+    background: #f1f5f9;
+    border-radius: 6px;
+    overflow: hidden;
+    margin-bottom: 0.5rem;
 }
 
-/* Mobile Sidebar Toggle */
-.sidebar-toggle {
-    display: none;
-    position: fixed;
-    top: 1rem;
-    left: 1rem;
-    z-index: 110;
-    background: #3B82F6;
-    color: white;
-    border: none;
-    padding: 0.75rem;
-    border-radius: 0.5rem;
-    cursor: pointer;
+.progress-bar {
+    height: 100%;
+    background: var(--gradient-primary);
+    border-radius: 6px;
+    transition: width 1s ease-out;
 }
 
-@media (max-width: 768px) {
-    .sidebar-toggle {
+/* Course Cards */
+.course-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 1.5rem;
+}
+
+.course-card {
+    background: white;
+    border: 1px solid #e2e8f0;
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    transition: all 0.3s;
+}
+
+.course-card:hover {
+    border-color: var(--primary-light);
+    box-shadow: var(--shadow-lg);
+}
+
+.course-header {
+    padding: 1.5rem;
+    border-bottom: 1px solid #f1f5f9;
+}
+
+.course-body {
+    padding: 1.5rem;
+}
+
+/* Responsive */
+@media (max-width: 1024px) {
+    .sidebar {
+        transform: translateX(-100%);
+    }
+
+    .sidebar.active {
+        transform: translateX(0);
+    }
+
+    .main-content {
+        margin-left: 0;
+        width: 100%;
+    }
+
+    .mobile-toggle {
         display: block;
     }
 }
-
-.dashboard-section {
-    display: block;
-}
-
-.dashboard-section.hidden {
-    display: none;
-}
-
-/* Table Styles */
-.table-container {
-    background: white;
-    border-radius: 0.75rem;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-    overflow: hidden;
-    overflow-x: auto;
-}
-
-.table {
-    width: 100%;
-    border-collapse: collapse;
-    min-width: 600px;
-}
-
-.table th {
-    background: #F9FAFB;
-    padding: 1rem;
-    text-align: left;
-    font-weight: 600;
-    color: #374151;
-    border-bottom: 1px solid #E5E7EB;
-    white-space: nowrap;
-}
-
-.table td {
-    padding: 1rem;
-    border-bottom: 1px solid #E5E7EB;
-}
-
-.table tr:last-child td {
-    border-bottom: none;
-}
-
-.table tr:hover {
-    background: #F9FAFB;
-}
-
-/* Responsive Tables */
-@media (max-width: 768px) {
-    .table th,
-    .table td {
-        padding: 0.75rem;
-        font-size: 0.9375rem;
-    }
-}
-
-@media (max-width: 480px) {
-    .table-container {
-        border-radius: 0.5rem;
-    }
-    
-    .table {
-        min-width: 500px;
-    }
-    
-    .table th,
-    .table td {
-        padding: 0.625rem;
-        font-size: 0.875rem;
-    }
-}
-

@@ -4,99 +4,82 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Programs - Mathematics Training Center</title>
+    <title>Programs - Pi Math Center</title>
     <link rel="stylesheet" href="styles/base.css">
-    <link rel="stylesheet" href="styles/programs.css">
+    <link rel="stylesheet" href="styles/index.css"> <!-- Reusing index card styles -->
 </head>
 
 <body>
-    <!-- Navigation -->
-    <nav class="navbar">
-        <div class="container">
-            <div class="nav-content">
-                <a href="index.html" class="logo">Math Training Center</a>
-                <div class="nav-links">
-                    <a href="programs.html">Programs</a>
-                    <a href="teachers.html">Teachers</a>
-                    <a href="login.html" class="btn-secondary">Login</a>
-                    <a href="register.html" class="btn-primary">Register</a>
-                </div>
-                <button class="mobile-menu-btn" id="mobileMenuBtn">
-                    <span></span>
-                    <span></span>
-                    <span></span>
-                </button>
+    <nav class="navbar"
+        style="background: white; box-shadow: var(--shadow-sm); position: sticky; top: 0; z-index: 100;">
+        <div class="container"
+            style="display: flex; justify-content: space-between; align-items: center; padding: 1rem;">
+            <a href="index.html"
+                style="font-size: 1.5rem; font-weight: 800; font-family: var(--font-heading); color: var(--primary-main);">Pi
+                Math Center</a>
+            <div style="display: flex; gap: 1.5rem; align-items: center;">
+                <a href="index.html">Home</a>
+                <a href="teachers.html">Teachers</a>
+                <a href="login.html" class="btn btn-primary btn-sm">Login</a>
             </div>
         </div>
     </nav>
 
-    <!-- Mobile Menu -->
-    <div class="mobile-menu" id="mobileMenu">
-        <a href="programs.html">Programs</a>
-        <a href="teachers.html">Teachers</a>
-        <a href="login.html">Login</a>
-        <a href="register.html">Register</a>
-    </div>
-
-    <!-- Page Header -->
-    <section class="hero hero-small">
+    <header class="section" style="padding: 6rem 0 2rem; text-align: center; background: #f8fafc;">
         <div class="container">
-            <h1>Our Programs</h1>
-            <p class="hero-subtitle">Choose the perfect program for your exam preparation</p>
+            <h1 class="section-title" style="margin-bottom: 1rem;">Our Programs</h1>
+            <p style="color: var(--text-muted); max-width: 600px; margin: 0 auto;">
+                Explore our specialized curriculum designed for International and National standards.
+            </p>
         </div>
-    </section>
+    </header>
 
-    <!-- Filter Bar -->
     <section class="section">
         <div class="container">
-            <div class="filter-bar">
-                <label for="filterQualification">Filter by:</label>
-                <select id="filterQualification" class="form-select">
-                    <option value="all">All Qualifications</option>
-                    <option value="SAT">SAT</option>
-                    <option value="IGCSE">IGCSE</option>
-                    <option value="AS Level">AS Level</option>
-                    <option value="A Level">A Level</option>
-                    <option value="ACT">ACT</option>
-                    <option value="IB">IB</option>
-                </select>
+            <div class="grid" id="programsGrid"
+                style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 2rem;">
+                <!-- JS Injected -->
             </div>
-
-            <!-- Programs Grid -->
-            <div class="grid" id="programsGrid"></div>
         </div>
     </section>
 
     <!-- Footer -->
-    <footer class="footer">
-        <div class="container">
-            <div class="footer-content">
-                <div class="footer-section">
-                    <h3>Math Training Center</h3>
-                    <p>Expert exam preparation for mathematics students worldwide.</p>
-                </div>
-                <div class="footer-section">
-                    <h4>Quick Links</h4>
-                    <a href="programs.html">Programs</a>
-                    <a href="teachers.html">Teachers</a>
-                    <a href="login.html">Login</a>
-                    <a href="register.html">Register</a>
-                </div>
-                <div class="footer-section">
-                    <h4>Contact</h4>
-                    <p>Email: info@mathtraining.com</p>
-                    <p>Phone: +1 (555) 123-4567</p>
-                </div>
-            </div>
-            <div class="footer-bottom">
-                <p>&copy; 2025 Mathematics Training Center. All rights reserved.</p>
-            </div>
-        </div>
+    <footer style="background: var(--text-main); color: white; padding: 3rem 0; margin-top: 4rem; text-align: center;">
+        <p>&copy; 2025 Pi Math Center</p>
     </footer>
 
     <script src="js/data.js"></script>
-    <script src="js/components/programs.component.js"></script>
-    <script src="js/utils.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const grid = document.getElementById('programsGrid');
+            const programs = JSON.parse(localStorage.getItem('programs') || '[]');
+
+            if (programs.length === 0) {
+                grid.innerHTML = '<p style="text-align: center; color: var(--text-muted);">No programs available.</p>';
+            } else {
+                grid.innerHTML = programs.map(p => `
+                    <div class="card" style="display: flex; flex-direction: column;">
+                        <span class="spec-tag" style="align-self: flex-start; margin-bottom: 1rem; background: #e0e7ff; color: var(--primary-main);">${p.qualification}</span>
+                        <h3 style="margin-bottom: 0.5rem;">${p.name}</h3>
+                        <p style="color: var(--text-muted); margin-bottom: 1.5rem; flex: 1;">${p.description}</p>
+                        
+                        <div style="margin-bottom: 1.5rem; background: #f8fafc; padding: 1rem; border-radius: var(--radius-md);">
+                            <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem; font-size: 0.9rem;">
+                                <span>Duration</span>
+                                <strong>${p.duration}</strong>
+                            </div>
+                            <div style="display: flex; justify-content: space-between; font-size: 0.9rem;">
+                                <span>Level</span>
+                                <strong>${p.level}</strong>
+                            </div>
+                        </div>
+
+                        <a href="login.html" class="btn btn-secondary" style="width: 100%; justify-content: center;">Register Interest</a>
+                    </div>
+                `).join('');
+            }
+        });
+    </script>
 </body>
 
 </html>

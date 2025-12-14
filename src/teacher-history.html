@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Teacher History - Mathematics Training Center</title>
+    <link rel="stylesheet" href="styles/base.css">
+    <link rel="stylesheet" href="styles/teacher-dashboard.css">
+</head>
+
+<body>
+    <div class="dashboard">
+        <!-- Sidebar -->
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <h2>Teacher Portal</h2>
+            </div>
+            <ul class="sidebar-nav">
+                <li>
+                    <a href="teacher-dashboard.html">
+                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
+                        </svg>
+                        Dashboard
+                    </a>
+                </li>
+                <li>
+                    <a href="teacher-dashboard.html#classes">
+                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+                        </svg>
+                        My Classes
+                    </a>
+                </li>
+                <li>
+                    <a href="teacher-history.html" class="active">
+                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg>
+                        Class History
+                    </a>
+                </li>
+                <li>
+                    <a href="#" onclick="logout()">
+                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+                        </svg>
+                        Sign Out
+                    </a>
+                </li>
+            </ul>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <header class="top-bar">
+                <button id="sidebarToggle" class="sidebar-toggle">
+                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M4 6h16M4 12h16M4 18h16" />
+                    </svg>
+                </button>
+                <div class="user-profile">
+                    <span id="teacherName">Teacher</span>
+                    <img src="https://ui-avatars.com/api/?name=Teacher&background=random" alt="Profile"
+                        class="h-8 w-8 rounded-full">
+                </div>
+            </header>
+
+            <div class="dashboard-content">
+                <div class="dashboard-section" id="overview">
+                    <h2 class="section-title">Class History & Attendance Logs</h2>
+                    <div class="card" id="historyList">
+                        <!-- History Table Loaded Here -->
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Attendance Modal -->
+    <div class="modal-overlay" id="attendanceModal">
+        <div class="modal-container">
+            <div class="modal-header">
+                <h3 id="modalTitle">Edit Attendance</h3>
+                <button class="modal-close" onclick="closeAttendanceModal()">&times;</button>
+            </div>
+            <div class="modal-body" id="modalStudentList">
+                <!-- Students injected here -->
+            </div>
+            <div class="modal-footer">
+                <button class="btn-secondary" onclick="closeAttendanceModal()">Cancel</button>
+                <button class="btn-primary" onclick="submitAttendance()">Save Logic</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/data.js"></script>
+    <script src="js/main.js"></script>
+    <script src="js/teacher-dashboard.js"></script>
+</body>
+
+</html>

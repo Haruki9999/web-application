@@ -4,102 +4,118 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Teachers - Mathematics Training Center</title>
+    <title>Our Teachers - Pi Math Center</title>
     <link rel="stylesheet" href="styles/base.css">
     <link rel="stylesheet" href="styles/teachers.css">
+    <link rel="stylesheet" href="styles/modal.css">
 </head>
 
 <body>
-    <!-- Navigation -->
-    <nav class="navbar">
-        <div class="container">
-            <div class="nav-content">
-                <a href="index.html" class="logo">Math Training Center</a>
-                <div class="nav-links">
-                    <a href="programs.html">Programs</a>
-                    <a href="teachers.html">Teachers</a>
-                    <a href="login.html" class="btn-secondary">Login</a>
-                    <a href="register.html" class="btn-primary">Register</a>
-                </div>
-                <button class="mobile-menu-btn" id="mobileMenuBtn">
-                    <span></span>
-                    <span></span>
-                    <span></span>
-                </button>
+    <!-- Navbar (Simplified version of Index Nav) -->
+    <nav class="navbar"
+        style="background: white; box-shadow: var(--shadow-sm); position: sticky; top: 0; z-index: 100;">
+        <div class="container"
+            style="display: flex; justify-content: space-between; align-items: center; padding: 1rem;">
+            <a href="index.html"
+                style="font-size: 1.5rem; font-weight: 800; font-family: var(--font-heading); color: var(--primary-main);">Pi
+                Math Center</a>
+            <div style="display: flex; gap: 1.5rem; align-items: center;">
+                <a href="index.html">Home</a>
+                <a href="login.html" class="btn btn-primary btn-sm">Login</a>
             </div>
         </div>
     </nav>
 
-    <!-- Mobile Menu -->
-    <div class="mobile-menu" id="mobileMenu">
-        <a href="programs.html">Programs</a>
-        <a href="teachers.html">Teachers</a>
-        <a href="login.html">Login</a>
-        <a href="register.html">Register</a>
-    </div>
-
-    <!-- Page Header -->
-    <section class="hero hero-small">
+    <header class="teachers-header">
         <div class="container">
-            <h1>Our Expert Teachers</h1>
-            <p class="hero-subtitle">Learn from experienced mathematics educators</p>
-        </div>
-    </section>
+            <h1>Meet Our Experts</h1>
+            <p style="color: var(--text-muted); font-size: 1.1rem; max-width: 600px; margin: 0 auto;">
+                Experienced educators dedicated to helping you master mathematics.
+            </p>
 
-    <!-- Filter Bar -->
-    <section class="section">
-        <div class="container">
             <div class="filter-bar">
-                <label for="filterSpecialization">Filter by:</label>
-                <select id="filterSpecialization" class="form-select">
-                    <option value="all">All Specializations</option>
-                    <option value="SAT">SAT</option>
-                    <option value="IGCSE">IGCSE</option>
-                    <option value="AS Level">AS Level</option>
-                    <option value="A Level">A Level</option>
-                    <option value="ACT">ACT</option>
-                    <option value="IB">IB</option>
-                    <option value="Algebra">Algebra</option>
-                    <option value="Calculus">Calculus</option>
-                    <option value="Statistics">Statistics</option>
-                </select>
+                <button class="filter-btn active" data-filter="all">All Teachers</button>
+                <button class="filter-btn" data-filter="sat">SAT/ACT</button>
+                <button class="filter-btn" data-filter="igcse">Cambridge (IGCSE/A-Level)</button>
+                <button class="filter-btn" data-filter="national">National Curriculum</button>
             </div>
+        </div>
+    </header>
 
-            <!-- Teachers Grid -->
-            <div class="grid" id="teachersGrid"></div>
+    <section class="container">
+        <div class="teachers-grid-main" id="teachersList">
+            <!-- JS Injected -->
         </div>
     </section>
 
     <!-- Footer -->
-    <footer class="footer">
-        <div class="container">
-            <div class="footer-content">
-                <div class="footer-section">
-                    <h3>Math Training Center</h3>
-                    <p>Expert exam preparation for mathematics students worldwide.</p>
-                </div>
-                <div class="footer-section">
-                    <h4>Quick Links</h4>
-                    <a href="programs.html">Programs</a>
-                    <a href="teachers.html">Teachers</a>
-                    <a href="login.html">Login</a>
-                    <a href="register.html">Register</a>
-                </div>
-                <div class="footer-section">
-                    <h4>Contact</h4>
-                    <p>Email: info@mathtraining.com</p>
-                    <p>Phone: +1 (555) 123-4567</p>
-                </div>
-            </div>
-            <div class="footer-bottom">
-                <p>&copy; 2025 Mathematics Training Center. All rights reserved.</p>
-            </div>
-        </div>
+    <footer style="background: var(--text-main); color: white; padding: 3rem 0; margin-top: 4rem; text-align: center;">
+        <p>&copy; 2025 Pi Math Center</p>
     </footer>
 
-    <script src="js/data.js"></script>
-    <script src="js/components/teachers.component.js"></script>
     <script src="js/utils.js"></script>
+    <script src="js/data.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const teachers = JSON.parse(localStorage.getItem('teachers') || '[]');
+            const container = document.getElementById('teachersList');
+            const btns = document.querySelectorAll('.filter-btn');
+
+            function renderTeachers(filter = 'all') {
+                container.innerHTML = '';
+
+                const filtered = filter === 'all'
+                    ? teachers
+                    : teachers.filter(t => {
+                        const specs = t.specialization.map(s => s.toLowerCase());
+                        if (filter === 'sat') return specs.some(s => s.includes('sat') || s.includes('act'));
+                        if (filter === 'igcse') return specs.some(s => s.includes('igcse') || s.includes('level'));
+                        if (filter === 'national') return specs.some(s => !s.includes('sat') && !s.includes('igcse')); // Simplified logic
+                        return true;
+                    });
+
+                if (filtered.length === 0) {
+                    container.innerHTML = '<p style="text-align: center; grid-column: 1/-1; color: var(--text-muted);">No teachers found matching this category.</p>';
+                    return;
+                }
+
+                container.innerHTML = filtered.map(t => `
+                    <div class="teacher-profile-card">
+                        <img src="${t.photo}" alt="${t.name}" class="profile-img-lg">
+                        <h3 style="font-size: 1.5rem; margin-bottom: 0.5rem; color: var(--text-main);">${t.name}</h3>
+                        <div class="profile-specs">
+                            ${t.specialization.map(s => `<span class="spec-tag">${s}</span>`).join('')}
+                        </div>
+                        <p style="color: var(--text-muted); margin-bottom: 1.5rem;">${t.experience} Experience</p>
+                        <p style="margin-bottom: 1.5rem; font-size: 0.9rem; line-height: 1.5;">${t.bio}</p>
+                        <button class="btn btn-primary" onclick="showLoginPrompt()">Register for Course</button>
+                    </div>
+                `).join('');
+            }
+
+            btns.forEach(btn => {
+                btn.addEventListener('click', () => {
+                    btns.forEach(b => b.classList.remove('active'));
+                    btn.classList.add('active');
+                    renderTeachers(btn.dataset.filter);
+                });
+            });
+
+            // Initial Render
+            renderTeachers();
+        });
+
+        function showLoginPrompt() {
+            showModal('Login Required', 'Please login as a student to register for courses.', 'info', () => {
+                window.location.href = 'login.html';
+            });
+            // Adjust Button Text
+            setTimeout(() => {
+                const btn = document.querySelector('#globalModal .btn-primary');
+                if (btn) btn.textContent = 'Go to Login';
+            }, 0);
+        }
+    </script>
 </body>
 
 </html>

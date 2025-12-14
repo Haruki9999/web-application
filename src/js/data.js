@@ -139,6 +139,7 @@ function initializeData() {
             {
                 id: '1',
                 email: 'student@test.com',
+                phone: '88888888',
                 password: 'password',
                 role: 'student',
                 name: 'John Student',
@@ -152,6 +153,7 @@ function initializeData() {
             {
                 id: '2',
                 email: 'teacher@test.com',
+                phone: '99999999',
                 password: 'password',
                 role: 'teacher',
                 name: 'Dr. Sarah Johnson',
@@ -159,11 +161,16 @@ function initializeData() {
                 isApproved: true,
                 totalStudents: 24,
                 upcomingClasses: 8,
-                materialsUploaded: 15
+                materialsUploaded: 15,
+                reviews: [
+                    { id: 'r1', studentName: 'John Student', rating: 5, comment: 'Dr. Sarah makes complex algebra so easy to understand! Highly recommended.', date: '2025-11-15' },
+                    { id: 'r2', studentName: 'Emma W.', rating: 4, comment: 'Great classes, very structured.', date: '2025-11-20' }
+                ]
             },
             {
                 id: '3',
                 email: 'admin@test.com',
+                phone: '11111111',
                 password: 'password',
                 role: 'admin',
                 name: 'Admin User'

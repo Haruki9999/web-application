@@ -1,192 +1,290 @@
-// Student Dashboard JavaScript
+// Student Dashboard Logic
 
-document.addEventListener('DOMContentLoaded', function () {
-    const currentUser = getCurrentUser();
+document.addEventListener('DOMContentLoaded', () => {
+    // Auth Check
+    if (!checkAuth('student')) return;
 
-    if (!currentUser || currentUser.role !== 'student') {
-        window.location.href = 'login.html';
-        return;
-    }
+    const user = getCurrentUser();
+    document.getElementById('welcomeName').textContent = `Hello, ${user.name}`;
 
-    // Refresh user data from storage to get latest progress
-    const freshUser = JSON.parse(localStorage.getItem('users') || '[]').find(u => u.id === currentUser.id) || currentUser;
-
-    loadDashboard(freshUser);
-
-    // Sidebar toggle for mobile
+    // Sidebar Toggle
     const sidebarToggle = document.getElementById('sidebarToggle');
     const sidebar = document.getElementById('sidebar');
-
     if (sidebarToggle) {
-        sidebarToggle.addEventListener('click', function () {
+        sidebarToggle.addEventListener('click', () => {
             sidebar.classList.toggle('active');
         });
     }
+
+    // Initial Load
+    refreshDashboard(user);
+    loadTeachers();
 });
 
-function loadDashboard(user) {
-    // Set student name
-    document.getElementById('studentName').textContent = user.name;
+function switchTab(tabId) {
+    // Hide all
+    document.querySelectorAll('.tab-content').forEach(el => el.style.display = 'none');
+    document.querySelectorAll('.nav-link').forEach(el => el.classList.remove('active'));
 
-    // Calculate stats
-    const TARGET_HOURS = 75;
-    const completedHours = parseFloat((user.completedHours || 0).toFixed(1));
-    const remainingHours = parseFloat(Math.max(0, TARGET_HOURS - completedHours).toFixed(1));
+    // Show Target
+    document.getElementById(`tab-${tabId}`).style.display = 'block';
 
-    const enrolledPrograms = user.enrolledPrograms || [];
-    // Get all scheduled classes
-    const allClasses = JSON.parse(localStorage.getItem('classes') || '[]');
-    const upcomingClasses = allClasses.filter(c => new Date(c.date) >= new Date() && c.status !== 'Cancelled');
+    // Highlight Nav (Simple match)
+    const navLink = document.querySelector(`.nav-link[onclick="switchTab('${tabId}')"]`);
+    if (navLink) navLink.classList.add('active');
 
-    // Update stats
-    document.getElementById('completedHours').textContent = completedHours;
-    document.getElementById('remainingHours').textContent = remainingHours;
-    document.getElementById('enrolledCount').textContent = enrolledPrograms.length;
-    document.getElementById('upcomingCount').textContent = upcomingClasses.length;
-
-    // Update progress bar
-    const progressPercent = Math.min((completedHours / TARGET_HOURS) * 100, 100);
-    document.getElementById('progressBar').style.width = progressPercent + '%';
-    document.getElementById('progressText').textContent =
-        `${completedHours} of ${TARGET_HOURS} Academic Hours completed (${Math.round(progressPercent)}%)`;
-
-    // Progress section
-    document.getElementById('totalHours').textContent = `${completedHours} / ${TARGET_HOURS} hours`;
-    document.getElementById('progressBarFull').style.width = progressPercent + '%';
-
-    loadUpcomingClasses(upcomingClasses);
-    loadEnrolledPrograms(enrolledPrograms);
-    loadAllClasses(allClasses);
-    loadAttendanceHistory(user.attendanceHistory || []);
+    // Close mobile sidebar if open
+    document.getElementById('sidebar').classList.remove('active');
 }
 
-function loadUpcomingClasses(classes) {
-    const container = document.getElementById('upcomingClassesList');
+function refreshDashboard(user) {
+    // Calc Stats
+    const totalHours = user.completedHours || 0;
+    const maxHours = 75;
+    const percentage = Math.min(100, Math.round((totalHours / maxHours) * 100));
 
-    if (classes.length === 0) {
-        container.innerHTML = '<p style="color: #6B7280;">No upcoming classes scheduled. <a href="teachers.html" style="color: #3B82F6;">View Schedule</a></p>';
-        return;
-    }
+    document.getElementById('totalHours').textContent = totalHours;
+    document.getElementById('hoursRemaining').textContent = Math.max(0, maxHours - totalHours);
+    document.getElementById('mainProgressBar').style.width = `${percentage}%`;
+    document.getElementById('progressPercentage').textContent = `${percentage}%`;
 
-    // Sort by date
-    classes.sort((a, b) => new Date(a.date) - new Date(b.date));
+    // Active Courses
+    const enrolledIds = user.enrolledCourses || [];
+    document.getElementById('activeCoursesCount').textContent = enrolledIds.length;
 
-    container.innerHTML = classes.slice(0, 3).map(cls => `
-        <div style="padding: 1rem; border: 1px solid #E5E7EB; border-radius: 0.5rem; margin-bottom: 1rem;">
-            <div style="display: flex; justify-content: space-between; align-items: start;">
-                <div>
-                    <h4 style="margin-bottom: 0.5rem;">Teacher: ${cls.teacherName || 'Staff'}</h4>
-                    <p style="color: #6B7280; font-size: 0.875rem; margin: 0.25rem 0;">
-                        📅 ${formatDate(cls.date)} at ${cls.time}
-                    </p>
-                    ${cls.assignment ? `<p style="color: #D97706; font-size: 0.875rem; font-weight: 500;">📝 Assignment: ${cls.assignment}</p>` : ''}
+    // Load Enrolled List
+    const coursesEl = document.getElementById('myCoursesList');
+    coursesEl.innerHTML = '';
+
+    if (enrolledIds.length === 0) {
+        coursesEl.innerHTML = `
+            <div style="grid-column: 1/-1; text-align: center; padding: 3rem; background: white; border-radius: var(--radius-lg);">
+                <p>You haven't enrolled in any courses yet.</p>
+                <button class="btn btn-primary" style="margin-top: 1rem;" onclick="switchTab('teachers')">Find a Teacher</button>
+            </div>
+        `;
+    } else {
+        const teachers = JSON.parse(localStorage.getItem('teachers') || '[]');
+        enrolledIds.forEach(courseId => {
+            // In this schema, enrollment is implied by teacher/course selection. 
+            // Simplified: "Course" = "Teacher's Class". 
+            // Let's assume courseId refers to a teacher ID for simplicity if specific course objects aren't granular enough, 
+            // OR find the course in 'programs'.
+            // Based on earlier logic: Single teacher selection? 
+            // RULES: "Each student can attend only one teacher’s course". 
+            // So if enrolled, it's basically "Enrolled with Teacher X".
+
+            const teacher = teachers.find(t => t.id === courseId) || { name: 'Unknown', specialization: [] };
+
+            const card = document.createElement('div');
+            card.className = 'course-card';
+            card.innerHTML = `
+                <div class="course-header">
+                    <h3>Course with ${teacher.name}</h3>
+                    <div style="margin-top: 0.5rem; color: var(--text-muted);">${teacher.specialization.join(', ')}</div>
                 </div>
-                <span style="background: #DBEAFE; color: #1E40AF; padding: 0.25rem 0.75rem; border-radius: 9999px; font-size: 0.875rem;">
-                    Scheduled
-                </span>
+                <div class="course-body">
+                    <p>Status: <span style="color: var(--success); font-weight: 600;">Active</span></p>
+                    <div style="margin-top: 1rem;">
+                         <button class="btn btn-secondary" style="width: 100%;">View Assignments</button>
+                    </div>
+                </div>
+            `;
+            coursesEl.appendChild(card);
+        });
+    }
+}
+
+function loadTeachers() {
+    const grid = document.getElementById('teachersGrid');
+    const teachers = JSON.parse(localStorage.getItem('teachers') || '[]');
+    const user = getCurrentUser();
+
+    grid.innerHTML = teachers.map(t => `
+        <div class="course-card">
+            <div style="padding: 1.5rem; text-align: center;">
+                <img src="${t.photo}" alt="${t.name}" style="width: 100px; height: 100px; border-radius: 50%; object-fit: cover; margin-bottom: 1rem;">
+                <h3>${t.name}</h3>
+                <p style="color: var(--primary-main); font-size: 0.9rem; margin-bottom: 0.5rem;">${t.specialization.join(', ')}</p>
+                <div style="color: var(--text-muted); font-size: 0.9rem; margin-bottom: 1.5rem;">
+                    ⭐ ${t.rating} | 🎓 ${t.experience}
+                </div>
+                <button class="btn btn-secondary" onclick="viewTeacherProfile('${t.id}')">View Profile</button>
             </div>
         </div>
     `).join('');
 }
 
-function loadEnrolledPrograms(programIds) {
-    const container = document.getElementById('enrolledProgramsList');
-    const programs = JSON.parse(localStorage.getItem('programs') || '[]');
-    const enrolledPrograms = programs.filter(p => programIds.includes(p.id));
+function viewTeacherProfile(teacherId) {
+    const teachers = JSON.parse(localStorage.getItem('teachers') || '[]');
+    const user = getCurrentUser();
+    const t = teachers.find(x => x.id === teacherId);
+    if (!t) return;
 
-    if (enrolledPrograms.length === 0) {
-        container.innerHTML = `
-            <div style="grid-column: 1/-1; text-align: center; padding: 2rem; background: white; border-radius: 0.75rem;">
-                <p style="color: #6B7280;">You haven't enrolled in any programs yet.</p>
-                <a href="programs.html" class="btn-primary mt-2" style="display: inline-block;">Browse Programs</a>
+    // Render Reviews
+    const reviewsHtml = (t.reviews || []).map(r => `
+        <div style="background: #f8fafc; padding: 1rem; border-radius: var(--radius-md); margin-bottom: 0.75rem;">
+            <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;">
+                <strong style="font-size: 0.9rem;">${r.studentName}</strong>
+                <span style="color: #fbbf24;">${'★'.repeat(r.rating)}${'☆'.repeat(5 - r.rating)}</span>
             </div>
-        `;
-        return;
-    }
-
-    container.innerHTML = enrolledPrograms.map(program => `
-        <div class="card">
-            <div class="card-badge">${program.qualification}</div>
-            <h3 class="card-title">${program.name}</h3>
-            <p class="card-subtitle">${program.level} • ${program.duration}</p>
-            <p style="color: #4B5563; margin: 1rem 0;">${program.description}</p>
-            <div class="card-actions">
-                <button onclick="alert('Continue learning in this program!')" class="btn-primary">Continue</button>
-            </div>
+            <p style="color: var(--text-muted); font-size: 0.9rem; margin: 0;">${r.comment}</p>
         </div>
-    `).join('');
-}
+    `).join('') || '<p style="color: var(--text-muted); font-style: italic;">No reviews yet.</p>';
 
-function loadAllClasses(classes) {
-    const container = document.getElementById('allClassesList');
-
-    if (classes.length === 0) {
-        container.innerHTML = `
-            <div class="card">
-                <p style="color: #6B7280; text-align: center;">No classes scheduled. <a href="teachers.html" style="color: #3B82F6;">Book your first class</a></p>
+    const modalContent = `
+        <div style="text-align: center;">
+            <div style="display: flex; align-items: center; gap: 1.5rem; text-align: left; margin-bottom: 1.5rem;">
+                <img src="${t.photo}" style="width: 80px; height: 80px; border-radius: 50%; object-fit: cover; flex-shrink: 0; box-shadow: var(--shadow-sm);">
+                <div>
+                    <h3 style="margin-bottom: 0.25rem;">${t.name}</h3>
+                    <p style="color: var(--text-muted); font-size: 0.9rem; margin-bottom: 0.5rem;">${t.bio}</p>
+                    <div style="font-size: 0.85rem; background: #f1f5f9; display: inline-block; padding: 0.25rem 0.75rem; border-radius: 20px;">
+                        ${t.specialization.join(', ')} • ${t.experience}
+                    </div>
+                </div>
             </div>
-        `;
-        return;
-    }
 
-    container.innerHTML = `
-        <div class="table-container">
-            <table class="table">
-                <thead>
-                    <tr>
-                        <th>Teacher</th>
-                        <th>Date</th>
-                        <th>Time</th>
-                        <th>Units</th>
-                        <th>Assignment</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    ${classes.map(cls => `
-                        <tr>
-                            <td>${cls.teacherName || 'Staff'}</td>
-                            <td>${formatDate(cls.date)}</td>
-                            <td>${cls.time}</td>
-                            <td>${cls.academicHours ? cls.academicHours.toFixed(1) : '3.0'} hrs</td>
-                            <td>${cls.assignment || '-'}</td>
-                        </tr>
-                    `).join('')}
-                </tbody>
-            </table>
+            <div style="text-align: left; margin-top: 1rem; border-top: 1px solid #f1f5f9; padding-top: 1rem;">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+                    <h4 style="font-size: 1rem; margin: 0;">Student Reviews</h4>
+                    <button class="btn btn-secondary btn-sm" onclick="toggleReviewForm('${t.id}')" style="font-size: 0.8rem; padding: 0.25rem 0.75rem;">+ Write Review</button>
+                </div>
+
+                <form id="reviewForm-${t.id}" style="display: none; margin-bottom: 1rem; background: #f8fafc; padding: 1rem; border-radius: var(--radius-md);">
+                    <div style="display: grid; grid-template-columns: 1fr auto; gap: 1rem; align-items: end;">
+                        <div class="form-group" style="margin-bottom: 0.5rem;">
+                            <label class="form-label" style="font-size: 0.8rem;">Rating</label>
+                            <select id="reviewRating-${t.id}" class="form-select" style="padding: 0.4rem;">
+                                <option value="5">⭐⭐⭐⭐⭐ (Excellent)</option>
+                                <option value="4">⭐⭐⭐⭐ (Good)</option>
+                                <option value="3">⭐⭐⭐ (Okay)</option>
+                                <option value="2">⭐⭐ (Poor)</option>
+                                <option value="1">⭐ (Terrible)</option>
+                            </select>
+                        </div>
+                        <button type="button" class="btn btn-primary btn-sm" onclick="submitReview('${t.id}')" style="height: 36px;">Submit</button>
+                    </div>
+                    <div class="form-group" style="margin-bottom: 0;">
+                        <textarea id="reviewComment-${t.id}" class="form-input" rows="2" placeholder="Optional comment..." style="font-size: 0.9rem;"></textarea>
+                    </div>
+                </form>
+
+                <div style="max-height: 250px; overflow-y: auto; display: flex; flex-direction: column; gap: 0.75rem;">
+                    ${reviewsHtml}
+                </div>
+            </div>
         </div>
     `;
+
+    showModal(`Teacher Profile`, modalContent, 'info', () => {
+        // Enrollment Logic
+        enrollInCourse(teacherId);
+    });
+
+    // Hack: Change the button text from "Confirm" to "Register" for this specific modal
+    setTimeout(() => {
+        const confirmBtn = document.querySelector('#globalModal .btn-primary');
+        if (confirmBtn) confirmBtn.textContent = 'Register for this Course';
+    }, 0);
 }
 
-function loadAttendanceHistory(history) {
-    // We need to add a container for this in the HTML first, or append it dynamically
-    // For now, let's append it to the wrapper if it doesn't exist
-    let container = document.getElementById('attendanceHistoryList');
-    if (!container) {
-        // Create section dynamically if missing in HTML (likely is)
-        const wrapper = document.querySelector('.dashboard-grid');
-        // Actually better to replace one of the existing lists or add a new section in HTML
-        // But I'll assume I can just reuse or create a section
-    }
-    // Since I can't easily edit HTML structure from here without being messy, 
-    // I will assume the user will see it in the "Progress" section or I'll inject it.
+// Global functions for inline event handlers (since modularity is simple here)
+window.toggleReviewForm = function (id) {
+    const form = document.getElementById(`reviewForm-${id}`);
+    form.style.display = form.style.display === 'none' ? 'block' : 'none';
+};
 
-    // Let's create a simple modal or alert for now since UI space is tight, 
-    // OR just console log it. 
-    // BETTER: Reuse 'allClassesList' area or similar if I wanted to be lazy, 
-    // BUT I should really add a proper section. 
-    // I previously "Planned" to overwrite student-dashboard.js, so I can try to find where to put it.
+window.submitReview = function (teacherId) {
+    const rating = parseInt(document.getElementById(`reviewRating-${teacherId}`).value);
+    const comment = document.getElementById(`reviewComment-${teacherId}`).value;
+    const user = getCurrentUser();
+
+    // Comment is now optional
+
+
+    const teachers = JSON.parse(localStorage.getItem('teachers') || '[]');
+    const idx = teachers.findIndex(t => t.id === teacherId);
+
+    if (idx !== -1) {
+        if (!teachers[idx].reviews) teachers[idx].reviews = [];
+        teachers[idx].reviews.unshift({
+            id: Date.now().toString(),
+            studentName: user.name || 'Anonymous',
+            rating,
+            comment,
+            date: new Date().toISOString().split('T')[0]
+        });
+
+        localStorage.setItem('teachers', JSON.stringify(teachers));
+        showToast('Review submitted!', 'success');
+
+        // Refresh modal content by re-opening (simple hack) or manual DOM update
+        // Let's just reload the list for now or close modal
+        closeModal();
+        viewTeacherProfile(teacherId);
+    }
+};
+
+function enrollInCourse(teacherId) {
+    const user = getCurrentUser();
+
+    // 1. Check if already enrolled (Rule: Only one teacher/course)
+    if (user.enrolledCourses && user.enrolledCourses.length > 0) {
+        showModal('Enrollment Error', 'You can only register for ONE course at a time.', 'error');
+        return;
+    }
+
+    // 2. Mock Enrollment
+    if (!user.enrolledCourses) user.enrolledCourses = [];
+    user.enrolledCourses.push(teacherId);
+
+    // Save
+    setCurrentUser(user);
+
+    // Update Global User ListMock
+    const users = JSON.parse(localStorage.getItem('users') || '[]');
+    const idx = users.findIndex(u => u.id === user.id);
+    if (idx !== -1) {
+        users[idx] = user;
+        localStorage.setItem('users', JSON.stringify(users));
+    }
+
+    showToast('Successfully enrolled!', 'success');
+    refreshDashboard(user);
+    switchTab('dashboard');
 }
 
-function showSection(sectionId) {
-    const sections = document.querySelectorAll('.dashboard-section');
-    sections.forEach(section => section.style.display = 'none');
-    document.getElementById(sectionId).style.display = 'block';
+function filterTeachers(type) {
+    // Basic filter logic placeholder
+    // In real app, filter 'teachers' array by specialization type if we added that metadata
+    // For now, just re-render all or show toast
+    if (type === 'all') {
+        loadTeachers();
+    } else {
+        // Demo filter
+        const teachers = JSON.parse(localStorage.getItem('teachers') || '[]');
+        // Let's assume some keywords map to International vs National
+        const keywords = type === 'International' ? ['SAT', 'IB', 'IGCSE', 'ACT'] : ['National', 'Olympiad', 'EEC'];
 
-    const links = document.querySelectorAll('.sidebar-nav a');
-    links.forEach(link => link.classList.remove('active'));
-    event.target.closest('a').classList.add('active');
+        const filtered = teachers.filter(t => t.specialization.some(s => keywords.some(k => s.includes(k))));
 
-    if (window.innerWidth < 768) {
-        document.getElementById('sidebar').classList.remove('active');
+        const grid = document.getElementById('teachersGrid');
+        grid.innerHTML = filtered.length ? filtered.map(t => `
+            <div class="course-card">
+                <div style="padding: 1.5rem; text-align: center;">
+                    <img src="${t.photo}" alt="${t.name}" style="width: 100px; height: 100px; border-radius: 50%; object-fit: cover; margin-bottom: 1rem;">
+                    <h3>${t.name}</h3>
+                    <p style="color: var(--primary-main); font-size: 0.9rem; margin-bottom: 0.5rem;">${t.specialization.join(', ')}</p>
+                    <button class="btn btn-secondary" onclick="viewTeacherProfile('${t.id}')">View Profile</button>
+                </div>
+            </div>
+        `).join('') : '<p class="col-span-full text-center text-muted">No teachers found for this category.</p>';
     }
+
+    // Update active button
+    document.querySelectorAll('.btn-secondary[onclick^="filterTeachers"]').forEach(btn => {
+        if (btn.innerText === (type === 'all' ? 'All' : type)) btn.classList.add('active');
+        else btn.classList.remove('active');
+    });
 }

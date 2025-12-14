@@ -4,9 +4,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Teacher Dashboard - Mathematics Training Center</title>
+    <title>Teacher Dashboard - Pi Math Center</title>
     <link rel="stylesheet" href="styles/base.css">
     <link rel="stylesheet" href="styles/teacher-dashboard.css">
+    <link rel="stylesheet" href="styles/modal.css">
 </head>
 
 <body>
@@ -14,200 +15,152 @@
         <!-- Sidebar -->
         <aside class="sidebar" id="sidebar">
             <div class="sidebar-header">
-                <h2>Teacher Portal</h2>
+                <div class="sidebar-brand">Pi Teachers</div>
             </div>
-            <ul class="sidebar-nav">
-                <li>
-                    <a href="#" class="active" onclick="showSection('overview')">
-                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
-                        </svg>
-                        Dashboard
-                    </a>
-                </li>
-                <li>
-                    <a href="#" onclick="showSection('classes')">
-                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
-                        </svg>
-                        My Classes
-                    </a>
-                </li>
-                <li>
-                    <a href="#" onclick="showSection('createClass')">
-                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
-                        </svg>
-                        Create Class
-                    </a>
-                </li>
-                <li>
-                    <a href="#" onclick="showSection('materials')">
-                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z" />
-                        </svg>
-                        Materials
-                    </a>
-                </li>
-                <li>
-                    <a href="#" onclick="logout()">
-                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
-                        </svg>
-                        Logout
-                    </a>
-                </li>
-            </ul>
+            <nav class="sidebar-nav">
+                <a href="#" class="nav-link active" onclick="showSection('overview')">
+                    Dashboard
+                </a>
+                <a href="#" class="nav-link" onclick="showSection('classes')">
+                    My Classes
+                </a>
+                <a href="#" class="nav-link" onclick="showSection('profile')">
+                    Profile & CV
+                </a>
+                <!-- Future features -->
+                <a href="#" class="nav-link" onclick="showSection('createClass')">
+                    Create Class
+                </a>
+            </nav>
+            <div class="sidebar-footer">
+                <button onclick="logout()" class="btn btn-secondary"
+                    style="width: 100%; border-color: #fca5a5; color: #ef4444;">
+                    Logout
+                </button>
+            </div>
         </aside>
 
         <!-- Main Content -->
-        <div class="dashboard-content">
-            <button class="sidebar-toggle" id="sidebarToggle">☰</button>
-
+        <main class="main-content">
             <div class="dashboard-header">
-                <h1>Teacher Dashboard</h1>
+                <div class="welcome-text">
+                    <h1 id="teacherName">Welcome, Teacher!</h1>
+                    <p>Manage your students and classes</p>
+                </div>
+                <button class="btn btn-secondary mobile-toggle" id="sidebarToggle" style="display: none;">Menu</button>
             </div>
 
-            <div class="dashboard-main">
-                <!-- Overview Section -->
-                <div id="overview" class="dashboard-section">
-                    <div class="dashboard-welcome">
-                        <h1>Welcome, <span id="teacherName"></span>!</h1>
-                        <p>Manage your classes and students</p>
+            <!-- 1. OVERVIEW -->
+            <div id="section-overview" class="dashboard-section">
+                <div class="dashboard-grid-3">
+                    <div class="stat-card">
+                        <div class="stat-label">Total Students</div>
+                        <div class="stat-value" id="totalStudents">0</div>
                     </div>
-
-                    <!-- Stats -->
-                    <div class="stats-grid">
-                        <div class="stat-card primary">
-                            <h3>Total Students</h3>
-                            <p id="totalStudents">0</p>
-                        </div>
-                        <div class="stat-card warning">
-                            <h3>Upcoming Classes</h3>
-                            <p id="upcomingClasses">0</p>
-                        </div>
-                        <div class="stat-card success">
-                            <h3>Materials Uploaded</h3>
-                            <p id="materialsCount">0</p>
-                        </div>
-                        <div class="stat-card">
-                            <h3>Classes This Week</h3>
-                            <p id="weeklyClasses">0</p>
-                        </div>
+                    <div class="stat-card">
+                        <div class="stat-label">Classes This Week</div>
+                        <div class="stat-value" id="weeklyClasses">0</div>
                     </div>
-
-                    <!-- Today's Schedule -->
-                    <div class="card">
-                        <h3 style="margin-bottom: 1.5rem;">Today's Schedule</h3>
-                        <div id="todaySchedule"></div>
-                    </div>
-
-                    <!-- Recent Activity -->
-                    <div class="card">
-                        <h3 style="margin-bottom: 1.5rem;">Recent Activity</h3>
-                        <div id="recentActivity">
-                            <p style="color: #6B7280;">No recent activity</p>
-                        </div>
+                    <div class="stat-card">
+                        <div class="stat-label">Materials</div>
+                        <div class="stat-value" id="materialsCount">0</div>
                     </div>
                 </div>
 
-                <!-- Classes Section -->
-                <div id="classes" class="dashboard-section" style="display: none;">
-                    <h2 class="mb-4">My Classes</h2>
-                    <div id="classesList"></div>
+                <h3>Today's Schedule</h3>
+                <div id="todaySchedule" style="margin-top: 1rem;">
+                    <!-- Injected JS -->
+                    <div class="class-card">
+                        <div class="class-body" style="text-align: center; color: var(--text-muted);">
+                            No classes scheduled for today.
+                        </div>
+                    </div>
                 </div>
+            </div>
 
-                <!-- Create Class Section -->
-                <div id="createClass" class="dashboard-section" style="display: none;">
-                    <h2 class="mb-4">Create New Class</h2>
-                    <div class="card" style="max-width: 600px;">
+            <!-- 2. MY CLASSES -->
+            <div id="section-classes" class="dashboard-section" style="display: none;">
+                <h2 class="section-title">My Teaching Schedule</h2>
+                <div id="classesList" style="display: grid; gap: 1.5rem;">
+                    <!-- Injected JS -->
+                </div>
+            </div>
+
+            <!-- 3. PROFILE -->
+            <div id="section-profile" class="dashboard-section" style="display: none;">
+                <h2 class="section-title">Teacher Profile</h2>
+                <div class="class-card">
+                    <div class="class-body">
+                        <form id="profileForm" class="profile-form-grid">
+                            <div class="profile-avatar-upload">
+                                <img src="https://via.placeholder.com/150" alt="Profile" class="avatar-preview"
+                                    id="profilePreview">
+                                <button type="button" class="btn btn-secondary btn-sm">Change Photo</button>
+                            </div>
+                            <div style="display: grid; gap: 1.5rem;">
+                                <div class="form-group">
+                                    <label class="form-label">Full Name</label>
+                                    <input type="text" id="profileName" class="form-input" readonly>
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">Specializations</label>
+                                    <input type="text" id="profileSpecs" class="form-input"
+                                        placeholder="e.g. SAT, Calculus">
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">Bio</label>
+                                    <textarea id="profileBio" class="form-input" rows="4"></textarea>
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">CV / Resume (PDF)</label>
+                                    <input type="file" id="profileCV" class="form-input" accept=".pdf">
+                                </div>
+                                <button type="submit" class="btn btn-primary">Save Profile</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 4. CREATE CLASS (Hidden/Optional per updated plan but good to have) -->
+            <div id="section-createClass" class="dashboard-section" style="display: none;">
+                <h2 class="section-title">Schedule New Class</h2>
+                <div class="class-card" style="max-width: 600px;">
+                    <div class="class-body">
                         <form id="createClassForm">
                             <div class="form-group">
-                                <label class="form-label">Subject/Topic</label>
-                                <input type="text" id="classSubject" class="form-input" placeholder="e.g., SAT Algebra"
-                                    required>
+                                <label class="form-label">Subject</label>
+                                <input type="text" id="newClassSubject" class="form-input" required>
                             </div>
-
                             <div class="form-group">
-                                <label class="form-label">Date</label>
-                                <input type="date" id="classDate" class="form-input" required>
+                                <label class="form-label">Date & Time</label>
+                                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                                    <input type="date" id="newClassDate" class="form-input" required>
+                                    <input type="time" id="newClassTime" class="form-input" required>
+                                </div>
                             </div>
-
                             <div class="form-group">
-                                <label class="form-label">Time</label>
-                                <input type="time" id="classTime" class="form-input" required>
-                            </div>
-
-                            <div class="form-group">
-                                <label class="form-label">Duration (hours)</label>
-                                <select id="classDuration" class="form-select" required>
-                                    <option value="1">1 hour</option>
-                                    <option value="1.5">1.5 hours</option>
-                                    <option value="2">2 hours</option>
-                                    <option value="2.5">2.5 hours</option>
-                                    <option value="3">3 hours</option>
+                                <label class="form-label">Academic Hours (1 unit = 3 real hours usually, but flexibility
+                                    needed)</label>
+                                <!-- User requirement: 1 attendance = 3 hours. -->
+                                <select id="newClassUnits" class="form-input">
+                                    <option value="3">3 Hours (Standard)</option>
+                                    <option value="1">1 Hour</option>
                                 </select>
                             </div>
-
-                            <div class="form-group">
-                                <label class="form-label">Maximum Students</label>
-                                <input type="number" id="classCapacity" class="form-input" value="10" min="1" max="30"
-                                    required>
-                            </div>
-
-                            <button type="submit" class="btn-primary">Create Class</button>
+                            <button type="submit" class="btn btn-primary">Schedule Class</button>
                         </form>
-                    </div>
-                </div>
-
-                <!-- Materials Section -->
-                <div id="materials" class="dashboard-section" style="display: none;">
-                    <h2 class="mb-4">Course Materials</h2>
-
-                    <div class="card mb-4" style="max-width: 600px;">
-                        <h3 style="margin-bottom: 1.5rem;">Upload New Material</h3>
-                        <form id="uploadMaterialForm">
-                            <div class="form-group">
-                                <label class="form-label">Material Title</label>
-                                <input type="text" id="materialTitle" class="form-input"
-                                    placeholder="e.g., Algebra Practice Sheet" required>
-                            </div>
-
-                            <div class="form-group">
-                                <label class="form-label">Type</label>
-                                <select id="materialType" class="form-select" required>
-                                    <option value="PDF">PDF Document</option>
-                                    <option value="Link">External Link</option>
-                                    <option value="Video">Video</option>
-                                    <option value="Quiz">Quiz</option>
-                                </select>
-                            </div>
-
-                            <div class="form-group">
-                                <label class="form-label">Description</label>
-                                <textarea id="materialDesc" class="form-input" rows="3"
-                                    placeholder="Brief description of the material"></textarea>
-                            </div>
-
-                            <button type="submit" class="btn-success">Upload Material</button>
-                        </form>
-                    </div>
-
-                    <div class="card">
-                        <h3 style="margin-bottom: 1.5rem;">Uploaded Materials</h3>
-                        <div id="materialsList"></div>
                     </div>
                 </div>
             </div>
-        </div>
+
+        </main>
     </div>
 
+    <!-- Attendance Modal is now Global, we will trigger it via JS -->
+
+    <script src="js/utils.js"></script>
     <script src="js/data.js"></script>
-    <script src="js/main.js"></script>
     <script src="js/teacher-dashboard.js"></script>
 </body>
 

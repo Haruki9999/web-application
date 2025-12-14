@@ -4,62 +4,62 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login - Mathematics Training Center</title>
+    <title>Login - Pi Math Center</title>
     <link rel="stylesheet" href="styles/base.css">
     <link rel="stylesheet" href="styles/login.css">
+    <link rel="stylesheet" href="styles/modal.css">
 </head>
 
 <body>
     <div class="auth-page">
-        <div class="auth-card">
+        <div class="auth-container">
             <div class="auth-header">
-                <h1>Welcome Back</h1>
-                <p>Sign in to your account</p>
+                <a href="index.html" class="auth-logo">Pi Math Center</a>
+                <h2>Welcome Back</h2>
+                <p style="color: var(--text-muted);">Please sign in to continue</p>
             </div>
 
-            <div id="alertContainer"></div>
+            <!-- Role Selector -->
+            <div class="role-selector" id="roleSelector">
+                <button class="role-option active" data-role="student" type="button">Student</button>
+                <button class="role-option" data-role="teacher" type="button">Teacher</button>
+            </div>
 
             <form id="loginForm">
                 <div class="form-group">
-                    <label class="form-label">Email Address</label>
-                    <input type="email" id="email" class="form-input" placeholder="your.email@example.com" required>
+                    <label class="form-label">Phone Number</label>
+                    <input type="tel" id="phone" class="form-input" placeholder="e.g. 99112233" required
+                        pattern="[0-9]{8,}" title="Please enter a valid phone number (digits only)">
                 </div>
 
+                <!-- Hidden Password Field for Mock Auth Simplicity - User asked for Phone Login, usually implies OTP or Phone+Pass. I will assume Password is still needed for security mock, or just Phone if strictly asked. 
+                     Request said: "Login using phone number". I will add a password field but maybe auto-fill for demo or simpler auth. Let's keep password for stricter auth feel. -->
                 <div class="form-group">
                     <label class="form-label">Password</label>
                     <input type="password" id="password" class="form-input" placeholder="Enter your password" required>
                 </div>
 
-                <div class="form-group">
-                    <label class="form-label">Login As</label>
-                    <select id="role" class="form-select" required>
-                        <option value="student">Student</option>
-                        <option value="teacher">Teacher</option>
-                        <option value="admin">Admin</option>
-                    </select>
-                </div>
-
-                <button type="submit" class="btn-primary btn-full">
-                    Sign In
+                <button type="submit" class="btn btn-primary"
+                    style="width: 100%; justify-content: center; margin-top: 1rem;">
+                    Login
                 </button>
             </form>
 
-            <div class="auth-footer">
-                <p>Don't have an account? <a href="register.html">Register as Student</a></p>
-                <p class="mt-1"><a href="index.html">← Back to Home</a></p>
-            </div>
-
-            <div class="demo-credentials">
-                <p class="demo-title">Demo Credentials:</p>
-                <p>Student: student@test.com / password</p>
-                <p>Teacher: teacher@test.com / password</p>
-                <p>Admin: admin@test.com / password</p>
+            <div class="form-footer">
+                <p>New student? <a href="register.html">Create an Account</a></p>
+                <div
+                    style="margin-top: 2rem; padding: 1rem; background: #f8fafc; border-radius: var(--radius-md); font-size: 0.8rem; text-align: left;">
+                    <strong>Demo Credentials:</strong><br>
+                    Student: 88888888 / 123456<br>
+                    Teacher: 99999999 / 123456
+                </div>
             </div>
         </div>
     </div>
 
+    <script src="js/utils.js"></script>
     <script src="js/data.js"></script>
-    <script src="js/components/auth.component.js"></script>
+    <script src="js/auth.js"></script>
 </body>
 
 </html>

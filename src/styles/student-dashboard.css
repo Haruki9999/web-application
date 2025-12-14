@@ -93,7 +93,7 @@
     flex: 1;
     margin-left: 60px;
     padding: 2rem;
-    padding-bottom: 6rem;
+    padding-top: 6rem;
     width: calc(100% - 60px);
     transition: margin-left 0.3s ease, width 0.3s ease;
 }

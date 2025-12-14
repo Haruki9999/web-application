@@ -46,86 +46,115 @@
         <!-- Main Content -->
         <main class="main-content">
             <!-- Header for Mobile Toggle -->
-            <div class="dashboard-header" style="justify-content: flex-start; gap: 1rem;">
-                <button id="headerProfileBtn" class="btn-icon" onclick="openStudentProfileModal()"
-                    style="padding: 0; width: 48px; height: 48px; border-radius: 50%; overflow: hidden; border: 2px solid white; box-shadow: var(--shadow-sm); cursor: pointer;">
-                    <img src="https://via.placeholder.com/150" id="headerProfileImg"
-                        style="width: 100%; height: 100%; object-fit: cover;">
-                </button>
+            <div class="dashboard-header" style="justify-content: space-between; align-items: center;">
                 <div class="welcome-text">
-                    <h1 id="welcomeName">Hello!</h1>
                     <p>Track your progress and assignments</p>
                 </div>
-                <div style="flex: 1;"></div>
+
                 <button class="btn btn-secondary mobile-toggle" id="sidebarToggle" style="display: none;">Menu</button>
             </div>
 
-            <!-- Content Views using Tabs -->
+            <!-- Main Content Wrapper with Profile Sidebar -->
+            <div style="display: flex; gap: 2rem; align-items: flex-start;">
+                <!-- Main Content Area -->
+                <div style="flex: 1; min-width: 0;">
+                    <!-- Scrollable Content Box -->
+                    <div
+                        style="background: white; border-radius: var(--radius-lg); border: 1px solid #e2e8f0; padding: 2rem; box-shadow: var(--shadow-sm);">
+                        <!-- Content Views using Tabs -->
 
-            <!-- 1. DASHBOARD OVERVIEW -->
-            <div id="tab-dashboard" class="tab-content">
+                        <!-- 1. DASHBOARD OVERVIEW -->
+                        <div id="tab-dashboard" class="tab-content">
 
-                <!-- Stats -->
-                <div class="stats-grid">
-                    <div class="stat-card">
-                        <div class="stat-label">Total Hours</div>
-                        <div class="stat-value"><span id="totalHours">0</span><span>/75</span></div>
+                            <!-- Stats -->
+                            <div class="stats-grid">
+                                <div class="stat-card">
+                                    <div class="stat-label">Total Hours</div>
+                                    <div class="stat-value"><span id="totalHours">0</span><span>/75</span></div>
+                                </div>
+                                <div class="stat-card">
+                                    <div class="stat-label">Attendance Rate</div>
+                                    <div class="stat-value" id="attendanceRate">100%</div>
+                                </div>
+                            </div>
+
+                            <!-- Main Progress -->
+                            <div class="progress-card">
+                                <div class="progress-header">
+                                    <h3>Overall Completion</h3>
+                                    <span id="progressPercentage" class="badge">0%</span>
+                                </div>
+                                <div class="progress-bar-container">
+                                    <div class="progress-bar" id="mainProgressBar" style="width: 0%"></div>
+                                </div>
+                                <p style="color: var(--text-muted); font-size: 0.9rem; margin-top: 1rem;">
+                                    You need <span id="hoursRemaining">75</span> more hours to complete the curriculum.
+                                </p>
+                            </div>
+
+                            <!-- Upcoming/Active -->
+                            <h3 style="margin-bottom: 1.5rem;">Recent Activity</h3>
+                            <div id="activityLog">
+                                <!-- Injected via JS -->
+                                <div style="text-align: center; color: var(--text-muted); padding: 2rem;">No recent
+                                    activity
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 2. FIND TEACHERS / SELECT COURSE -->
+                        <div id="tab-teachers" class="tab-content" style="display: none;">
+                            <h2 class="section-title" style="text-align: left; margin-bottom: 2rem;">Available Teachers
+                            </h2>
+
+                            <!-- Category Filter -->
+                            <div style="margin-bottom: 2rem; display: flex; gap: 1rem;">
+                                <button class="btn btn-secondary active" onclick="filterTeachers('all')">All</button>
+                                <button class="btn btn-secondary"
+                                    onclick="filterTeachers('International')">International</button>
+                                <button class="btn btn-secondary" onclick="filterTeachers('National')">National</button>
+                            </div>
+
+                            <div class="course-grid" id="teachersGrid">
+                                <!-- Teachers injected here -->
+                            </div>
+                        </div>
+
+                        <!-- 3. MY COURSES -->
+                        <div id="tab-courses" class="tab-content" style="display: none;">
+                            <h2 class="section-title" style="text-align: left;">My Courses</h2>
+                            <div id="myCoursesList" class="course-grid">
+                                <!-- Enrolled courses -->
+                            </div>
+                        </div>
+
                     </div>
-                    <div class="stat-card">
-                        <div class="stat-label">Active Courses</div>
-                        <div class="stat-value" id="activeCoursesCount">0</div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="stat-label">Attendance Rate</div>
-                        <div class="stat-value" id="attendanceRate">100%</div>
+                    <!-- End Scrollable Content Box -->
+                </div>
+                <!-- End Main Content Area -->
+
+                <!-- Profile Card Sidebar -->
+                <div style="width: 320px; flex-shrink: 0;">
+                    <div onclick="openStudentProfileModal()"
+                        style="background: white; border: 1px solid #e2e8f0; border-radius: var(--radius-lg); padding: 1.5rem; cursor: pointer; transition: all 0.2s; box-shadow: var(--shadow-md); position: sticky; top: 2rem;">
+                        <div style="text-align: center; margin-bottom: 1.5rem;">
+                            <img src="https://via.placeholder.com/150" id="headerProfileImg"
+                                style="width: 80px; height: 80px; border-radius: 50%; object-fit: cover; border: 3px solid #e2e8f0; margin: 0 auto;">
+                        </div>
+                        <div style="text-align: center;">
+                            <div id="headerUserName"
+                                style="font-weight: 600; font-size: 1.1rem; color: var(--text-main); margin-bottom: 0.5rem;">
+                                Student Name</div>
+                            <div id="headerUserId"
+                                style="font-size: 0.9rem; color: var(--text-muted); margin-bottom: 1rem;">ID: 000000
+                            </div>
+                        </div>
                     </div>
                 </div>
+                <!-- End Profile Sidebar -->
 
-                <!-- Main Progress -->
-                <div class="progress-card">
-                    <div class="progress-header">
-                        <h3>Overall Completion</h3>
-                        <span id="progressPercentage" class="badge">0%</span>
-                    </div>
-                    <div class="progress-bar-container">
-                        <div class="progress-bar" id="mainProgressBar" style="width: 0%"></div>
-                    </div>
-                    <p style="color: var(--text-muted); font-size: 0.9rem; margin-top: 1rem;">
-                        You need <span id="hoursRemaining">75</span> more hours to complete the curriculum.
-                    </p>
-                </div>
-
-                <!-- Upcoming/Active -->
-                <h3 style="margin-bottom: 1.5rem;">Recent Activity</h3>
-                <div id="activityLog">
-                    <!-- Injected via JS -->
-                    <div style="text-align: center; color: var(--text-muted); padding: 2rem;">No recent activity</div>
-                </div>
             </div>
-
-            <!-- 2. FIND TEACHERS / SELECT COURSE -->
-            <div id="tab-teachers" class="tab-content" style="display: none;">
-                <h2 class="section-title" style="text-align: left; margin-bottom: 2rem;">Available Teachers</h2>
-
-                <!-- Category Filter -->
-                <div style="margin-bottom: 2rem; display: flex; gap: 1rem;">
-                    <button class="btn btn-secondary active" onclick="filterTeachers('all')">All</button>
-                    <button class="btn btn-secondary" onclick="filterTeachers('International')">International</button>
-                    <button class="btn btn-secondary" onclick="filterTeachers('National')">National</button>
-                </div>
-
-                <div class="course-grid" id="teachersGrid">
-                    <!-- Teachers injected here -->
-                </div>
-            </div>
-
-            <!-- 3. MY COURSES -->
-            <div id="tab-courses" class="tab-content" style="display: none;">
-                <h2 class="section-title" style="text-align: left;">My Courses</h2>
-                <div id="myCoursesList" class="course-grid">
-                    <!-- Enrolled courses -->
-                </div>
-            </div>
+            <!-- End Main Content Wrapper -->
 
         </main>
     </div>

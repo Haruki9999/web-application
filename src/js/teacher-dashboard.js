@@ -7,6 +7,12 @@ document.addEventListener('DOMContentLoaded', () => {
     const user = getCurrentUser();
     document.getElementById('teacherName').textContent = `Welcome, ${user.name}`;
 
+    // Update header profile card
+    const headerTeacherName = document.getElementById('headerTeacherName');
+    const headerTeacherId = document.getElementById('headerTeacherId');
+    if (headerTeacherName) headerTeacherName.textContent = user.name;
+    if (headerTeacherId) headerTeacherId.textContent = `ID: ${user.id}`;
+
     // Load initial data
     loadDashboardStats(user);
     loadClasses(user);

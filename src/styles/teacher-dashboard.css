@@ -11,7 +11,7 @@
 /* Sidebar */
 .sidebar {
     width: 280px;
-    background: white;
+    background: rgb(255, 255, 255);
     border-right: 1px solid #e2e8f0;
     display: flex;
     flex-direction: column;
@@ -34,7 +34,7 @@
     font-family: var(--font-heading);
     font-size: 1.5rem;
     font-weight: 800;
-    color: var(--secondary-main);
+    color: var(--primary-main);
     /* Pink for Teachers */
 }
 
@@ -59,9 +59,9 @@
 
 .nav-link:hover,
 .nav-link.active {
-    background: #fce7f3;
+    background: #e0e7ff;
     /* Pink Light */
-    color: var(--secondary-main);
+    color: var(--primary-main);
 }
 
 .sidebar-footer {
@@ -143,7 +143,7 @@
 .class-card:hover {
     transform: translateY(-3px);
     box-shadow: var(--shadow-md);
-    border-color: var(--secondary-light);
+    border-color: var(--primary-light);
 }
 
 .class-header {

@@ -10,6 +10,12 @@ document.addEventListener('DOMContentLoaded', () => {
     const headerImg = document.getElementById('headerProfileImg');
     if (headerImg) headerImg.src = user.profileImage || 'https://via.placeholder.com/150';
 
+    // Update header profile card
+    const headerUserName = document.getElementById('headerUserName');
+    const headerUserId = document.getElementById('headerUserId');
+    if (headerUserName) headerUserName.textContent = user.name;
+    if (headerUserId) headerUserId.textContent = `ID: ${user.id}`;
+
     // Sidebar Toggle
     const sidebar = document.getElementById('sidebar');
     const toggle = document.getElementById('sidebarToggle');

@@ -281,29 +281,89 @@ function handleCreateClass(e) {
     e.target.reset();
 
     // Refresh
-    loadClasses(user);
-    loadDashboardStats(user);
-    showSection('classes');
-}
+    // Load Profile View (Read Only)
+    function loadProfile() {
+        const currentUser = getCurrentUser();
+        if (!currentUser) return;
 
-function loadProfile(user) {
-    document.getElementById('profileName').value = user.name;
-    // Mock additional fields
-    document.getElementById('profileSpecs').value = user.specialization ? user.specialization.join(', ') : 'SAT Math';
-    document.getElementById('profileBio').value = user.bio || '';
-    if (user.photo) document.getElementById('profilePreview').src = user.photo;
-}
+        // Populate Read-Only View
+        const img = document.getElementById('viewProfileImg');
+        const name = document.getElementById('viewProfileName');
+        const specs = document.getElementById('viewProfileSpecs');
+        const bio = document.getElementById('viewProfileBio');
 
-function handleSaveProfile(e) {
-    e.preventDefault();
-    const user = getCurrentUser();
+        if (img) img.src = currentUser.profileImage || 'https://via.placeholder.com/150';
+        if (name) name.textContent = currentUser.name;
+        if (specs) specs.textContent = currentUser.specialization || 'General Mathematics';
+        if (bio) bio.textContent = currentUser.bio || 'Welcome to my profile! I am excited to teach at Pi Math Center.';
+    }
 
-    // Update local Mock object
-    user.bio = document.getElementById('profileBio').value;
+    // Initial Load
+    loadProfile();
 
-    // Save
-    setCurrentUser(user);
-    showToast('Profile Updated', 'success');
+    // Open Edit Profile Modal
+    window.openEditProfileModal = function () {
+        const currentUser = getCurrentUser();
+
+        const modalContent = `
+            <form id="modalProfileForm" style="padding: 0.5rem 0;">
+                <div style="text-align: center; margin-bottom: 2rem;">
+                     <div style="position: relative; display: inline-block;">
+                        <img src="${currentUser.profileImage || 'https://via.placeholder.com/150'}" 
+                             style="width: 100px; height: 100px; border-radius: 50%; object-fit: cover; border: 2px solid white; box-shadow: var(--shadow-md);"
+                             id="modalAvatarPreview">
+                        <button type="button" style="position: absolute; bottom: 0; right: 0; background: var(--primary-main); color: white; border: none; border-radius: 50%; width: 32px; height: 32px; cursor: pointer; display: flex; align-items: center; justify-content: center;" onclick="alert('Photo upload simulation - in real app this opens file picker')">
+                            <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 13a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
+                        </button>
+                     </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Full Name</label>
+                    <input type="text" id="editName" class="form-input" value="${currentUser.name}" readonly style="background: #f1f5f9; cursor: not-allowed;">
+                    <small style="color: var(--text-muted);">Name change requires admin approval.</small>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">Specializations</label>
+                    <input type="text" id="editSpecs" class="form-input" value="${currentUser.specialization || ''}" placeholder="e.g. SAT, Calculus">
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">Bio / Introduction</label>
+                    <textarea id="editBio" class="form-input" rows="5">${currentUser.bio || ''}</textarea>
+                </div>
+            </form>
+        `;
+
+        showModal('Edit Profile', modalContent, 'primary', () => {
+            // Save Function
+            const form = document.getElementById('modalProfileForm');
+            const newSpecs = form.querySelector('#editSpecs').value;
+            const newBio = form.querySelector('#editBio').value;
+
+            // Update User Object
+            currentUser.specialization = newSpecs;
+            currentUser.bio = newBio;
+
+            // Save to LocalStorage
+            setCurrentUser(currentUser);
+
+            // Also update in the global 'pendingTeachers' or 'users' list if needed for consistency, 
+            // but usually currentUser is the session. We should update the main 'users' array too.
+            const users = JSON.parse(localStorage.getItem('users') || '[]');
+            const userIdx = users.findIndex(u => u.id === currentUser.id);
+            if (userIdx !== -1) {
+                users[userIdx] = { ...users[userIdx], ...currentUser };
+                localStorage.setItem('users', JSON.stringify(users));
+            }
+
+            // Refresh View
+            loadProfile();
+            showToast('Profile updated successfully!', 'success');
+            return true; // Close modal
+        });
+    };
 }
 
 // Attendance Logic using Global Modal

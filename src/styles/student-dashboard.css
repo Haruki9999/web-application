@@ -1,8 +1,11 @@
 /* Student Dashboard Premium Styles */
 .dashboard {
+    position: relative;
+    z-index: 1;
     display: flex;
     min-height: 100vh;
-    background: var(--bg-body);
+    background: transparent;
+    /* Let body see through if needed, or keep bg-body but ensure stacking */
 }
 
 /* Sidebar */

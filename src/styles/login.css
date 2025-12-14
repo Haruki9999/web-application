@@ -4,8 +4,8 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    background: radial-gradient(circle at top left, #e0e7ff, transparent 40%),
-        radial-gradient(circle at bottom right, #fce7f3, transparent 40%);
+    background: #f1f5f9;
+    /* Solid light gray */
     padding: 2rem;
 }
 

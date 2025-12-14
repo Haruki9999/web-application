@@ -1,0 +1,118 @@
+/* Floating Background Objects */
+.floating-container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    overflow: hidden;
+    z-index: 0;
+    /* Changed from -1 to 0 to ensure visibility on top of body bg */
+    pointer-events: none;
+    background: var(--bg-main);
+    /* Ensure it sits on top of base bg if needed, or transparent */
+}
+
+/* Specific Math Symbols */
+.float-item {
+    position: absolute;
+    color: var(--primary-light);
+    opacity: 0.15;
+    font-family: 'Times New Roman', serif;
+    font-weight: bold;
+    user-select: none;
+    filter: blur(1px);
+    animation: floatUp linear infinite;
+}
+
+/* Variations */
+.float-item:nth-child(1) {
+    left: 10%;
+    font-size: 4rem;
+    animation-duration: 15s;
+    animation-delay: 0s;
+}
+
+.float-item:nth-child(2) {
+    left: 20%;
+    font-size: 2rem;
+    animation-duration: 20s;
+    animation-delay: 2s;
+}
+
+.float-item:nth-child(3) {
+    left: 35%;
+    font-size: 5rem;
+    animation-duration: 18s;
+    animation-delay: 5s;
+}
+
+.float-item:nth-child(4) {
+    left: 50%;
+    font-size: 3rem;
+    animation-duration: 25s;
+    animation-delay: 0s;
+}
+
+.float-item:nth-child(5) {
+    left: 65%;
+    font-size: 4rem;
+    animation-duration: 22s;
+    animation-delay: 3s;
+}
+
+.float-item:nth-child(6) {
+    left: 80%;
+    font-size: 2.5rem;
+    animation-duration: 18s;
+    animation-delay: 7s;
+}
+
+.float-item:nth-child(7) {
+    left: 90%;
+    font-size: 6rem;
+    animation-duration: 30s;
+    animation-delay: 1s;
+}
+
+.float-item:nth-child(8) {
+    left: 40%;
+    top: 50%;
+    font-size: 8rem;
+    opacity: 0.05;
+    animation: floatPulse 20s infinite ease-in-out;
+}
+
+@keyframes floatUp {
+    0% {
+        transform: translateY(110vh) rotate(0deg);
+        opacity: 0.05;
+    }
+
+    50% {
+        opacity: 0.2;
+    }
+
+    100% {
+        transform: translateY(-10vh) rotate(360deg);
+        opacity: 0.05;
+    }
+}
+
+@keyframes floatPulse {
+
+    0%,
+    100% {
+        transform: scale(1) rotate(0deg);
+    }
+
+    50% {
+        transform: scale(1.1) rotate(10deg);
+    }
+}
+
+/* Modal Open State - Interactions */
+/* When modal is active, we might want to blur these even more or hide them? 
+   Actually the modal backdrop filter handles the blurring of WHAT IS BEHIND.
+   So no extra CSS needed here for standard blur. 
+*/

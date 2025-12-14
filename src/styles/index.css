@@ -2,8 +2,8 @@
 .hero {
     padding: 8rem 0 6rem;
     text-align: center;
-    background: radial-gradient(circle at top right, rgba(99, 102, 241, 0.1), transparent 40%),
-        radial-gradient(circle at bottom left, rgba(236, 72, 153, 0.1), transparent 40%);
+    background: #f8fafc;
+    /* Solid background */
     overflow: hidden;
 }
 

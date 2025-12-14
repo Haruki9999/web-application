@@ -145,6 +145,9 @@ function initializeData() {
                 password: '123456',
                 role: 'student',
                 name: 'John Student',
+                profileImage: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Felix',
+                bio: 'Grade 10 student passionate about Physics.',
+                parentPhone: '88110099', // Parent contact
                 enrolledPrograms: ['1', '2'],
                 completedHours: 45,
                 upcomingClasses: [

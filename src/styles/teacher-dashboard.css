@@ -1,10 +1,11 @@
-/* Teacher Dashboard Premium Styles */
-/* Inherits from base.css and variables.css */
-
 .dashboard {
+    position: relative;
+    z-index: 1;
+    /* Ensure dashboard content sits on top of floating icons (z-index: 0) */
     display: flex;
     min-height: 100vh;
-    background: var(--bg-body);
+    background: transparent;
+    /* Changed to transparent so body icons show through */
 }
 
 /* Sidebar */
@@ -147,7 +148,8 @@
 
 .class-header {
     padding: 1.5rem;
-    background: linear-gradient(to right, #fdf2f8, white);
+    background: #ffffff;
+    /* background: linear-gradient(to right, #fdf2f8, white); Removed gradient */
     border-bottom: 1px solid #f1f5f9;
 }
 

@@ -35,9 +35,11 @@
     --info: #3b82f6;
 
     /* Gradients */
-    --gradient-primary: linear-gradient(135deg, #6366f1 0%, #a855f7 100%);
-    --gradient-dark: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
-    --gradient-glass: linear-gradient(135deg, rgba(255, 255, 255, 0.8) 0%, rgba(255, 255, 255, 0.4) 100%);
+    /* Gradients - Flattened to Solid Colors */
+    --gradient-primary: #6366f1;
+    /* Just primary main */
+    --gradient-dark: #1e293b;
+    --gradient-glass: rgba(255, 255, 255, 0.95);
 
     /* Shadows & Effects */
     --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);

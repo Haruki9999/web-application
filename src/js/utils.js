@@ -185,4 +185,58 @@ function showToast(title, type = 'success', message = '') {
 }
 
 // Initialize mobile menu on page load
-document.addEventListener('DOMContentLoaded', initMobileMenu);
+document.addEventListener('DOMContentLoaded', () => {
+    initMobileMenu();
+    initFloatingIcons(); // New Feature
+});
+
+// Floating Icons System
+function initFloatingIcons() {
+    if (document.querySelector('.floating-container')) return;
+
+    const container = document.createElement('div');
+    container.className = 'floating-container';
+
+    // Math Symbols
+    const symbols = ['π', '∑', '∫', '∞', '√', '÷', '×', '≈', '≠', '≤'];
+
+    // Create random distribution
+    let html = '';
+
+    // Fixed big ones
+    html += `<div class="float-item" style="left: 5%; animation-duration: 25s;">π</div>`;
+    html += `<div class="float-item" style="left: 85%; animation-duration: 30s; animation-delay: 5s;">∑</div>`;
+
+    // Random ones
+    for (let i = 0; i < 15; i++) {
+        const left = Math.floor(Math.random() * 100);
+        const duration = 15 + Math.floor(Math.random() * 20);
+        const delay = Math.floor(Math.random() * 10);
+        const size = 1 + Math.random() * 3;
+        const symbol = symbols[Math.floor(Math.random() * symbols.length)];
+
+        html += `<div class="float-item" style="
+            left: ${left}%; 
+            animation-duration: ${duration}s; 
+            animation-delay: -${delay}s; /* Start mid-animation */
+            font-size: ${size}rem;
+        ">${symbol}</div>`;
+    }
+
+    container.innerHTML = html;
+    document.body.prepend(container);
+
+    // Inject CSS if not present
+    if (!document.querySelector('link[href*="floating.css"]')) {
+        const link = document.createElement('link');
+        link.rel = 'stylesheet';
+
+        // Determine path based on location
+        // If we are deep in src/ (e.g. src/teacher-dashboard.html), path is styles/floating.css
+        // If we are at root (index.html), path is src/styles/floating.css
+        const isInSrc = window.location.pathname.includes('/src/');
+        link.href = isInSrc ? 'styles/floating.css' : 'src/styles/floating.css';
+
+        document.head.appendChild(link);
+    }
+}

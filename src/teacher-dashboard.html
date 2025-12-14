@@ -40,11 +40,18 @@
 
         <!-- Main Content -->
         <main class="main-content">
-            <div class="dashboard-header">
+            <div class="dashboard-header" style="justify-content: flex-start; gap: 1rem;">
+                <button id="headerProfileBtn" class="btn-icon" onclick="openEditProfileModal()"
+                    style="padding: 0; width: 48px; height: 48px; border-radius: 50%; overflow: hidden; border: 2px solid white; box-shadow: var(--shadow-sm); cursor: pointer;">
+                    <img src="https://via.placeholder.com/150" id="headerProfileImg"
+                        style="width: 100%; height: 100%; object-fit: cover;">
+                </button>
                 <div class="welcome-text">
                     <h1 id="teacherName">Welcome, Teacher!</h1>
                     <p>Manage your students and classes</p>
                 </div>
+                <!-- Spacer to push toggle to right on mobile -->
+                <div style="flex: 1;"></div>
                 <button class="btn btn-secondary mobile-toggle" id="sidebarToggle" style="display: none;">Menu</button>
             </div>
 
@@ -90,78 +97,45 @@
 
             <!-- 3. PROFILE -->
             <div id="section-profile" class="dashboard-section" style="display: none;">
-                <h2 class="section-title">Teacher Profile</h2>
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
+                    <h2 class="section-title" style="margin: 0;">Teacher Profile</h2>
+                    <button class="btn btn-primary btn-sm" onclick="openEditProfileModal()">
+                        <svg style="width:16px;height:16px;margin-right:0.5rem;" fill="none" stroke="currentColor"
+                            viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z">
+                            </path>
+                        </svg>
+                        Edit Profile
+                    </button>
+                </div>
+
                 <div class="class-card">
-                    <div class="class-body">
-                        <form id="profileForm" class="profile-form-grid">
-                            <div class="profile-avatar-upload">
-                                <img src="https://via.placeholder.com/150" alt="Profile" class="avatar-preview"
-                                    id="profilePreview">
-                                <button type="button" class="btn btn-secondary btn-sm">Change Photo</button>
-                            </div>
-                            <div style="display: grid; gap: 1.5rem;">
-                                <div class="form-group">
-                                    <label class="form-label">Full Name</label>
-                                    <input type="text" id="profileName" class="form-input" readonly>
-                                </div>
-                                <div class="form-group">
-                                    <label class="form-label">Specializations</label>
-                                    <input type="text" id="profileSpecs" class="form-input"
-                                        placeholder="e.g. SAT, Calculus">
-                                </div>
-                                <div class="form-group">
-                                    <label class="form-label">Bio</label>
-                                    <textarea id="profileBio" class="form-input" rows="4"></textarea>
-                                </div>
-                                <div class="form-group">
-                                    <label class="form-label">CV / Resume (PDF)</label>
-                                    <input type="file" id="profileCV" class="form-input" accept=".pdf">
-                                </div>
-                                <button type="submit" class="btn btn-primary">Save Profile</button>
-                            </div>
-                        </form>
+                    <div class="class-body" style="text-align: center; padding: 3rem;">
+                        <img src="https://via.placeholder.com/150" alt="Profile" class="avatar-preview"
+                            id="viewProfileImg"
+                            style="width: 150px; height: 150px; border-radius: 50%; object-fit: cover; border: 4px solid white; box-shadow: var(--shadow-md); margin-bottom: 1.5rem;">
+
+                        <h2 id="viewProfileName"
+                            style="margin-bottom: 0.5rem; font-size: 1.5rem; color: var(--text-main);">Teacher Name</h2>
+                        <p id="viewProfileSpecs"
+                            style="color: var(--secondary-main); font-weight: 500; margin-bottom: 2rem; font-size: 1.1rem;">
+                            Specializations</p>
+
+                        <div
+                            style="text-align: left; max-width: 600px; margin: 0 auto; background: #f8fafc; padding: 2rem; border-radius: var(--radius-lg);">
+                            <h4
+                                style="margin-bottom: 1rem; color: var(--text-muted); font-size: 0.9rem; text-transform: uppercase; letter-spacing: 0.05em;">
+                                About Me</h4>
+                            <p id="viewProfileBio" style="line-height: 1.6; color: var(--text-main);">No bio added yet.
+                            </p>
+                        </div>
                     </div>
                 </div>
             </div>
+    </div>
 
-            <!-- 4. PROFILE -->
-            <div id="section-profile" class="dashboard-section" style="display: none;">
-                <!-- ... Content moved/kept same ... -->
-                <h2 class="section-title">Teacher Profile</h2>
-                <div class="class-card">
-                    <div class="class-body">
-                        <form id="profileForm" class="profile-form-grid">
-                            <div class="profile-avatar-upload">
-                                <img src="https://via.placeholder.com/150" alt="Profile" class="avatar-preview"
-                                    id="profilePreview">
-                                <button type="button" class="btn btn-secondary btn-sm">Change Photo</button>
-                            </div>
-                            <div style="display: grid; gap: 1.5rem;">
-                                <div class="form-group">
-                                    <label class="form-label">Full Name</label>
-                                    <input type="text" id="profileName" class="form-input" readonly>
-                                </div>
-                                <div class="form-group">
-                                    <label class="form-label">Specializations</label>
-                                    <input type="text" id="profileSpecs" class="form-input"
-                                        placeholder="e.g. SAT, Calculus">
-                                </div>
-                                <div class="form-group">
-                                    <label class="form-label">Bio</label>
-                                    <textarea id="profileBio" class="form-input" rows="4"></textarea>
-                                </div>
-                                <div class="form-group">
-                                    <label class="form-label">CV / Resume (PDF)</label>
-                                    <input type="file" id="profileCV" class="form-input" accept=".pdf">
-                                </div>
-                                <button type="submit" class="btn btn-primary">Save Profile</button>
-                            </div>
-                        </form>
-                    </div>
-                </div>
-            </div>
-
-        </main>
+    </main>
     </div>
 
     <!-- Attendance Modal is now Global, we will trigger it via JS -->

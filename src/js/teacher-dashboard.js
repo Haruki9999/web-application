@@ -54,8 +54,27 @@ document.addEventListener('DOMContentLoaded', () => {
 
 // Profile Functions
 function loadProfile() {
-    const currentUser = getCurrentUser();
+    let currentUser = getCurrentUser();
     if (!currentUser) return;
+
+    // Merge with public teacher profile if available (for initial data)
+    if (currentUser.role === 'teacher') {
+        const teachers = JSON.parse(localStorage.getItem('teachers') || '[]');
+        const teacher = teachers.find(t =>
+            (currentUser.teacherId && t.id === currentUser.teacherId) ||
+            t.id === currentUser.id ||
+            t.name === currentUser.name
+        );
+
+        if (teacher) {
+            currentUser = {
+                ...currentUser,
+                profileImage: currentUser.profileImage || teacher.photo,
+                specialization: currentUser.specialization || (Array.isArray(teacher.specialization) ? teacher.specialization.join(', ') : teacher.specialization),
+                bio: currentUser.bio || teacher.bio
+            };
+        }
+    }
 
     // Header Icon
     const headerImg = document.getElementById('headerProfileImg');
@@ -66,11 +85,16 @@ function loadProfile() {
     const name = document.getElementById('viewProfileName');
     const specs = document.getElementById('viewProfileSpecs');
     const bio = document.getElementById('viewProfileBio');
+    const phone = document.getElementById('viewProfilePhone');
+    const email = document.getElementById('viewProfileEmail');
 
     if (img) img.src = currentUser.profileImage || 'https://via.placeholder.com/150';
     if (name) name.textContent = currentUser.name;
     if (specs) specs.textContent = currentUser.specialization || 'General Mathematics';
     if (bio) bio.textContent = currentUser.bio || 'Welcome to my profile! I am excited to teach at Pi Math Center.';
+
+    if (phone) phone.textContent = currentUser.phone || 'No phone added';
+    if (email) email.textContent = currentUser.email || 'No email added';
 
     // Load Reviews
     loadTeacherReviews();
@@ -171,6 +195,23 @@ window.openEditProfileModal = function () {
 
         <form id="modalProfileForm" onsubmit="event.preventDefault();">
             <div style="background: #f8fafc; padding: 1.5rem; border-radius: var(--radius-lg); border: 1px solid #f1f5f9;">
+                
+                <div style="margin-bottom: 1rem;">
+                    <label class="form-label" style="display: block; font-size: 0.85rem; color: var(--text-muted); margin-bottom: 0.5rem;">About Me (Bio)</label>
+                    <textarea id="editTeacherBio" class="form-input" placeholder="Tell us about your teaching experience..." 
+                        style="width: 100%; padding: 0.75rem; border: 1px solid #e2e8f0; border-radius: var(--radius-md); transition: all 0.2s; min-height: 80px; resize: vertical;"
+                        onchange="saveTeacherProfile(true)">${currentUser.bio || ''}</textarea>
+                </div>
+
+                <div style="margin-bottom: 1rem;">
+                    <label class="form-label" style="display: block; font-size: 0.85rem; color: var(--text-muted); margin-bottom: 0.5rem;">Specialization (Comma separated)</label>
+                    <input type="text" id="editTeacherSpec" class="form-input" value="${currentUser.specialization || ''}" placeholder="e.g. Calculus, Algebra, Geometry" 
+                        style="width: 100%; padding: 0.75rem; border: 1px solid #e2e8f0; border-radius: var(--radius-md); transition: all 0.2s;"
+                        onchange="saveTeacherProfile(true)">
+                </div>
+
+                <div style="border-top: 1px solid #e2e8f0; margin: 1rem 0;"></div>
+
                 <div style="margin-bottom: 1rem;">
                     <label class="form-label" style="display: block; font-size: 0.85rem; color: var(--text-muted); margin-bottom: 0.5rem;">My Phone Number</label>
                     <input type="tel" id="editTeacherPhone" class="form-input" value="${currentUser.phone || ''}" placeholder="+976 8888-8888" 
@@ -178,10 +219,8 @@ window.openEditProfileModal = function () {
                         onchange="saveTeacherProfile(true)">
                 </div>
                 
-                <div style="border-top: 1px solid #e2e8f0; margin: 1rem 0;"></div>
-                
                 <div>
-                    <label class="form-label" style="display: block; font-size: 0.85rem; color: var(--text-muted); margin-bottom: 0.5rem; color: var(--secondary-dark);">Email Address</label>
+                    <label class="form-label" style="display: block; font-size: 0.85rem; color: var(--text-muted); margin-bottom: 0.5rem;">Email Address</label>
                     <input type="email" id="editTeacherEmail" class="form-input" value="${currentUser.email || ''}" placeholder="teacher@pimath.edu" 
                         style="width: 100%; padding: 0.75rem; border: 1px solid #e2e8f0; border-radius: var(--radius-md); transition: all 0.2s;"
                         onchange="saveTeacherProfile(true)">
@@ -221,12 +260,16 @@ window.handlePhotoPreview = function (input) {
 window.saveTeacherProfile = function (silent = false) {
     const phone = document.getElementById('editTeacherPhone').value;
     const email = document.getElementById('editTeacherEmail').value;
+    const bio = document.getElementById('editTeacherBio').value;
+    const spec = document.getElementById('editTeacherSpec').value;
     const profileImgSrc = document.getElementById('previewProfileImage').src;
 
     const currentUser = getCurrentUser();
 
     currentUser.phone = phone;
     currentUser.email = email;
+    currentUser.bio = bio;
+    currentUser.specialization = spec;
 
     if (profileImgSrc && !profileImgSrc.includes('via.placeholder.com')) {
         currentUser.profileImage = profileImgSrc;
@@ -242,9 +285,23 @@ window.saveTeacherProfile = function (silent = false) {
     }
 
     const teachers = JSON.parse(localStorage.getItem('teachers') || '[]');
-    const tIdx = teachers.findIndex(t => t.id === currentUser.id);
+    const tIdx = teachers.findIndex(t =>
+        (currentUser.teacherId && t.id === currentUser.teacherId) ||
+        t.id === currentUser.id ||
+        t.name === currentUser.name
+    );
     if (tIdx !== -1) {
-        teachers[tIdx] = { ...teachers[tIdx], photo: currentUser.profileImage, email: currentUser.email };
+        // Convert comma-separated string back to array if needed for teachers schema
+        const specArray = spec.split(',').map(s => s.trim()).filter(s => s);
+
+        teachers[tIdx] = {
+            ...teachers[tIdx],
+            photo: currentUser.profileImage,
+            email: currentUser.email,
+            phone: currentUser.phone,
+            bio: bio,
+            specialization: specArray // Store as array for teachers listing consistency
+        };
         localStorage.setItem('teachers', JSON.stringify(teachers));
     }
 
@@ -329,15 +386,8 @@ window.openCreateClassModal = function () {
     }, 0);
 };
 
-// ... keep submitClassCreation (it calls loadDashboardStats/loadClasses) ...
 
-// ... (logic for submitClassCreation is skipped in replacement unless specific lines targeted) ... 
-// Wait, I must ensure I don't delete submitClassCreation if I am replacing a block.
-// The previous block for openCreateClassModal ended at line 71.
-// I will target lines 37 to 71.
-
-// Also need to update loadDashboardStats (line 146) to use formatDate
-// And loadClasses (line 169) to use formatDate
+// Submit Class Creation
 
 window.submitClassCreation = function () {
     const subject = document.getElementById('mSubject').value;
@@ -408,6 +458,10 @@ function showSection(sectionId) {
     if (window.innerWidth < 1024) {
         const sb = document.getElementById('sidebar');
         if (sb) sb.classList.remove('active');
+    }
+
+    if (sectionId === 'profile') {
+        loadProfile();
     }
 }
 
@@ -755,3 +809,56 @@ function saveAttendance(classId, presentIds) {
     loadClasses(user); // refresh UI
     loadDashboardStats(user);
 }
+
+// Show Assigned Students Modal
+window.openMyStudentsModal = function () {
+    const user = getCurrentUser();
+    if (!user) return;
+
+    const users = JSON.parse(localStorage.getItem('users') || '[]');
+
+    // Find students enrolled with this teacher
+    // Student.enrolledCourses contains array of teacher IDs
+    const myStudents = users.filter(u =>
+        u.role === 'student' &&
+        u.enrolledCourses &&
+        u.enrolledCourses.includes(user.id)
+    );
+
+    if (myStudents.length === 0) {
+        showModal('My Students', '<p style="text-align: center; color: var(--text-muted); padding: 2rem;">No students enrolled in your courses yet.</p>', 'info');
+        return;
+    }
+
+    const html = `
+        <div style="max-height: 400px; overflow-y: auto; padding: 0.5rem;">
+            <div style="display: grid; gap: 0.75rem;">
+                ${myStudents.map(s => `
+                    <div style="display: flex; align-items: center; justify-content: space-between; background: #fff; padding: 0.75rem 1rem; border-radius: var(--radius-md); border: 1px solid #e2e8f0; box-shadow: var(--shadow-sm);">
+                       <div style="display: flex; align-items: center; gap: 1rem;">
+                           <img src="${s.profileImage || 'https://via.placeholder.com/40'}" style="width: 42px; height: 42px; border-radius: 50%; object-fit: cover; border: 2px solid #f1f5f9;">
+                           <div>
+                               <h4 style="margin: 0; font-size: 0.95rem; font-weight: 600; color: var(--text-main);">${s.name}</h4>
+                               <p style="margin: 0; font-size: 0.8rem; color: var(--text-muted);">ID: ${s.id}</p>
+                           </div>
+                       </div>
+                       <div style="text-align: right;">
+                            <a href="tel:${s.phone}" style="display: block; font-size: 0.85rem; color: var(--primary-main); text-decoration: none; font-weight: 500;">
+                                📞 ${s.phone || 'No Phone'}
+                            </a>
+                       </div>
+                    </div>
+                `).join('')}
+            </div>
+            <div style="margin-top: 1.5rem; padding-top: 1rem; border-top: 1px solid #e2e8f0; text-align: center; color: var(--text-muted); font-size: 0.9rem;">
+                Total: <strong>${myStudents.length}</strong> Students
+            </div>
+        </div>
+    `;
+
+    showModal('My Students', html, 'info');
+
+    // Hide default footer actions
+    const footer = document.querySelector('#globalModal .modal-actions');
+    if (footer) footer.style.display = 'none';
+};

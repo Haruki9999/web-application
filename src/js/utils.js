@@ -114,7 +114,7 @@ function createModalContainer() {
  * @param {'success'|'error'|'warning'|'info'} type 
  * @param {Function} onConfirm - Optional callback for confirmation
  */
-function showModal(title, message, type = 'info', onConfirm = null) {
+function showModal(title, message, type = 'info', onConfirm = null, confirmText = 'Confirm') {
     createModalContainer();
 
     const modal = document.getElementById('globalModal');
@@ -142,7 +142,7 @@ function showModal(title, message, type = 'info', onConfirm = null) {
     if (onConfirm) {
         const confirmBtn = document.createElement('button');
         confirmBtn.className = 'btn btn-primary';
-        confirmBtn.textContent = 'Confirm';
+        confirmBtn.textContent = confirmText;
         confirmBtn.onclick = () => {
             if (onConfirm) {
                 try {

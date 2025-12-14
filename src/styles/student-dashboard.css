@@ -5,7 +5,10 @@
     display: flex;
     min-height: 100vh;
     background: transparent;
-    /* Let body see through if needed, or keep bg-body but ensure stacking */
+}
+
+body {
+    background-color: #f1f5f9;
 }
 
 /* Sidebar */
@@ -20,6 +23,8 @@
     transition: width 0.3s ease;
     z-index: 50;
     overflow: hidden;
+    margin-top: 70px;
+    height: calc(100vh - 70px);
 }
 
 .sidebar.active {

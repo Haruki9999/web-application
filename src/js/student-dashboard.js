@@ -38,134 +38,134 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 
 
-    // Modal For Student Profile
-    window.openStudentProfileModal = function () {
-        const u = getCurrentUser();
-
-        const modalContent = `
-            <button onclick="closeModal()" style="position: absolute; top: 1rem; right: 1rem; background: none; border: none; font-size: 1.5rem; color: var(--text-muted); cursor: pointer; padding: 0.5rem; line-height: 1;">
-                &times;
-            </button>
-
-            <div style="display: flex; align-items: center; gap: 1.5rem; margin-bottom: 2rem; padding-top: 1rem;">
-                 <div style="position: relative;">
-                    <img src="${u.profileImage || 'https://via.placeholder.com/150'}" 
-                         id="previewProfileImage"
-                         style="width: 100px; height: 100px; border-radius: 50%; object-fit: cover; border: 4px solid white; box-shadow: var(--shadow-md);">
-                    <button onclick="triggerPhotoUpload()" title="Change Photo" style="position: absolute; bottom: 0; right: 0; background: var(--primary-main); color: white; border: none; width: 32px; height: 32px; border-radius: 50%; cursor: pointer; display: flex; align-items: center; justify-content: center; box-shadow: 0 2px 4px rgba(0,0,0,0.2);">
-                        <svg width="14" height="14" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"></path></svg>
-                    </button>
-                    <input type="file" id="photoUploadInput" style="display: none;" accept="image/*" onchange="handlePhotoPreview(this)">
-                 </div>
-                 <div>
-                     <h3 style="margin-bottom: 0.25rem;">${u.name}</h3>
-                     <p style="color: var(--text-muted); margin-bottom: 0.5rem;">Student ID: ${u.id}</p>
-                     <button onclick="logout()" class="btn btn-sm btn-outline-danger" style="font-size: 0.75rem; padding: 0.25rem 0.75rem; border-color: #fca5a5; color: #ef4444; background: white;">
-                        Log Out
-                     </button>
-                 </div>
-            </div>
-
-            <form id="studentProfileForm" onsubmit="event.preventDefault();">
-                <div style="background: #f8fafc; padding: 1.5rem; border-radius: var(--radius-lg); border: 1px solid #f1f5f9;">
-                    <div style="margin-bottom: 1rem;">
-                        <label class="form-label" style="display: block; font-size: 0.85rem; color: var(--text-muted); margin-bottom: 0.5rem;">My Phone Number</label>
-                        <input type="tel" id="editStudentPhone" class="form-input" value="${u.phone || ''}" placeholder="+976 8888-8888" 
-                            style="width: 100%; padding: 0.75rem; border: 1px solid #e2e8f0; border-radius: var(--radius-md); transition: all 0.2s;"
-                            onchange="saveStudentProfile(true)">
-                    </div>
-                    
-                    <div style="border-top: 1px solid #e2e8f0; margin: 1rem 0;"></div>
-                    
-                    <div>
-                        <label class="form-label" style="display: block; font-size: 0.85rem; color: var(--text-muted); margin-bottom: 0.5rem; color: var(--secondary-dark);">Parent's Contact</label>
-                        <input type="tel" id="editParentPhone" class="form-input" value="${u.parentPhone || ''}" placeholder="+976 9999-9999" 
-                            style="width: 100%; padding: 0.75rem; border: 1px solid #e2e8f0; border-radius: var(--radius-md); transition: all 0.2s;"
-                            onchange="saveStudentProfile(true)">
-                        <small style="color: var(--text-muted); display: block; margin-top: 0.5rem;">Emergency contact & updates will be sent here.</small>
-                    </div>
-                </div>
-            </form>
-            <div id="saveIndicator" style="text-align: center; color: var(--success); font-size: 0.85rem; height: 1.5rem; margin-top: 0.5rem; opacity: 0; transition: opacity 0.3s;">
-                <span style="display: inline-flex; align-items: center; gap: 0.25rem;">
-                    <svg width="12" height="12" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
-                    Saved
-                </span>
-            </div>
-        `;
-
-        showModal('Edit Profile', modalContent, 'info');
-
-        // Hide default footer globally for this modal
-        const footer = document.querySelector('#globalModal .modal-actions');
-        if (footer) footer.style.display = 'none';
-
-        // Safety: Ensure footer is restored when other modals might use it (though simplified here)
-    };
-
-    window.triggerPhotoUpload = function () {
-        document.getElementById('photoUploadInput').click();
-    };
-
-    window.handlePhotoPreview = function (input) {
-        if (input.files && input.files[0]) {
-            const reader = new FileReader();
-            reader.onload = function (e) {
-                document.getElementById('previewProfileImage').src = e.target.result;
-                saveStudentProfile(true); // Autosave image immediately
-            };
-            reader.readAsDataURL(input.files[0]);
-        }
-    };
-
-    window.saveStudentProfile = function (silent = false) {
-        const phone = document.getElementById('editStudentPhone').value;
-        const parentPhone = document.getElementById('editParentPhone').value;
-        const profileImgSrc = document.getElementById('previewProfileImage').src;
-
-        const user = getCurrentUser();
-
-        // Update User Object
-        user.phone = phone;
-        user.parentPhone = parentPhone;
-
-        if (profileImgSrc && !profileImgSrc.includes('via.placeholder.com')) {
-            user.profileImage = profileImgSrc;
-        }
-
-        // Save
-        setCurrentUser(user);
-
-        // Update Global Users List
-        const users = JSON.parse(localStorage.getItem('users') || '[]');
-        const idx = users.findIndex(u => u.id === user.id);
-        if (idx !== -1) {
-            users[idx] = user;
-            localStorage.setItem('users', JSON.stringify(users));
-        }
-
-        // Update UI
-        refreshDashboard(user);
-        const headerImg = document.getElementById('headerProfileImg');
-        if (headerImg) headerImg.src = user.profileImage || 'https://via.placeholder.com/150';
-
-        // Feedback
-        if (silent) {
-            const indicator = document.getElementById('saveIndicator');
-            if (indicator) {
-                indicator.style.opacity = '1';
-                setTimeout(() => { if (indicator) indicator.style.opacity = '0'; }, 2000);
-            }
-        } else {
-            showToast('Profile saved', 'success');
-            closeModal();
-        }
-    };
-
     // Initial Load
     refreshDashboard(user);
     loadTeachers();
 });
+
+// Modal For Student Profile
+window.openStudentProfileModal = function () {
+    const u = getCurrentUser();
+    if (!u) return; // Safety check
+
+    const modalContent = `
+        <button onclick="closeModal()" style="position: absolute; top: 1rem; right: 1rem; background: none; border: none; font-size: 1.5rem; color: var(--text-muted); cursor: pointer; padding: 0.5rem; line-height: 1;">
+            &times;
+        </button>
+
+        <div style="display: flex; align-items: center; gap: 1.5rem; margin-bottom: 2rem; padding-top: 1rem;">
+                <div style="position: relative;">
+                <img src="${u.profileImage || 'https://via.placeholder.com/150'}" 
+                        id="previewProfileImage"
+                        style="width: 100px; height: 100px; border-radius: 50%; object-fit: cover; border: 4px solid white; box-shadow: var(--shadow-md);">
+                <button onclick="triggerPhotoUpload()" title="Change Photo" style="position: absolute; bottom: 0; right: 0; background: var(--primary-main); color: white; border: none; width: 32px; height: 32px; border-radius: 50%; cursor: pointer; display: flex; align-items: center; justify-content: center; box-shadow: 0 2px 4px rgba(0,0,0,0.2);">
+                    <svg width="14" height="14" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"></path></svg>
+                </button>
+                <input type="file" id="photoUploadInput" style="display: none;" accept="image/*" onchange="handlePhotoPreview(this)">
+                </div>
+                <div>
+                    <h3 style="margin-bottom: 0.25rem;">${u.name}</h3>
+                    <p style="color: var(--text-muted); margin-bottom: 0.5rem;">Student ID: ${u.id}</p>
+                    <button onclick="logout()" class="btn btn-sm btn-outline-danger" style="font-size: 0.75rem; padding: 0.25rem 0.75rem; border-color: #fca5a5; color: #ef4444; background: white;">
+                    Log Out
+                    </button>
+                </div>
+        </div>
+
+        <form id="studentProfileForm" onsubmit="event.preventDefault();">
+            <div style="background: #f8fafc; padding: 1.5rem; border-radius: var(--radius-lg); border: 1px solid #f1f5f9;">
+                <div style="margin-bottom: 1rem;">
+                    <label class="form-label" style="display: block; font-size: 0.85rem; color: var(--text-muted); margin-bottom: 0.5rem;">My Phone Number</label>
+                    <input type="tel" id="editStudentPhone" class="form-input" value="${u.phone || ''}" placeholder="+976 8888-8888" 
+                        style="width: 100%; padding: 0.75rem; border: 1px solid #e2e8f0; border-radius: var(--radius-md); transition: all 0.2s;"
+                        onchange="saveStudentProfile(true)">
+                </div>
+                
+                <div style="border-top: 1px solid #e2e8f0; margin: 1rem 0;"></div>
+                
+                <div>
+                    <label class="form-label" style="display: block; font-size: 0.85rem; color: var(--text-muted); margin-bottom: 0.5rem;">Parent's Contact</label>
+                    <input type="tel" id="editParentPhone" class="form-input" value="${u.parentPhone || ''}" placeholder="+976 9999-9999" 
+                        style="width: 100%; padding: 0.75rem; border: 1px solid #e2e8f0; border-radius: var(--radius-md); transition: all 0.2s;"
+                        onchange="saveStudentProfile(true)">
+                    <small style="color: var(--text-muted); display: block; margin-top: 0.5rem;">Emergency contact & updates will be sent here.</small>
+                </div>
+            </div>
+        </form>
+        <div id="saveIndicator" style="text-align: center; color: var(--success); font-size: 0.85rem; height: 1.5rem; margin-top: 0.5rem; opacity: 0; transition: opacity 0.3s;">
+            <span style="display: inline-flex; align-items: center; gap: 0.25rem;">
+                <svg width="12" height="12" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+                Saved
+            </span>
+        </div>
+    `;
+
+    showModal('Edit Profile', modalContent, 'info');
+
+    // Hide default footer globally for this modal
+    const footer = document.querySelector('#globalModal .modal-actions');
+    if (footer) footer.style.display = 'none';
+};
+
+window.triggerPhotoUpload = function () {
+    document.getElementById('photoUploadInput').click();
+};
+
+window.handlePhotoPreview = function (input) {
+    if (input.files && input.files[0]) {
+        const reader = new FileReader();
+        reader.onload = function (e) {
+            document.getElementById('previewProfileImage').src = e.target.result;
+            saveStudentProfile(true); // Autosave image immediately
+        };
+        reader.readAsDataURL(input.files[0]);
+    }
+};
+
+window.saveStudentProfile = function (silent = false) {
+    const phone = document.getElementById('editStudentPhone').value;
+    const parentPhone = document.getElementById('editParentPhone').value;
+    const profileImgSrc = document.getElementById('previewProfileImage').src;
+
+    const user = getCurrentUser();
+    if (!user) return;
+
+    // Update User Object
+    user.phone = phone;
+    user.parentPhone = parentPhone;
+
+    if (profileImgSrc && !profileImgSrc.includes('via.placeholder.com')) {
+        user.profileImage = profileImgSrc;
+    }
+
+    // Save
+    setCurrentUser(user);
+
+    // Update Global Users List
+    const users = JSON.parse(localStorage.getItem('users') || '[]');
+    const idx = users.findIndex(u => u.id === user.id);
+    if (idx !== -1) {
+        users[idx] = user;
+        localStorage.setItem('users', JSON.stringify(users));
+    }
+
+    // Update UI
+    refreshDashboard(user);
+    const headerImg = document.getElementById('headerProfileImg');
+    if (headerImg) headerImg.src = user.profileImage || 'https://via.placeholder.com/150';
+
+    // Feedback
+    if (silent) {
+        const indicator = document.getElementById('saveIndicator');
+        if (indicator) {
+            indicator.style.opacity = '1';
+            setTimeout(() => { if (indicator) indicator.style.opacity = '0'; }, 2000);
+        }
+    } else {
+        showToast('Profile saved', 'success');
+        closeModal();
+    }
+};
 
 function switchTab(tabId) {
     // Hide all
@@ -180,9 +180,11 @@ function switchTab(tabId) {
     const navLink = document.querySelector(`.nav-link[onclick="switchTab('${tabId}')"]`);
     if (navLink) navLink.classList.add('active');
 
-    // Close mobile sidebar if open
-    const sidebar = document.getElementById('sidebar');
-    if (sidebar) sidebar.classList.remove('active');
+    // Close mobile sidebar if open (only on mobile)
+    if (window.innerWidth < 1024) {
+        const sidebar = document.getElementById('sidebar');
+        if (sidebar) sidebar.classList.remove('active');
+    }
 }
 
 function refreshDashboard(user) {
@@ -296,7 +298,25 @@ function viewTeacherProfile(teacherId) {
                 </div>
             </div>
 
-            <div style="text-align: left; margin-top: 1rem; border-top: 1px solid #f1f5f9; padding-top: 1rem;">
+            <div style="text-align: left; margin-top: 1rem; background: #f8fafc; padding: 1rem; border-radius: var(--radius-md); border: 1px solid #f1f5f9;">
+                <h4 style="margin: 0 0 0.75rem 0; font-size: 0.85rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em;">Contact Information</h4>
+                <div style="display: grid; gap: 0.5rem; font-size: 0.95rem;">
+                    <div style="display: flex; align-items: center; gap: 0.5rem;">
+                        <svg width="18" height="18" fill="none" stroke="currentColor" viewBox="0 0 24 24" style="color: var(--primary-main); flex-shrink: 0;">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"></path>
+                        </svg>
+                        <span style="font-weight: 500; color: var(--text-main);">${t.phone || 'No phone number'}</span>
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 0.5rem;">
+                        <svg width="18" height="18" fill="none" stroke="currentColor" viewBox="0 0 24 24" style="color: var(--primary-main); flex-shrink: 0;">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path>
+                        </svg>
+                        <span style="font-weight: 500; color: var(--text-main);">${t.email || 'No email address'}</span>
+                    </div>
+                </div>
+            </div>
+
+            <div style="text-align: left; margin-top: 1.5rem; border-top: 1px solid #f1f5f9; padding-top: 1rem;">
                 <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
                     <h4 style="font-size: 1rem; margin: 0;">Student Reviews</h4>
                     <button class="btn btn-secondary btn-sm" onclick="toggleReviewForm('${t.id}')" style="font-size: 0.8rem; padding: 0.25rem 0.75rem;">+ Write Review</button>
@@ -328,16 +348,16 @@ function viewTeacherProfile(teacherId) {
         </div>
     `;
 
-    showModal(`Teacher Profile`, modalContent, 'info', () => {
-        // Enrollment Logic
-        enrollInCourse(teacherId);
-    });
-
-    // Hack: Change the button text from "Confirm" to "Register" for this specific modal
-    setTimeout(() => {
-        const confirmBtn = document.querySelector('#globalModal .btn-primary');
-        if (confirmBtn) confirmBtn.textContent = 'Register for this Course';
-    }, 0);
+    showModal(
+        `Teacher Profile`,
+        modalContent,
+        'info',
+        () => {
+            // Enrollment Logic
+            return enrollInCourse(teacherId);
+        },
+        'Enroll' // Custom Button Text
+    );
 }
 
 // Global functions for inline event handlers
@@ -380,10 +400,19 @@ window.submitReview = function (teacherId) {
 function enrollInCourse(teacherId) {
     const user = getCurrentUser();
 
-    // 1. Check if already enrolled (Rule: Only one teacher/course)
+    // 1. One Course at a Time Rule (Unless 75 hours completed)
+    const completedHours = user.completedHours || 0;
     if (user.enrolledCourses && user.enrolledCourses.length > 0) {
-        showModal('Enrollment Error', 'You can only register for ONE course at a time.', 'error');
-        return;
+        if (completedHours < 75) {
+            showModal('Enrollment Restricted', `You are currently enrolled in a course. You must complete 75 hours of study (Current: ${completedHours}h) before you can enroll in another class.`, 'warning');
+            return false;
+        }
+
+        // Check if already enrolled in THIS course (duplicate check)
+        if (user.enrolledCourses.includes(teacherId)) {
+            showModal('Already Enrolled', 'You are already registered for this course.', 'warning');
+            return false;
+        }
     }
 
     // 2. Mock Enrollment
@@ -401,9 +430,12 @@ function enrollInCourse(teacherId) {
         localStorage.setItem('users', JSON.stringify(users));
     }
 
-    showToast('Successfully enrolled!', 'success');
     refreshDashboard(user);
-    switchTab('dashboard');
+    showModal('Enrollment Successful', 'You have successfully enrolled in this course. You can now view your assignments and schedule.', 'success', () => {
+        switchTab('dashboard');
+    }, 'Go to Dashboard');
+
+    return false; // Keep success modal open
 }
 
 function filterTeachers(type) {

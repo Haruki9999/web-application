@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Our Teachers - Pi Math Center</title>
+    <title>Манай багш нар - Pi Math Center</title>
     <link rel="stylesheet" href="styles/base.css">
     <link rel="stylesheet" href="styles/teachers.css">
     <link rel="stylesheet" href="styles/modal.css">
@@ -20,24 +20,24 @@
                 style="font-size: 1.5rem; font-weight: 800; font-family: var(--font-heading); color: var(--primary-main);">Pi
                 Math Center</a>
             <div style="display: flex; gap: 1.5rem; align-items: center;">
-                <a href="index.html">Home</a>
-                <a href="login.html" class="btn btn-primary btn-sm">Login</a>
+                <a href="index.html">Нүүр</a>
+                <a href="login.html" class="btn btn-primary btn-sm">Нэвтрэх</a>
             </div>
         </div>
     </nav>
 
     <header class="teachers-header">
         <div class="container">
-            <h1>Meet Our Experts</h1>
+            <h1>Манай мэргэжилтнүүдтэй танилц</h1>
             <p style="color: var(--text-muted); font-size: 1.1rem; max-width: 600px; margin: 0 auto;">
-                Experienced educators dedicated to helping you master mathematics.
+                Математикыг эзэмшихэд тань туслах туршлагатай сурган хүмүүжүүлэгчид.
             </p>
 
             <div class="filter-bar">
-                <button class="filter-btn active" data-filter="all">All Teachers</button>
+                <button class="filter-btn active" data-filter="all">Бүх багш нар</button>
                 <button class="filter-btn" data-filter="sat">SAT/ACT</button>
                 <button class="filter-btn" data-filter="igcse">Cambridge (IGCSE/A-Level)</button>
-                <button class="filter-btn" data-filter="national">National Curriculum</button>
+                <button class="filter-btn" data-filter="national">Үндэсний хөтөлбөр</button>
             </div>
         </div>
     </header>
@@ -75,7 +75,7 @@
                     });
 
                 if (filtered.length === 0) {
-                    container.innerHTML = '<p style="text-align: center; grid-column: 1/-1; color: var(--text-muted);">No teachers found matching this category.</p>';
+                    container.innerHTML = '<p style="text-align: center; grid-column: 1/-1; color: var(--text-muted);">Энэ ангилалд тохирох багш олдсонгүй.</p>';
                     return;
                 }
 
@@ -86,9 +86,9 @@
                         <div class="profile-specs">
                             ${t.specialization.map(s => `<span class="spec-tag">${s}</span>`).join('')}
                         </div>
-                        <p style="color: var(--text-muted); margin-bottom: 1.5rem;">${t.experience} Experience</p>
+                        <p style="color: var(--text-muted); margin-bottom: 1.5rem;">${t.experience} Туршлага</p>
                         <p style="margin-bottom: 1.5rem; font-size: 0.9rem; line-height: 1.5;">${t.bio}</p>
-                        <button class="btn btn-primary" onclick="showLoginPrompt()">Register for Course</button>
+                        <button class="btn btn-primary" onclick="showLoginPrompt()">Сургалтанд бүртгүүлэх</button>
                     </div>
                 `).join('');
             }
@@ -106,13 +106,13 @@
         });
 
         function showLoginPrompt() {
-            showModal('Login Required', 'Please login as a student to register for courses.', 'info', () => {
+            showModal('Нэвтрэх шаардлагатай', 'Сургалтанд бүртгүүлэхийн тулд сурагчаар нэвтэрнэ үү.', 'info', () => {
                 window.location.href = 'login.html';
             });
             // Adjust Button Text
             setTimeout(() => {
                 const btn = document.querySelector('#globalModal .btn-primary');
-                if (btn) btn.textContent = 'Go to Login';
+                if (btn) btn.textContent = 'Нэвтрэх хэсэг рүү очих';
             }, 0);
         }
     </script>

@@ -72,6 +72,10 @@
     padding: 0.75rem 0;
 }
 
+.sidebar:not(.active) .nav-link span {
+    display: none;
+}
+
 .nav-link:hover,
 .nav-link.active {
     background: #e0e7ff;
@@ -236,4 +240,61 @@
         grid-template-columns: 1fr;
         justify-items: center;
     }
+}
+
+/* Icon Button */
+.btn-icon {
+    background: transparent;
+    color: var(--primary-main);
+    border: none;
+    width: 40px;
+    height: 40px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.btn-icon:hover {
+    background: #eff6ff;
+    color: var(--primary-dark);
+}
+
+/* Dark Mode Overrides */
+html.dark body {
+    background-color: var(--color-dark-blue);
+}
+
+html.dark .sidebar {
+    background: var(--color-indigo);
+    border-right-color: var(--color-purple-blue);
+}
+
+html.dark .sidebar-header {
+    border-bottom-color: var(--color-purple-blue);
+}
+
+html.dark .nav-link {
+    color: var(--color-lavender);
+}
+
+html.dark .nav-link:hover,
+html.dark .nav-link.active {
+    background: var(--color-purple-blue);
+    color: var(--color-white);
+}
+
+html.dark .stat-card,
+html.dark .progress-card,
+html.dark .class-card {
+    background: var(--color-purple-blue) !important;
+    border-color: var(--color-indigo) !important;
+    color: var(--color-lavender) !important;
+}
+
+html.dark .dashboard-grid-3 .stat-card {
+    background: var(--color-purple-blue) !important;
+    color: var(--color-lavender) !important;
 }

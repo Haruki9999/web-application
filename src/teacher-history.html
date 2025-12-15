@@ -83,26 +83,96 @@
         </main>
     </div>
 
-    <!-- Attendance Modal -->
-    <div class="modal-overlay" id="attendanceModal">
-        <div class="modal-container">
-            <div class="modal-header">
-                <h3 id="modalTitle">Edit Attendance</h3>
-                <button class="modal-close" onclick="closeAttendanceModal()">&times;</button>
-            </div>
-            <div class="modal-body" id="modalStudentList">
-                <!-- Students injected here -->
-            </div>
-            <div class="modal-footer">
-                <button class="btn-secondary" onclick="closeAttendanceModal()">Cancel</button>
-                <button class="btn-primary" onclick="submitAttendance()">Save Logic</button>
-            </div>
-        </div>
-    </div>
 
+
+    <script src="js/utils.js"></script>
     <script src="js/data.js"></script>
-    <script src="js/main.js"></script>
     <script src="js/teacher-dashboard.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const user = getCurrentUser();
+            if (!user || user.role !== 'teacher') {
+                window.location.href = 'login.html';
+                return;
+            }
+
+            // Render Name/Avatar
+            document.getElementById('teacherName').textContent = user.name;
+            const img = document.querySelector('.user-profile img');
+            if (img) img.src = user.profileImage || `https://api.dicebear.com/7.x/avataaars/svg?seed=${user.name}`;
+
+            const container = document.getElementById('historyList');
+
+            // 1. Get All Students
+            const allUsers = JSON.parse(localStorage.getItem('users') || '[]');
+            const students = allUsers.filter(u => u.role === 'student');
+
+            // 2. Get My Classes to verify IDs
+            const myClasses = (JSON.parse(localStorage.getItem('classes') || '[]')).filter(c => String(c.teacherId) === String(user.teacherId || user.id));
+            const myClassIds = myClasses.map(c => String(c.id));
+
+            // 3. Collect ALL relevant history entries
+            let allHistory = [];
+            students.forEach(st => {
+                if (st.attendanceHistory) {
+                    st.attendanceHistory.forEach(h => {
+                        // In a real DB, class ID would link to Teacher. Here we check loose association or match classes
+                        // For now, if the student is enrolled with THIS teacher, we show their history?
+                        // Or if the Class ID belongs to this teacher.
+                        // Since class IDs are loose, we will assume if the student is currently enrolled with me, I see their history.
+                        // BETTER: Check if h.teacherId matches current teacher (if we stored it). 
+                        // We didn't store teacherId in history explicitly in all versions. 
+                        // But we can check if the classId belongs to one of my classes.
+                        if (myClassIds.includes(String(h.classId)) || (st.enrolledCourses && st.enrolledCourses.includes(String(user.teacherId || user.id)))) {
+                            allHistory.push({
+                                studentName: st.name,
+                                date: h.date,
+                                hours: h.hours,
+                                status: h.status
+                            });
+                        }
+                    });
+                }
+            });
+
+            // Sort by Date Descending
+            allHistory.sort((a, b) => new Date(b.date) - new Date(a.date));
+
+            if (allHistory.length === 0) {
+                container.innerHTML = '<p style="padding: 2rem; text-align: center; color: var(--text-muted);">Түүх олдсонгүй.</p>';
+            } else {
+                let html = `
+                <table style="width: 100%; border-collapse: collapse; margin-top: 1rem;">
+                    <thead>
+                        <tr style="text-align: left; border-bottom: 2px solid #e2e8f0;">
+                            <th style="padding: 1rem;">Огноо</th>
+                            <th style="padding: 1rem;">Сурагч</th>
+                            <th style="padding: 1rem;">Цаг</th>
+                            <th style="padding: 1rem;">Төлөв</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                `;
+
+                html += allHistory.map(h => {
+                    const statusColor = h.status === 'Present' ? 'green' : (h.status === 'Absent' ? 'red' : 'orange');
+                    const statusText = h.status === 'Present' ? 'Ирсэн' : (h.status === 'Absent' ? 'Тасалсан' : 'Чөлөөтэй');
+                    return `
+                        <tr style="border-bottom: 1px solid #f1f5f9;">
+                            <td style="padding: 1rem;">${new Date(h.date).toLocaleDateString()}</td>
+                            <td style="padding: 1rem; font-weight: 500;">${h.studentName}</td>
+                            <td style="padding: 1rem;">${h.hours} цаг</td>
+                            <td style="padding: 1rem; color: ${statusColor};">${statusText}</td>
+                        </tr>
+                     `;
+                }).join('');
+
+                html += '</tbody></table>';
+                container.innerHTML = html;
+            }
+
+        });
+    </script>
 </body>
 
 </html>

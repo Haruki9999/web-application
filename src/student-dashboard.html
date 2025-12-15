@@ -61,21 +61,21 @@
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                             d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
                     </svg>
-                    Dashboard
+                    <span>Dashboard</span>
                 </a>
                 <a href="#" class="nav-link" onclick="switchTab('courses')">
                     <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                             d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
                     </svg>
-                    My Classes
+                    <span>Миний хичээлүүд</span>
                 </a>
                 <a href="#" class="nav-link" onclick="switchTab('teachers')">
                     <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                             d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
                     </svg>
-                    Find Teachers
+                    <span>Багш хайх</span>
                 </a>
             </nav>
             <!-- Sidebar Footer Removed (Logout moved to Profile Modal) -->
@@ -86,7 +86,7 @@
             <!-- Header for Mobile Toggle -->
             <div class="dashboard-header" style="justify-content: space-between; align-items: center;">
                 <div class="welcome-text">
-                    <p>Track your progress and assignments</p>
+                    <p>Ахиц дэвшил болон даалгавраа хянах</p>
                 </div>
 
                 <button class="btn btn-secondary mobile-toggle" id="sidebarToggle" style="display: none;">Menu</button>
@@ -107,11 +107,11 @@
                             <!-- Stats -->
                             <div class="stats-grid">
                                 <div class="stat-card">
-                                    <div class="stat-label">Total Hours</div>
+                                    <div class="stat-label">Нийт цаг</div>
                                     <div class="stat-value"><span id="totalHours">0</span><span>/75</span></div>
                                 </div>
                                 <div class="stat-card">
-                                    <div class="stat-label">Attendance Rate</div>
+                                    <div class="stat-label">Ирцийн хувь</div>
                                     <div class="stat-value" id="attendanceRate">100%</div>
                                 </div>
                             </div>
@@ -119,38 +119,38 @@
                             <!-- Main Progress -->
                             <div class="progress-card">
                                 <div class="progress-header">
-                                    <h3>Overall Completion</h3>
+                                    <h3>Нийт гүйцэтгэл</h3>
                                     <span id="progressPercentage" class="badge">0%</span>
                                 </div>
                                 <div class="progress-bar-container">
                                     <div class="progress-bar" id="mainProgressBar" style="width: 0%"></div>
                                 </div>
                                 <p style="color: var(--text-muted); font-size: 0.9rem; margin-top: 1rem;">
-                                    You need <span id="hoursRemaining">75</span> more hours to complete the curriculum.
+                                    Сургалтын хөтөлбөрийг дуусгахад <span id="hoursRemaining">75</span> цаг дутуу байна.
                                 </p>
                             </div>
 
                             <!-- Upcoming/Active -->
-                            <h3 style="margin-bottom: 1.5rem;">Recent Activity</h3>
+                            <h3 style="margin-bottom: 1.5rem;">Сүүлийн үеийн үйл ажиллагаа</h3>
                             <div id="activityLog">
                                 <!-- Injected via JS -->
-                                <div style="text-align: center; color: var(--text-muted); padding: 2rem;">No recent
-                                    activity
+                                <div style="text-align: center; color: var(--text-muted); padding: 2rem;">Сүүлийн үеийн
+                                    үйл ажиллагаа байхгүй
                                 </div>
                             </div>
                         </div>
 
                         <!-- 2. FIND TEACHERS / SELECT COURSE -->
                         <div id="tab-teachers" class="tab-content" style="display: none;">
-                            <h2 class="section-title" style="text-align: left; margin-bottom: 2rem;">Available Teachers
+                            <h2 class="section-title" style="text-align: left; margin-bottom: 2rem;">Боломжтой багш нар
                             </h2>
 
                             <!-- Category Filter -->
                             <div style="margin-bottom: 2rem; display: flex; gap: 1rem;">
-                                <button class="btn btn-secondary active" onclick="filterTeachers('all')">All</button>
-                                <button class="btn btn-secondary"
-                                    onclick="filterTeachers('International')">International</button>
-                                <button class="btn btn-secondary" onclick="filterTeachers('National')">National</button>
+                                <button class="btn btn-secondary active" onclick="filterTeachers('all')">Бүгд</button>
+                                <button class="btn btn-secondary" onclick="filterTeachers('International')">Олон
+                                    улсын</button>
+                                <button class="btn btn-secondary" onclick="filterTeachers('National')">Үндэсний</button>
                             </div>
 
                             <div class="course-grid" id="teachersGrid">
@@ -160,7 +160,7 @@
 
                         <!-- 3. MY Classes -->
                         <div id="tab-courses" class="tab-content" style="display: none;">
-                            <h2 class="section-title" style="text-align: left;">My Classes</h2>
+                            <h2 class="section-title" style="text-align: left;">Миний хичээлүүд</h2>
                             <div id="myCoursesList" class="course-grid">
                                 <!-- Enrolled courses -->
                             </div>
@@ -183,9 +183,18 @@
                             <div id="headerUserName"
                                 style="font-weight: 600; font-size: 1.1rem; color: var(--text-main); margin-bottom: 0.5rem;">
                                 Student Name</div>
-                            <div id="headerUserId"
-                                style="font-size: 0.9rem; color: var(--text-muted); margin-bottom: 1rem;">ID: 000000
+                            <div id="headerUserPhone"
+                                style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 0.25rem;">Утас:
+                                99112233
                             </div>
+                            <div id="headerParentPhone"
+                                style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 1rem;">Эцэг/эх:
+                                88001122
+                            </div>
+                            <button onclick="event.stopPropagation(); logout()" class="btn btn-sm"
+                                style="width: 100%; background: #fee; color: #ef4444; border: 1px solid #fca5a5; justify-content: center;">
+                                Гарах
+                            </button>
                         </div>
                     </div>
                 </div>

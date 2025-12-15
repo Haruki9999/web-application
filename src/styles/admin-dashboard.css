@@ -8,7 +8,7 @@
 
 .sidebar {
     width: 260px;
-    background: #1F2937;
+    background: var(--color-dark-blue);
     color: white;
     padding: 1.5rem 0;
     position: fixed;
@@ -19,7 +19,7 @@
 
 .sidebar-header {
     padding: 0 1.5rem 1.5rem;
-    border-bottom: 1px solid #374151;
+    border-bottom: 1px solid var(--color-purple-blue);
     margin-bottom: 1rem;
 }
 
@@ -35,19 +35,19 @@
         transform: translateX(-100%);
         z-index: 100;
     }
-    
+
     .sidebar.active {
         transform: translateX(0);
     }
-    
+
     .sidebar-header {
         padding: 0 1rem 1rem;
     }
-    
+
     .sidebar-header h2 {
         font-size: 1.125rem;
     }
-    
+
     .sidebar-nav a {
         padding: 0.75rem 1rem;
         font-size: 0.9375rem;
@@ -69,14 +69,14 @@
     align-items: center;
     gap: 0.75rem;
     padding: 0.875rem 1.5rem;
-    color: #D1D5DB;
+    color: var(--color-lavender);
     text-decoration: none;
     transition: all 0.2s;
 }
 
 .sidebar-nav a:hover,
 .sidebar-nav a.active {
-    background: #374151;
+    background: var(--color-indigo);
     color: white;
 }
 
@@ -88,7 +88,7 @@
 .dashboard-content {
     flex: 1;
     margin-left: 260px;
-    background: #F9FAFB;
+    background: var(--color-lavender);
 }
 
 .dashboard-header {
@@ -112,15 +112,15 @@
     .dashboard-main {
         padding: 1rem;
     }
-    
+
     .dashboard-content {
         margin-left: 0;
     }
-    
+
     .dashboard-header {
         padding: 1rem;
     }
-    
+
     .dashboard-header h1 {
         font-size: 1.5rem;
     }
@@ -130,11 +130,11 @@
     .dashboard-main {
         padding: 0.75rem;
     }
-    
+
     .dashboard-header {
         padding: 0.875rem;
     }
-    
+
     .dashboard-header h1 {
         font-size: 1.25rem;
     }
@@ -145,11 +145,11 @@
 }
 
 .dashboard-welcome h1 {
-    color: #1F2937;
+    color: var(--color-dark-blue);
 }
 
 .dashboard-welcome p {
-    color: #6B7280;
+    color: var(--color-purple-blue);
 }
 
 .stats-grid {
@@ -172,11 +172,11 @@
         grid-template-columns: 1fr;
         gap: 0.875rem;
     }
-    
+
     .stat-card {
         padding: 1rem;
     }
-    
+
     .stat-card p {
         font-size: 1.5rem;
     }
@@ -190,7 +190,7 @@
 }
 
 .stat-card h3 {
-    color: #6B7280;
+    color: var(--color-purple-blue);
     font-size: 0.875rem;
     font-weight: 500;
     margin-bottom: 0.5rem;
@@ -199,19 +199,19 @@
 .stat-card p {
     font-size: 2rem;
     font-weight: 700;
-    color: #1F2937;
+    color: var(--color-dark-blue);
 }
 
 .stat-card.primary p {
-    color: #3B82F6;
+    color: var(--color-indigo);
 }
 
 .stat-card.success p {
-    color: #10B981;
+    color: var(--color-purple-blue);
 }
 
 .stat-card.warning p {
-    color: #F59E0B;
+    color: var(--color-light-purple);
 }
 
 /* Mobile Sidebar Toggle */
@@ -221,7 +221,7 @@
     top: 1rem;
     left: 1rem;
     z-index: 110;
-    background: #3B82F6;
+    background: var(--color-indigo);
     color: white;
     border: none;
     padding: 0.75rem;
@@ -259,18 +259,18 @@
 }
 
 .table th {
-    background: #F9FAFB;
+    background: var(--color-lavender);
     padding: 1rem;
     text-align: left;
     font-weight: 600;
-    color: #374151;
-    border-bottom: 1px solid #E5E7EB;
+    color: var(--color-dark-blue);
+    border-bottom: 1px solid var(--color-purple-blue);
     white-space: nowrap;
 }
 
 .table td {
     padding: 1rem;
-    border-bottom: 1px solid #E5E7EB;
+    border-bottom: 1px solid var(--color-light-purple);
 }
 
 .table tr:last-child td {
@@ -278,11 +278,12 @@
 }
 
 .table tr:hover {
-    background: #F9FAFB;
+    background: var(--color-lavender);
 }
 
 /* Responsive Tables */
 @media (max-width: 768px) {
+
     .table th,
     .table td {
         padding: 0.75rem;
@@ -294,11 +295,11 @@
     .table-container {
         border-radius: 0.5rem;
     }
-    
+
     .table {
         min-width: 500px;
     }
-    
+
     .table th,
     .table td {
         padding: 0.625rem;
@@ -321,12 +322,12 @@
 
 .filter-bar label {
     font-weight: 500;
-    color: #374151;
+    color: var(--color-dark-blue);
 }
 
 .filter-bar select {
     padding: 0.5rem 1rem;
-    border: 1px solid #D1D5DB;
+    border: 1px solid var(--color-purple-blue);
     border-radius: 0.5rem;
     font-size: 0.875rem;
 }
@@ -338,11 +339,11 @@
         flex-direction: column;
         align-items: stretch;
     }
-    
+
     .filter-bar label {
         margin-bottom: 0.5rem;
     }
-    
+
     .filter-bar select {
         width: 100%;
     }
@@ -354,4 +355,3 @@
         margin-bottom: 1.5rem;
     }
 }
-

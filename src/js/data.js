@@ -73,56 +73,6 @@ const teachers = [
         experience: '12 years',
         isApproved: true,
         bio: 'PhD in Mathematics Education with expertise in standardized test preparation'
-    },
-    {
-        id: '2',
-        name: 'Prof. Michael Chen',
-        photo: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&h=150&fit=crop',
-        specialization: ['IGCSE', 'A Level', 'Calculus'],
-        rating: 4.8,
-        experience: '15 years',
-        isApproved: true,
-        bio: 'Former university professor specializing in advanced mathematics'
-    },
-    {
-        id: '3',
-        name: 'Ms. Emily Rodriguez',
-        photo: 'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=150&h=150&fit=crop',
-        specialization: ['IB', 'AS Level', 'Statistics'],
-        rating: 4.9,
-        experience: '10 years',
-        isApproved: true,
-        bio: 'IB examiner and experienced international mathematics educator'
-    },
-    {
-        id: '4',
-        name: 'Dr. James Wilson',
-        photo: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=150&h=150&fit=crop',
-        specialization: ['A Level', 'Further Maths', 'Mechanics'],
-        rating: 4.7,
-        experience: '18 years',
-        isApproved: true,
-        bio: 'Specializes in advanced mathematics and mechanics'
-    },
-    {
-        id: '5',
-        name: 'Ms. Aisha Patel',
-        photo: 'https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?w=150&h=150&fit=crop',
-        specialization: ['IGCSE', 'SAT', 'Geometry'],
-        rating: 4.8,
-        experience: '8 years',
-        isApproved: true,
-        bio: 'Passionate educator with focus on building strong foundations'
-    },
-    {
-        id: '6',
-        name: 'Mr. David Kim',
-        photo: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=150&h=150&fit=crop',
-        specialization: ['ACT', 'SAT', 'Algebra'],
-        rating: 4.9,
-        experience: '11 years',
-        isApproved: true,
-        bio: 'Expert in test-taking strategies and mathematics fundamentals'
     }
 ];
 
@@ -131,12 +81,28 @@ function initializeData() {
     if (!localStorage.getItem('programs')) {
         localStorage.setItem('programs', JSON.stringify(programs));
     }
-    if (!localStorage.getItem('teachers')) {
-        localStorage.setItem('teachers', JSON.stringify(teachers));
-    }
+
+    // Force Set Teachers to Single User (Dr. Sarah) per User Request
+    // This overwrites previous data to ensure cleanup
+    localStorage.setItem('teachers', JSON.stringify(teachers));
     const storedUsers = JSON.parse(localStorage.getItem('users') || 'null');
-    // Force re-init if users don't exist, OR missing phone, OR password is the old 'password' instead of '123456'
-    if (!storedUsers || (storedUsers.length > 0 && (!storedUsers[0].phone || storedUsers[0].password === 'password'))) {
+
+    // Self-healing: Check if critical test accounts exist and have passwords
+    let dataCorrupted = false;
+    if (!storedUsers || !Array.isArray(storedUsers) || storedUsers.length === 0) {
+        dataCorrupted = true;
+    } else {
+        // Check for specific default accounts availability or general corruption
+        const hasStudent = storedUsers.some(u => u.role === 'student' && u.password);
+        const hasTeacher = storedUsers.some(u => u.role === 'teacher' && u.password);
+        // If critical roles missing, or if first user has old password format
+        if (!hasStudent || !hasTeacher || (storedUsers[0].password === 'password')) {
+            dataCorrupted = true;
+        }
+    }
+
+    if (dataCorrupted) {
+        console.warn('Data corruption detected or critical users missing. Restoring defaults.');
         localStorage.setItem('users', JSON.stringify([
             {
                 id: '1',
@@ -164,6 +130,7 @@ function initializeData() {
                 name: 'Dr. Sarah Johnson',
                 teacherId: '1',
                 isApproved: true,
+                profileImage: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=150&h=150&fit=crop', // Sync with public profile
                 totalStudents: 24,
                 upcomingClasses: [], // Changed from number 8 to empty array
                 materialsUploaded: 15,
@@ -197,30 +164,33 @@ function initializeData() {
     }
 
     // Check and Sync Classes Global List
-    // This ensures that the classes defined in 'upcomingClasses' user objects are also available in the 'classes' global list for the dashboard logic.
+    // Always sync from users to global list to recover "lost" classes from previous versions
     const storedClasses = JSON.parse(localStorage.getItem('classes') || '[]');
-    if (storedClasses.length === 0) {
-        // Extract from users if available
-        const users = JSON.parse(localStorage.getItem('users') || '[]');
-        const allNewClasses = [];
+    const users = JSON.parse(localStorage.getItem('users') || '[]');
+    let hasChanges = false;
 
-        users.forEach(u => {
-            if (u.role === 'teacher' && u.upcomingClasses && u.upcomingClasses.length > 0) {
-                u.upcomingClasses.forEach(c => {
-                    // Ensure each class has the teacherId for correct filtering
-                    allNewClasses.push({
+    users.forEach(u => {
+        if (u.role === 'teacher' && u.upcomingClasses && Array.isArray(u.upcomingClasses) && u.upcomingClasses.length > 0) {
+            u.upcomingClasses.forEach(c => {
+                // Check if class already exists in global list (by ID)
+                const exists = storedClasses.some(gx => gx.id === c.id);
+                if (!exists) {
+                    // Normalize and Add
+                    storedClasses.push({
                         ...c,
-                        teacherId: u.id,
-                        attendanceTaken: false, // Default
-                        students: c.students ? c.students.length : 0
+                        teacherId: u.id, // Ensure teacherId is set
+                        attendanceTaken: c.attendanceTaken || false,
+                        students: c.students || 0
                     });
-                });
-            }
-        });
-
-        if (allNewClasses.length > 0) {
-            localStorage.setItem('classes', JSON.stringify(allNewClasses));
+                    hasChanges = true;
+                }
+            });
         }
+    });
+
+    if (hasChanges) {
+        localStorage.setItem('classes', JSON.stringify(storedClasses));
+        console.log('Restored missing classes from user history:', storedClasses.length);
     }
 }
 

@@ -52,7 +52,7 @@
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                             d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
                     </svg>
-                    Dashboard
+                    <span>Хянах самбар</span>
                 </a>
                 <a href="#" class="nav-link" onclick="showSection('classes')">
                     <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"
@@ -60,7 +60,7 @@
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                             d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
                     </svg>
-                    My Classes
+                    <span>Миний хичээлүүд</span>
                 </a>
                 <a href="#" class="nav-link" onclick="showSection('profile')">
                     <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"
@@ -68,7 +68,7 @@
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                             d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
                     </svg>
-                    Profile
+                    <span>Профайл</span>
                 </a>
                 <!-- Future features -->
                 <!-- Create Class moved to separate modal within My Classes -->
@@ -81,11 +81,11 @@
             <!-- Header -->
             <div class="dashboard-header">
                 <div class="welcome-text">
-                    <p>Manage your students and classes</p>
+                    <p>Сурагчид болон хичээлүүдээ удирдах</p>
                 </div>
 
                 <!-- Spacer to push toggle to right on mobile -->
-                <button class="btn btn-secondary mobile-toggle" id="sidebarToggle" style="display: none;">Menu</button>
+                <button class="btn btn-secondary mobile-toggle" id="sidebarToggle" style="display: none;">Цэс</button>
             </div>
 
             <!-- 1. OVERVIEW -->
@@ -96,25 +96,25 @@
                         style="cursor: pointer; transition: transform 0.2s;"
                         onmouseover="this.style.transform='translateY(-2px)'"
                         onmouseout="this.style.transform='translateY(0)'">
-                        <div class="stat-label">Total Students</div>
+                        <div class="stat-label">Нийт сурагчид</div>
                         <div class="stat-value" id="totalStudents">0</div>
                     </div>
                     <div class="stat-card">
-                        <div class="stat-label">Classes This Week</div>
+                        <div class="stat-label">Энэ долоо хоногийн хичээлүүд</div>
                         <div class="stat-value" id="weeklyClasses">0</div>
                     </div>
                     <div class="stat-card">
-                        <div class="stat-label">Materials</div>
+                        <div class="stat-label">Материалууд</div>
                         <div class="stat-value" id="materialsCount">0</div>
                     </div>
                 </div>
 
-                <h3>Today's Schedule</h3>
+                <h3>Энэ долоо хоногийн хуваарь</h3>
                 <div id="todaySchedule" style="margin-top: 1rem;">
                     <!-- Injected JS -->
                     <div class="class-card">
                         <div class="class-body" style="text-align: center; color: var(--text-muted);">
-                            No classes scheduled for today.
+                            Хичээлгүй байна.
                         </div>
                     </div>
                 </div>
@@ -123,8 +123,8 @@
             <!-- 2. MY CLASSES -->
             <div id="section-classes" class="dashboard-section" style="display: none;">
                 <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
-                    <h2 class="section-title" style="margin: 0;">My Teaching Schedule</h2>
-                    <button class="btn btn-primary" onclick="openCreateClassModal()">+ Schedule Class</button>
+                    <h2 class="section-title" style="margin: 0;">Миний хичээлийн хуваарь</h2>
+                    <button class="btn btn-primary" onclick="openCreateClassModal()">+ Хичээл товлох</button>
                 </div>
                 <div id="classesList" style="display: grid; gap: 1.5rem;">
                     <!-- Injected JS -->
@@ -134,7 +134,7 @@
             <!-- 3. PROFILE -->
             <div id="section-profile" class="dashboard-section" style="display: none;">
                 <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
-                    <h2 class="section-title" style="margin: 0;">Teacher Profile</h2>
+                    <h2 class="section-title" style="margin: 0;">Багшийн профайл</h2>
                     <div style="display: flex; gap: 1rem;">
                         <button class="btn btn-primary btn-sm" onclick="openEditProfileModal()">
                             <svg style="width:16px;height:16px;margin-right:0.5rem;" fill="none" stroke="currentColor"
@@ -143,7 +143,7 @@
                                     d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z">
                                 </path>
                             </svg>
-                            Edit Profile
+                            Профайл засах
                         </button>
                         <button class="btn btn-sm" onclick="logout()"
                             style="background: #fee; color: #ef4444; border: 1px solid #fca5a5;">
@@ -153,7 +153,7 @@
                                     d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1">
                                 </path>
                             </svg>
-                            Log Out
+                            Гарах
                         </button>
                     </div>
                 </div>
@@ -168,14 +168,15 @@
                             style="margin-bottom: 0.5rem; font-size: 1.5rem; color: var(--text-main);">Teacher Name</h2>
                         <p id="viewProfileSpecs"
                             style="color: var(--primary-main); font-weight: 500; margin-bottom: 2rem; font-size: 1.1rem;">
-                            Specializations</p>
+                            Мэргэшил</p>
 
                         <div
                             style="text-align: left; margin: 0 auto; background: #f8fafc; padding: 2rem; border-radius: var(--radius-lg);">
                             <h4
                                 style="margin-bottom: 1rem; color: var(--text-muted); font-size: 0.9rem; text-transform: uppercase; letter-spacing: 0.05em;">
-                                About Me</h4>
-                            <p id="viewProfileBio" style="line-height: 1.6; color: var(--text-main);">No bio added yet.
+                                Миний тухай</h4>
+                            <p id="viewProfileBio" style="line-height: 1.6; color: var(--text-main);">Намтар оруулаагүй
+                                байна.
                             </p>
                         </div>
 
@@ -183,7 +184,7 @@
                             style="text-align: left; margin: 1rem auto 0; background: #f8fafc; padding: 2rem; border-radius: var(--radius-lg);">
                             <h4
                                 style="margin-bottom: 1rem; color: var(--text-muted); font-size: 0.9rem; text-transform: uppercase; letter-spacing: 0.05em;">
-                                Contact Information</h4>
+                                Холбоо барих мэдээлэл</h4>
                             <div style="display: grid; gap: 0.75rem;">
                                 <div style="display: flex; align-items: center; gap: 0.75rem;">
                                     <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24"
@@ -213,16 +214,18 @@
                             style="text-align: left; margin: 2rem auto 0; background: white; padding: 2rem; border-radius: var(--radius-lg); border: 1px solid #e2e8f0;">
                             <div
                                 style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
-                                <h4 style="margin: 0; font-size: 1.1rem; color: var(--text-main);">Student Reviews</h4>
+                                <h4 style="margin: 0; font-size: 1.1rem; color: var(--text-main);">Сурагчийн сэтгэгдэл
+                                </h4>
                                 <div style="display: flex; align-items: center; gap: 0.5rem;">
                                     <span style="color: #fbbf24; font-size: 1.2rem;">★</span>
                                     <span id="averageRating" style="font-weight: 600; font-size: 1.1rem;">0.0</span>
                                     <span id="reviewCount" style="color: var(--text-muted); font-size: 0.9rem;">(0
-                                        reviews)</span>
+                                        сэтгэгдэл)</span>
                                 </div>
                             </div>
                             <div id="teacherReviewsList" style="max-height: 400px; overflow-y: auto;">
-                                <p style="color: var(--text-muted); text-align: center; padding: 2rem;">No reviews yet.
+                                <p style="color: var(--text-muted); text-align: center; padding: 2rem;">Одоогоор
+                                    сэтгэгдэл алга.
                                 </p>
                             </div>
                         </div>

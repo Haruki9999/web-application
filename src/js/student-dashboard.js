@@ -1,470 +1,354 @@
-// Student Dashboard Logic
+/**
+ * STUDENT DASHBOARD - REWRITTEN FOR STABILITY
+ * Handles: Auth, Course View, History, Profile
+ */
 
 document.addEventListener('DOMContentLoaded', () => {
-    // Auth Check
-    if (!checkAuth('student')) return;
-
-    // Load User Data
-    const user = getCurrentUser();
-    document.getElementById('welcomeName').textContent = `Hello, ${user.name.split(' ')[0]}!`;
-    const headerImg = document.getElementById('headerProfileImg');
-    if (headerImg) headerImg.src = user.profileImage || 'https://via.placeholder.com/150';
-
-    // Update header profile card
-    const headerUserName = document.getElementById('headerUserName');
-    const headerUserId = document.getElementById('headerUserId');
-    if (headerUserName) headerUserName.textContent = user.name;
-    if (headerUserId) headerUserId.textContent = `ID: ${user.id}`;
-
-    // Sidebar Toggle
-    const sidebar = document.getElementById('sidebar');
-    const toggle = document.getElementById('sidebarToggle');
-
-    // Start sidebar expanded
-    sidebar.classList.add('active');
-
-    if (toggle) {
-        toggle.addEventListener('click', () => {
-            sidebar.classList.toggle('active');
-        });
-    }
-
-    // Global function for sidebar brand toggle
-    window.toggleSidebar = function () {
-        const sidebarEl = document.getElementById('sidebar');
-        if (sidebarEl) {
-            sidebarEl.classList.toggle('active');
-        }
-    };
-
-
-    // Initial Load
-    refreshDashboard(user);
-    loadTeachers();
-});
-
-// Modal For Student Profile
-window.openStudentProfileModal = function () {
-    const u = getCurrentUser();
-    if (!u) return; // Safety check
-
-    const modalContent = `
-        <button onclick="closeModal()" style="position: absolute; top: 1rem; right: 1rem; background: none; border: none; font-size: 1.5rem; color: var(--text-muted); cursor: pointer; padding: 0.5rem; line-height: 1;">
-            &times;
-        </button>
-
-        <div style="display: flex; align-items: center; gap: 1.5rem; margin-bottom: 2rem; padding-top: 1rem;">
-                <div style="position: relative;">
-                <img src="${u.profileImage || 'https://via.placeholder.com/150'}" 
-                        id="previewProfileImage"
-                        style="width: 100px; height: 100px; border-radius: 50%; object-fit: cover; border: 4px solid white; box-shadow: var(--shadow-md);">
-                <button onclick="triggerPhotoUpload()" title="Change Photo" style="position: absolute; bottom: 0; right: 0; background: var(--primary-main); color: white; border: none; width: 32px; height: 32px; border-radius: 50%; cursor: pointer; display: flex; align-items: center; justify-content: center; box-shadow: 0 2px 4px rgba(0,0,0,0.2);">
-                    <svg width="14" height="14" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"></path></svg>
-                </button>
-                <input type="file" id="photoUploadInput" style="display: none;" accept="image/*" onchange="handlePhotoPreview(this)">
-                </div>
-                <div>
-                    <h3 style="margin-bottom: 0.25rem;">${u.name}</h3>
-                    <p style="color: var(--text-muted); margin-bottom: 0.5rem;">Student ID: ${u.id}</p>
-                    <button onclick="logout()" class="btn btn-sm btn-outline-danger" style="font-size: 0.75rem; padding: 0.25rem 0.75rem; border-color: #fca5a5; color: #ef4444; background: white;">
-                    Log Out
-                    </button>
-                </div>
-        </div>
-
-        <form id="studentProfileForm" onsubmit="event.preventDefault();">
-            <div style="background: #f8fafc; padding: 1.5rem; border-radius: var(--radius-lg); border: 1px solid #f1f5f9;">
-                <div style="margin-bottom: 1rem;">
-                    <label class="form-label" style="display: block; font-size: 0.85rem; color: var(--text-muted); margin-bottom: 0.5rem;">My Phone Number</label>
-                    <input type="tel" id="editStudentPhone" class="form-input" value="${u.phone || ''}" placeholder="+976 8888-8888" 
-                        style="width: 100%; padding: 0.75rem; border: 1px solid #e2e8f0; border-radius: var(--radius-md); transition: all 0.2s;"
-                        onchange="saveStudentProfile(true)">
-                </div>
-                
-                <div style="border-top: 1px solid #e2e8f0; margin: 1rem 0;"></div>
-                
-                <div>
-                    <label class="form-label" style="display: block; font-size: 0.85rem; color: var(--text-muted); margin-bottom: 0.5rem;">Parent's Contact</label>
-                    <input type="tel" id="editParentPhone" class="form-input" value="${u.parentPhone || ''}" placeholder="+976 9999-9999" 
-                        style="width: 100%; padding: 0.75rem; border: 1px solid #e2e8f0; border-radius: var(--radius-md); transition: all 0.2s;"
-                        onchange="saveStudentProfile(true)">
-                    <small style="color: var(--text-muted); display: block; margin-top: 0.5rem;">Emergency contact & updates will be sent here.</small>
-                </div>
-            </div>
-        </form>
-        <div id="saveIndicator" style="text-align: center; color: var(--success); font-size: 0.85rem; height: 1.5rem; margin-top: 0.5rem; opacity: 0; transition: opacity 0.3s;">
-            <span style="display: inline-flex; align-items: center; gap: 0.25rem;">
-                <svg width="12" height="12" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
-                Saved
-            </span>
-        </div>
-    `;
-
-    showModal('Edit Profile', modalContent, 'info');
-
-    // Hide default footer globally for this modal
-    const footer = document.querySelector('#globalModal .modal-actions');
-    if (footer) footer.style.display = 'none';
-};
-
-window.triggerPhotoUpload = function () {
-    document.getElementById('photoUploadInput').click();
-};
-
-window.handlePhotoPreview = function (input) {
-    if (input.files && input.files[0]) {
-        const reader = new FileReader();
-        reader.onload = function (e) {
-            document.getElementById('previewProfileImage').src = e.target.result;
-            saveStudentProfile(true); // Autosave image immediately
-        };
-        reader.readAsDataURL(input.files[0]);
-    }
-};
-
-window.saveStudentProfile = function (silent = false) {
-    const phone = document.getElementById('editStudentPhone').value;
-    const parentPhone = document.getElementById('editParentPhone').value;
-    const profileImgSrc = document.getElementById('previewProfileImage').src;
-
-    const user = getCurrentUser();
-    if (!user) return;
-
-    // Update User Object
-    user.phone = phone;
-    user.parentPhone = parentPhone;
-
-    if (profileImgSrc && !profileImgSrc.includes('via.placeholder.com')) {
-        user.profileImage = profileImgSrc;
-    }
-
-    // Save
-    setCurrentUser(user);
-
-    // Update Global Users List
-    const users = JSON.parse(localStorage.getItem('users') || '[]');
-    const idx = users.findIndex(u => u.id === user.id);
-    if (idx !== -1) {
-        users[idx] = user;
-        localStorage.setItem('users', JSON.stringify(users));
-    }
-
-    // Update UI
-    refreshDashboard(user);
-    const headerImg = document.getElementById('headerProfileImg');
-    if (headerImg) headerImg.src = user.profileImage || 'https://via.placeholder.com/150';
-
-    // Feedback
-    if (silent) {
-        const indicator = document.getElementById('saveIndicator');
-        if (indicator) {
-            indicator.style.opacity = '1';
-            setTimeout(() => { if (indicator) indicator.style.opacity = '0'; }, 2000);
-        }
-    } else {
-        showToast('Profile saved', 'success');
-        closeModal();
-    }
-};
-
-function switchTab(tabId) {
-    // Hide all
-    document.querySelectorAll('.tab-content').forEach(el => el.style.display = 'none');
-    document.querySelectorAll('.nav-link').forEach(el => el.classList.remove('active'));
-
-    // Show Target
-    const target = document.getElementById(`tab-${tabId}`);
-    if (target) target.style.display = 'block';
-
-    // Highlight Nav
-    const navLink = document.querySelector(`.nav-link[onclick="switchTab('${tabId}')"]`);
-    if (navLink) navLink.classList.add('active');
-
-    // Close mobile sidebar if open (only on mobile)
-    if (window.innerWidth < 1024) {
-        const sidebar = document.getElementById('sidebar');
-        if (sidebar) sidebar.classList.remove('active');
-    }
-}
-
-function refreshDashboard(user) {
-    // Stats
-    const totalHours = user.completedHours || 0;
-    const maxHours = 75;
-    const percentage = Math.min(100, Math.round((totalHours / maxHours) * 100));
-
-    const elTotal = document.getElementById('totalHours');
-    if (elTotal) elTotal.textContent = totalHours;
-
-    const elRem = document.getElementById('hoursRemaining');
-    if (elRem) elRem.textContent = Math.max(0, maxHours - totalHours);
-
-    const elProgBar = document.getElementById('mainProgressBar');
-    if (elProgBar) elProgBar.style.width = `${percentage}%`;
-
-    const elProgPerc = document.getElementById('progressPercentage');
-    if (elProgPerc) elProgPerc.textContent = `${percentage}%`;
-
-    // Active Courses
-    const enrolledIds = user.enrolledCourses || [];
-    const elActiveCount = document.getElementById('activeCoursesCount');
-    if (elActiveCount) elActiveCount.textContent = enrolledIds.length;
-
-    // Load Enrolled List
-    const coursesEl = document.getElementById('myCoursesList');
-    if (!coursesEl) return;
-
-    coursesEl.innerHTML = '';
-
-    if (enrolledIds.length === 0) {
-        coursesEl.innerHTML = `
-            <div style="grid-column: 1/-1; text-align: center; padding: 3rem; background: white; border-radius: var(--radius-lg);">
-                <p>You haven't enrolled in any courses yet.</p>
-                <button class="btn btn-primary" style="margin-top: 1rem;" onclick="switchTab('teachers')">Find a Teacher</button>
+    // 1. Strict Auth Check
+    let user = getCurrentUser(); // From utils.js
+    if (!user || user.role !== 'student') {
+        // Debugging: Instead of redirect loop, show why
+        document.body.innerHTML = `
+            <div style="display:flex; justify-content:center; align-items:center; height:100vh; flex-direction:column; font-family:sans-serif;">
+                <h1 style="color:red;">Нэвтрэх эрхгүй байна</h1>
+                <p>Шалтгаан: ${!user ? 'Хэрэглэгч олдсонгүй (Not logged in)' : 'Та сурагч биш байна (Role mismatch)'}</p>
+                <p>Role: ${user ? user.role : 'N/A'}</p>
+                <a href="login.html" style="padding:10px 20px; background:blue; color:white; text-decoration:none; border-radius:5px;">Дахин нэвтрэх</a>
             </div>
         `;
-    } else {
-        const teachers = JSON.parse(localStorage.getItem('teachers') || '[]');
-        enrolledIds.forEach(courseId => {
-            const teacher = teachers.find(t => t.id === courseId) || { name: 'Unknown', specialization: [] };
-
-            const card = document.createElement('div');
-            card.className = 'course-card';
-            card.innerHTML = `
-                <div class="course-header">
-                    <h3>Course with ${teacher.name}</h3>
-                    <div style="margin-top: 0.5rem; color: var(--text-muted);">${teacher.specialization.join(', ')}</div>
-                </div>
-                <div class="course-body">
-                    <p>Status: <span style="color: var(--success); font-weight: 600;">Active</span></p>
-                    <div style="margin-top: 1rem;">
-                        <button class="btn btn-secondary" style="width: 100%;">View Assignments</button>
-                    </div>
-                </div>
-            `;
-            coursesEl.appendChild(card);
-        });
+        return;
     }
+
+    // 2. Refresh User Data (READ ONLY, NO WRITE to avoid loop)
+    // We fetch the latest version of this user from the 'users' array to ensure stats are up to date.
+    const users = JSON.parse(localStorage.getItem('users') || '[]');
+    const latestUser = users.find(u => String(u.id) === String(user.id));
+    if (latestUser) {
+        user = latestUser;
+        // Optimization: valid to update session storage, but safeguard it
+        // setCurrentUser(user); <--- Skipped to prevent any potential loop if storage is flaky
+    }
+
+    initDashboard(user);
+
+    // Sidebar
+    window.toggleSidebar = () => document.getElementById('sidebar').classList.toggle('active');
+    const st = document.getElementById('sidebarToggle');
+    if (st) st.addEventListener('click', window.toggleSidebar);
+});
+
+function initDashboard(user) {
+    safeSetText('welcomeName', `Сайн байна уу, ${user.name}`);
+    safeSetText('headerUserName', user.name);
+    safeSetText('headerUserPhone', `Утас: ${user.phone || '99112233'}`);
+    safeSetText('headerParentPhone', `Эцэг/эх: ${user.parentPhone || '88001122'}`);
+
+    const img = document.getElementById('headerProfileImg');
+    if (img) img.src = user.profileImage || 'https://via.placeholder.com/150';
+
+    loadStats(user);
+    loadMyCourses(user);
+    loadAllTeachers(); // "Find Teachers" tab
+    loadHistory(user); // If on history page
 }
 
-function loadTeachers() {
+function loadStats(user) {
+    const totalHours = user.completedHours || 0;
+    const max = 75;
+    const percent = Math.min(100, Math.round((totalHours / max) * 100));
+
+    safeSetText('totalHours', totalHours);
+    safeSetText('hoursRemaining', Math.max(0, max - totalHours));
+    safeSetText('activeCoursesCount', (user.enrolledCourses || []).length);
+    safeSetText('progressPercentage', `${percent}%`);
+
+    const bar = document.getElementById('mainProgressBar');
+    if (bar) bar.style.width = `${percent}%`;
+}
+
+function loadMyCourses(user) {
+    const container = document.getElementById('myCoursesList');
+    if (!container) return;
+
+    const enrolledIds = user.enrolledCourses || [];
+
+    if (enrolledIds.length === 0) {
+        container.innerHTML = `
+            <div style="grid-column: 1/-1; text-align: center; padding: 2rem; background: #f8fafc; border-radius: 12px;">
+                <p>Та сургалтанд хамрагдаагүй байна.</p>
+                <button class="btn btn-primary" onclick="switchTab('teachers')">Багш хайх</button>
+            </div>
+        `;
+        return;
+    }
+
+    const allClasses = JSON.parse(localStorage.getItem('classes') || '[]');
+    const todayStr = new Date().toISOString().split('T')[0];
+
+    // Filter: From enrolled teachers AND Upcoming (or today)
+    const myClasses = allClasses.filter(c => {
+        // Is enrolled teacher?
+        if (!enrolledIds.map(String).includes(String(c.teacherId))) return false;
+        // Is upcoming?
+        return c.date >= todayStr;
+    }).sort((a, b) => new Date(a.date + ' ' + a.time) - new Date(b.date + ' ' + b.time));
+
+    if (myClasses.length === 0) {
+        container.innerHTML = `
+            <div style="grid-column: 1/-1; text-align: center; padding: 2rem; background: #f8fafc; border-radius: 12px;">
+                <p>Одоогоор хуваарьт хичээл алга байна.</p>
+                <button class="btn btn-secondary" onclick="switchTab('teachers')">Багш нарыг харах</button>
+            </div>
+        `;
+        return;
+    }
+
+    container.innerHTML = myClasses.map(c => `
+        <div class="course-card">
+            <div class="course-header" style="border-bottom: 1px solid #eee; padding-bottom: 0.5rem; margin-bottom: 0.5rem; display: flex; justify-content: space-between; align-items: start;">
+                <div>
+                     <h3 style="margin: 0; font-size: 1.1rem;">${c.subject}</h3>
+                     <p style="color: #64748b; font-size: 0.9rem; margin: 0.25rem 0 0 0;">Багш: ${c.teacher}</p>
+                </div>
+                <div style="text-align: right;">
+                    <div style="font-weight: 600; color: var(--primary-main);">${formatDate(c.date)}</div>
+                    <div style="font-size: 0.85rem; color: #64748b;">${c.time}</div>
+                </div>
+            </div>
+             <div class="course-body" style="margin-top: 1rem;">
+                <div style="display: flex; justify-content: space-between; align-items: center;">
+                    <span style="font-size: 0.8rem; padding: 0.2rem 0.6rem; background: #eff6ff; color: #1e40af; border-radius: 99px;">
+                        Upcoming
+                    </span>
+                    <button class="btn btn-primary btn-sm" onclick="alert('Joining ${c.subject}...')">
+                        Хичээлд суух
+                    </button>
+                </div>
+             </div>
+        </div>
+    `).join('');
+}
+
+function loadAllTeachers() {
     const grid = document.getElementById('teachersGrid');
     if (!grid) return;
 
     const teachers = JSON.parse(localStorage.getItem('teachers') || '[]');
-
     grid.innerHTML = teachers.map(t => `
-        <div class="course-card">
-            <div style="padding: 1.5rem; text-align: center;">
-                <img src="${t.photo}" alt="${t.name}" style="width: 100px; height: 100px; border-radius: 50%; object-fit: cover; margin-bottom: 1rem;">
-                <h3>${t.name}</h3>
-                <p style="color: var(--primary-main); font-size: 0.9rem; margin-bottom: 0.5rem;">${t.specialization.join(', ')}</p>
-                <div style="color: var(--text-muted); font-size: 0.9rem; margin-bottom: 1.5rem;">
-                    ⭐ ${t.rating} | 🎓 ${t.experience}
-                </div>
-                <button class="btn btn-secondary" onclick="viewTeacherProfile('${t.id}')">View Profile</button>
+        <div class="course-card" style="text-align: center;">
+            <img src="${t.photo}" style="width: 80px; height: 80px; border-radius: 50%; margin: 0 auto 1rem; object-fit: cover;">
+            <h3>${t.name}</h3>
+            <p style="font-size: 0.9rem; color: #666;">${Array.isArray(t.specialization) ? t.specialization.join(', ') : t.specialization}</p>
+            <div style="margin-top: 1rem;">
+                <button class="btn btn-primary btn-sm" onclick="enroll('${t.id}')">Enroll/View</button>
             </div>
         </div>
     `).join('');
 }
 
-function viewTeacherProfile(teacherId) {
-    const teachers = JSON.parse(localStorage.getItem('teachers') || '[]');
-    const t = teachers.find(x => x.id === teacherId);
-    if (!t) return;
+function loadHistory(user) {
+    const list = document.getElementById('allClassesList');
+    if (!list) return;
 
-    // Render Reviews
-    const reviewsHtml = (t.reviews || []).map(r => `
-        <div style="background: #f8fafc; padding: 1rem; border-radius: var(--radius-md); margin-bottom: 0.75rem;">
-            <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;">
-                <strong style="font-size: 0.9rem;">${r.studentName}</strong>
-                <span style="color: #fbbf24;">${'★'.repeat(r.rating)}${'☆'.repeat(5 - r.rating)}</span>
-                <span style="font-size: 0.8rem; color: var(--text-muted); margin-left: auto; padding-left: 1rem;">${formatDate(r.date)}</span>
+    const history = user.attendanceHistory || [];
+    if (history.length === 0) {
+        list.innerHTML = '<p style="text-align: center; padding: 2rem;">Түүх байхгүй.</p>';
+        return;
+    }
+
+    // Need access to classes to get subject name
+    const classes = JSON.parse(localStorage.getItem('classes') || '[]');
+
+    list.innerHTML = history.reverse().map(h => {
+        const cls = classes.find(c => String(c.id) === String(h.classId)) || { subject: 'Unknown', teacher: 'Unknown' };
+
+        return `
+        <div class="course-card" style="display: flex; justify-content: space-between; align-items: center; padding: 1rem;">
+            <div>
+                <h3>${cls.subject}</h3>
+                <p class="text-muted">${formatDate(h.date)} • ${h.hours} цаг</p>
             </div>
-            <p style="color: var(--text-muted); font-size: 0.9rem; margin: 0;">${r.comment}</p>
+            <span style="padding: 0.5rem 1rem; border-radius: 20px; background: #dcfce7; color: #166534; font-weight: bold;">
+                ${h.status}
+            </span>
         </div>
-    `).join('') || '<p style="color: var(--text-muted); font-style: italic;">No reviews yet.</p>';
+        `;
+    }).join('');
+}
 
-    const modalContent = `
-        <div style="text-align: center;">
-            <div style="display: flex; align-items: center; gap: 1.5rem; text-align: left; margin-bottom: 1.5rem;">
-                <img src="${t.photo}" style="width: 80px; height: 80px; border-radius: 50%; object-fit: cover; flex-shrink: 0; box-shadow: var(--shadow-sm);">
-                <div>
-                    <h3 style="margin-bottom: 0.25rem;">${t.name}</h3>
-                    <p style="color: var(--text-muted); font-size: 0.9rem; margin-bottom: 0.5rem;">${t.bio}</p>
-                    <div style="font-size: 0.85rem; background: #f1f5f9; display: inline-block; padding: 0.25rem 0.75rem; border-radius: 20px;">
-                        ${t.specialization.join(', ')} • ${t.experience}
-                    </div>
+// --- ACTIONS ---
+
+window.enroll = function (teacherId) {
+    const user = getCurrentUser(); // Get fresh
+
+    // 1. Check if already enrolled in THIS course
+    if (user.enrolledCourses && user.enrolledCourses.map(String).includes(String(teacherId))) {
+        showModal('Бүртгэлтэй байна', 'Та энэ багшийн хичээлд аль хэдийн бүртгүүлсэн байна.', 'info');
+        return;
+    }
+
+    // 2. Check "1 Teacher at a Time" Rule
+    const hasActiveCourse = user.enrolledCourses && user.enrolledCourses.length > 0;
+    const currentHours = user.completedHours || 0;
+    const REQUIRED_HOURS = 75;
+
+    if (hasActiveCourse) {
+        if (currentHours < REQUIRED_HOURS) {
+            showModal('Бүртгүүлэх боломжгүй', `Та одоогийн багштайгаа ${REQUIRED_HOURS} цаг хичээллэсний дараа багшаа солих боломжтой. Одоогоор: ${currentHours} цаг.`, 'warning');
+            return;
+        } else {
+            // Hours reached 75 -> Allow Switch
+            const confirmSwitch = confirm('Та 75 цаг хичээллэсэн тул багшаа солих эрхтэй боллоо. Та шинэ багш руу шилжихдээ итгэлтэй байна уу? (Одоогийн цаг тэглэгдэх болно)');
+            if (!confirmSwitch) return;
+
+            // Proceed to switch logic below... (We will reset hours)
+        }
+    } else {
+        // No active course -> Regular enroll
+        if (!confirm('Та энэ багшийн ангид бүртгүүлэх үү?')) return;
+    }
+
+    // Perform Enrollment / Switch
+    const globalUsers = JSON.parse(localStorage.getItem('users') || '[]');
+    const uIdx = globalUsers.findIndex(u => String(u.id) === String(user.id));
+
+    if (uIdx !== -1) {
+        // Reset or Initialize
+        if (hasActiveCourse) {
+            // Archiving old hours (optional, for record)
+            globalUsers[uIdx].archivedHours = (globalUsers[uIdx].archivedHours || 0) + currentHours;
+            globalUsers[uIdx].completedHours = 0; // Reset for new teacher
+            globalUsers[uIdx].enrolledCourses = [teacherId]; // Replace old teacher
+        } else {
+            if (!globalUsers[uIdx].enrolledCourses) globalUsers[uIdx].enrolledCourses = [];
+            globalUsers[uIdx].enrolledCourses.push(teacherId);
+        }
+
+        localStorage.setItem('users', JSON.stringify(globalUsers));
+        // Update session
+        localStorage.setItem('currentUser', JSON.stringify(globalUsers[uIdx]));
+
+        showModal('Амжилттай', hasActiveCourse ? 'Багш солигдлоо!' : 'Амжилттай бүртгүүлээ!', 'success', () => {
+            window.location.reload();
+        });
+    }
+};
+
+window.switchTab = function (tab) {
+    document.querySelectorAll('.tab-content').forEach(t => t.style.display = 'none');
+    document.getElementById('tab-' + tab).style.display = 'block';
+
+    document.querySelectorAll('.nav-link').forEach(n => n.classList.remove('active'));
+    const activeLink = Array.from(document.querySelectorAll('.nav-link')).find(n => n.getAttribute('onclick') && n.getAttribute('onclick').includes(tab));
+    if (activeLink) activeLink.classList.add('active');
+};
+
+// Utils
+function safeSetText(id, text) {
+    const el = document.getElementById(id);
+    if (el) el.textContent = text;
+}
+
+// --- PROFILE EDITING ---
+
+window.openStudentProfileModal = function () {
+    const user = getCurrentUser();
+
+    // Create Modal Content
+    const content = `
+        <div class="profile-edit-form">
+            <div style="text-align: center; margin-bottom: 2rem;">
+                <div style="position: relative; display: inline-block;">
+                    <img src="${user.profileImage || 'https://api.dicebear.com/7.x/avataaars/svg?seed=' + user.name}" 
+                         id="previewStudentImg" 
+                         style="width: 100px; height: 100px; border-radius: 50%; object-fit: cover; border: 3px solid #e0e7ff;">
+                    <button onclick="document.getElementById('editStudentImgInput').click()" 
+                            style="position: absolute; bottom: 0; right: 0; background: var(--primary-main); color: white; border: none; border-radius: 50%; width: 32px; height: 32px; cursor: pointer; display: flex; align-items: center; justify-content: center; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+                        <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 13a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
+                    </button>
+                    <input type="file" id="editStudentImgInput" hidden accept="image/*" onchange="handleStudentImagePreview(this)">
                 </div>
             </div>
 
-            <div style="text-align: left; margin-top: 1rem; background: #f8fafc; padding: 1rem; border-radius: var(--radius-md); border: 1px solid #f1f5f9;">
-                <h4 style="margin: 0 0 0.75rem 0; font-size: 0.85rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em;">Contact Information</h4>
-                <div style="display: grid; gap: 0.5rem; font-size: 0.95rem;">
-                    <div style="display: flex; align-items: center; gap: 0.5rem;">
-                        <svg width="18" height="18" fill="none" stroke="currentColor" viewBox="0 0 24 24" style="color: var(--primary-main); flex-shrink: 0;">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"></path>
-                        </svg>
-                        <span style="font-weight: 500; color: var(--text-main);">${t.phone || 'No phone number'}</span>
-                    </div>
-                    <div style="display: flex; align-items: center; gap: 0.5rem;">
-                        <svg width="18" height="18" fill="none" stroke="currentColor" viewBox="0 0 24 24" style="color: var(--primary-main); flex-shrink: 0;">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path>
-                        </svg>
-                        <span style="font-weight: 500; color: var(--text-main);">${t.email || 'No email address'}</span>
-                    </div>
-                </div>
+            <div class="form-group">
+                <label class="form-label">Нэр</label>
+                <input type="text" id="editStudentName" class="form-input" value="${user.name}">
             </div>
 
-            <div style="text-align: left; margin-top: 1.5rem; border-top: 1px solid #f1f5f9; padding-top: 1rem;">
-                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
-                    <h4 style="font-size: 1rem; margin: 0;">Student Reviews</h4>
-                    <button class="btn btn-secondary btn-sm" onclick="toggleReviewForm('${t.id}')" style="font-size: 0.8rem; padding: 0.25rem 0.75rem;">+ Write Review</button>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                <div class="form-group">
+                    <label class="form-label">Утас</label>
+                    <input type="tel" id="editStudentPhone" class="form-input" value="${user.phone}">
                 </div>
-
-                <form id="reviewForm-${t.id}" style="display: none; margin-bottom: 1rem; background: #f8fafc; padding: 1rem; border-radius: var(--radius-md);">
-                    <div style="display: grid; grid-template-columns: 1fr auto; gap: 1rem; align-items: end;">
-                        <div class="form-group" style="margin-bottom: 0.5rem;">
-                            <label class="form-label" style="font-size: 0.8rem;">Rating</label>
-                            <select id="reviewRating-${t.id}" class="form-select" style="padding: 0.4rem;">
-                                <option value="5">⭐⭐⭐⭐⭐ (Excellent)</option>
-                                <option value="4">⭐⭐⭐⭐ (Good)</option>
-                                <option value="3">⭐⭐⭐ (Okay)</option>
-                                <option value="2">⭐⭐ (Poor)</option>
-                                <option value="1">⭐ (Terrible)</option>
-                            </select>
-                        </div>
-                        <button type="button" class="btn btn-primary btn-sm" onclick="submitReview('${t.id}')" style="height: 36px;">Submit</button>
-                    </div>
-                    <div class="form-group" style="margin-bottom: 0;">
-                        <textarea id="reviewComment-${t.id}" class="form-input" rows="2" placeholder="Optional comment..." style="font-size: 0.9rem;"></textarea>
-                    </div>
-                </form>
-
-                <div style="max-height: 250px; overflow-y: auto; display: flex; flex-direction: column; gap: 0.75rem;">
-                    ${reviewsHtml}
+                <div class="form-group">
+                    <label class="form-label">Имэйл</label>
+                    <input type="email" id="editStudentEmail" class="form-input" value="${user.email || ''}">
                 </div>
+            </div>
+            
+            <div class="form-group">
+                <label class="form-label">Эцэг/эхийн утас</label>
+                <input type="tel" id="editParentPhone" class="form-input" value="${user.parentPhone || ''}">
+            </div>
+
+            <div style="display: flex; justify-content: flex-end; gap: 1rem; margin-top: 2rem;">
+                <button onclick="closeModal()" class="btn btn-secondary">Болих</button>
+                <button onclick="saveStudentProfile()" class="btn btn-primary">Хадгалах</button>
             </div>
         </div>
     `;
 
-    showModal(
-        `Teacher Profile`,
-        modalContent,
-        'info',
-        () => {
-            // Enrollment Logic
-            return enrollInCourse(teacherId);
-        },
-        'Enroll' // Custom Button Text
-    );
-}
+    showModal('Профайл засах', content, 'info');
 
-// Global functions for inline event handlers
-window.toggleReviewForm = function (id) {
-    const form = document.getElementById(`reviewForm-${id}`);
-    if (form) form.style.display = form.style.display === 'none' ? 'block' : 'none';
+    // Hide default footer
+    const footer = document.querySelector('#globalModal .modal-actions');
+    if (footer) footer.style.display = 'none';
 };
 
-window.submitReview = function (teacherId) {
-    const elRating = document.getElementById(`reviewRating-${teacherId}`);
-    const elComment = document.getElementById(`reviewComment-${teacherId}`);
-
-    if (!elRating) return;
-
-    const rating = parseInt(elRating.value);
-    const comment = elComment ? elComment.value : '';
-    const user = getCurrentUser();
-
-    const teachers = JSON.parse(localStorage.getItem('teachers') || '[]');
-    const idx = teachers.findIndex(t => t.id === teacherId);
-
-    if (idx !== -1) {
-        if (!teachers[idx].reviews) teachers[idx].reviews = [];
-        teachers[idx].reviews.unshift({
-            id: Date.now().toString(),
-            studentName: user.name || 'Anonymous',
-            rating,
-            comment,
-            date: formatDate(new Date().toISOString().split('T')[0])
-        });
-
-        localStorage.setItem('teachers', JSON.stringify(teachers));
-        showToast('Review submitted!', 'success');
-
-        closeModal();
-        viewTeacherProfile(teacherId);
+window.handleStudentImagePreview = function (input) {
+    if (input.files && input.files[0]) {
+        const reader = new FileReader();
+        reader.onload = function (e) {
+            document.getElementById('previewStudentImg').src = e.target.result;
+        };
+        reader.readAsDataURL(input.files[0]);
     }
 };
 
-function enrollInCourse(teacherId) {
+window.saveStudentProfile = function () {
     const user = getCurrentUser();
+    const newName = document.getElementById('editStudentName').value;
+    const newPhone = document.getElementById('editStudentPhone').value;
+    const newEmail = document.getElementById('editStudentEmail').value;
+    const newParentPhone = document.getElementById('editParentPhone').value;
+    const newImgSrc = document.getElementById('previewStudentImg').src;
 
-    // 1. One Course at a Time Rule (Unless 75 hours completed)
-    const completedHours = user.completedHours || 0;
-    if (user.enrolledCourses && user.enrolledCourses.length > 0) {
-        if (completedHours < 75) {
-            showModal('Enrollment Restricted', `You are currently enrolled in a course. You must complete 75 hours of study (Current: ${completedHours}h) before you can enroll in another class.`, 'warning');
-            return false;
-        }
-
-        // Check if already enrolled in THIS course (duplicate check)
-        if (user.enrolledCourses.includes(teacherId)) {
-            showModal('Already Enrolled', 'You are already registered for this course.', 'warning');
-            return false;
-        }
+    if (!newName) {
+        showToast('Нэр оруулна уу', 'error');
+        return;
     }
 
-    // 2. Mock Enrollment
-    if (!user.enrolledCourses) user.enrolledCourses = [];
-    user.enrolledCourses.push(teacherId);
+    // Update Object
+    user.name = newName;
+    user.phone = newPhone;
+    user.email = newEmail;
+    user.parentPhone = newParentPhone;
+    user.profileImage = newImgSrc;
 
-    // Save
-    setCurrentUser(user);
-
-    // Update Global User ListMock
+    // Save to DB
     const users = JSON.parse(localStorage.getItem('users') || '[]');
-    const idx = users.findIndex(u => u.id === user.id);
+    const idx = users.findIndex(u => String(u.id) === String(user.id));
     if (idx !== -1) {
-        users[idx] = user;
+        users[idx] = { ...users[idx], ...user };
         localStorage.setItem('users', JSON.stringify(users));
     }
 
-    refreshDashboard(user);
-    showModal('Enrollment Successful', 'You have successfully enrolled in this course. You can now view your assignments and schedule.', 'success', () => {
-        switchTab('dashboard');
-    }, 'Go to Dashboard');
+    // Update Session
+    setCurrentUser(user);
 
-    return false; // Keep success modal open
-}
+    showToast('Амжилттай хадгалагдлаа', 'success');
+    closeModal();
 
-function filterTeachers(type) {
-    if (type === 'all') {
-        loadTeachers();
-    } else {
-        const teachers = JSON.parse(localStorage.getItem('teachers') || '[]');
-        const keywords = type === 'International' ? ['SAT', 'IB', 'IGCSE', 'ACT'] : ['National', 'Olympiad', 'EEC'];
-
-        const filtered = teachers.filter(t => t.specialization.some(s => keywords.some(k => s.includes(k))));
-
-        const grid = document.getElementById('teachersGrid');
-        if (grid) {
-            grid.innerHTML = filtered.length ? filtered.map(t => `
-                <div class="course-card">
-                    <div style="padding: 1.5rem; text-align: center;">
-                        <img src="${t.photo}" alt="${t.name}" style="width: 100px; height: 100px; border-radius: 50%; object-fit: cover; margin-bottom: 1rem;">
-                        <h3>${t.name}</h3>
-                        <p style="color: var(--primary-main); font-size: 0.9rem; margin-bottom: 0.5rem;">${t.specialization.join(', ')}</p>
-                        <button class="btn btn-secondary" onclick="viewTeacherProfile('${t.id}')">View Profile</button>
-                    </div>
-                </div>
-            `).join('') : '<p class="col-span-full text-center text-muted">No teachers found for this category.</p>';
-        }
-    }
-
-    // Update active button
-    document.querySelectorAll('.btn-secondary[onclick^="filterTeachers"]').forEach(btn => {
-        if (btn.innerText === (type === 'all' ? 'All' : type)) btn.classList.add('active');
-        else btn.classList.remove('active');
-    });
-}
+    // Refresh UI
+    initDashboard(user);
+};

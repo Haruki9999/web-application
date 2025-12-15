@@ -94,9 +94,66 @@
     <!-- Mobile Overlay -->
     <div class="fixed inset-0 bg-black bg-opacity-50 z-20 hidden md:hidden" id="mobileOverlay"></div>
 
+    <script src="js/utils.js"></script>
     <script src="js/data.js"></script>
-    <script src="js/main.js"></script>
     <script src="js/student-dashboard.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const user = getCurrentUser();
+            if (!user || user.role !== 'student') {
+                window.location.href = 'login.html';
+                return;
+            }
+
+            // Render Name/Avatar
+            document.getElementById('studentName').textContent = user.name;
+            const img = document.querySelector('.user-profile img');
+            if (img) img.src = user.profileImage || `https://api.dicebear.com/7.x/avataaars/svg?seed=${user.name}`;
+
+            // Render History
+            const container = document.getElementById('allClassesList');
+            const history = user.attendanceHistory || [];
+
+            if (history.length === 0) {
+                container.innerHTML = '<p style="padding: 2rem; text-align: center; color: var(--text-muted);">Ирцийн түүх байхгүй байна.</p>';
+            } else {
+                // Get Class Subjects
+                const classes = JSON.parse(localStorage.getItem('classes') || '[]');
+
+                // Create Table
+                let html = `
+                <table style="width: 100%; border-collapse: collapse; margin-top: 1rem;">
+                    <thead>
+                        <tr style="text-align: left; border-bottom: 2px solid #e2e8f0;">
+                            <th style="padding: 1rem;">Огноо</th>
+                            <th style="padding: 1rem;">Хичээл</th>
+                            <th style="padding: 1rem;">Цаг</th>
+                            <th style="padding: 1rem;">Төлөв</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                `;
+
+                html += history.reverse().map(h => {
+                    const cls = classes.find(c => String(c.id) === String(h.classId)) || { subject: 'Unknown' };
+                    const statusColor = h.status === 'Present' ? 'green' : (h.status === 'Absent' ? 'red' : 'orange');
+                    const statusText = h.status === 'Present' ? 'Ирсэн' : (h.status === 'Absent' ? 'Тасалсан' : 'Чөлөөтэй');
+
+                    return `
+                        <tr style="border-bottom: 1px solid #f1f5f9;">
+                            <td style="padding: 1rem;">${new Date(h.date).toLocaleDateString()}</td>
+                            <td style="padding: 1rem;">${cls.subject}</td>
+                            <td style="padding: 1rem;">${h.hours} цаг</td>
+                            <td style="padding: 1rem; color: ${statusColor}; font-weight: 500;">${statusText}</td>
+                        </tr>
+                     `;
+                }).join('');
+
+                html += '</tbody></table>';
+                container.innerHTML = html;
+            }
+        });
+    </script>
 </body>
 
 </html>

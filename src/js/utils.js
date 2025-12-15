@@ -46,15 +46,15 @@ function setCurrentUser(user) {
 function logout() {
     const content = `
         <div style="text-align: center; padding: 1rem 0;">
-            <p style="margin-bottom: 2rem; color: var(--text-muted); font-size: 1.1rem;">Are you sure you want to end your session?</p>
+            <p style="margin-bottom: 2rem; color: var(--text-muted); font-size: 1.1rem;">Та системээс гарахдаа итгэлтэй байна уу?</p>
             <div style="display: flex; gap: 1rem; justify-content: center;">
-                <button onclick="closeModal()" class="btn btn-secondary" style="min-width: 120px;">Cancel</button>
-                <button onclick="performLogout()" class="btn" style="min-width: 120px; background-color: #ef4444; color: white; border: none; box-shadow: var(--shadow-sm);">Log Out</button>
+                <button onclick="closeModal()" class="btn btn-secondary" style="min-width: 120px;">Болих</button>
+                <button onclick="performLogout()" class="btn" style="min-width: 120px; background-color: #ef4444; color: white; border: none; box-shadow: var(--shadow-sm);">Гарах</button>
             </div>
         </div>
     `;
 
-    showModal('Confirm Logout', content, 'warning');
+    showModal('Гарахыг баталгаажуулах', content, 'warning');
 
     // Hide default footer since we have custom buttons
     const footer = document.querySelector('#globalModal .modal-actions');
@@ -76,7 +76,7 @@ function checkAuth(requiredRole = null) {
     }
 
     if (requiredRole && currentUser.role !== requiredRole) {
-        showToast('Unauthorized access', 'error');
+        showToast('Зөвшөөрөлгүй хандалт', 'error');
         window.location.href = 'login.html';
         return false;
     }
@@ -114,7 +114,7 @@ function createModalContainer() {
  * @param {'success'|'error'|'warning'|'info'} type 
  * @param {Function} onConfirm - Optional callback for confirmation
  */
-function showModal(title, message, type = 'info', onConfirm = null, confirmText = 'Confirm') {
+function showModal(title, message, type = 'info', onConfirm = null, confirmText = 'Баталгаажуулах') {
     createModalContainer();
 
     const modal = document.getElementById('globalModal');
@@ -135,7 +135,7 @@ function showModal(title, message, type = 'info', onConfirm = null, confirmText 
 
     const closeBtn = document.createElement('button');
     closeBtn.className = 'btn btn-secondary';
-    closeBtn.textContent = onConfirm ? 'Cancel' : 'Close';
+    closeBtn.textContent = onConfirm ? 'Болих' : 'Хаах';
     closeBtn.onclick = () => closeModal();
     actionsEl.appendChild(closeBtn);
 

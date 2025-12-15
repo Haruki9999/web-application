@@ -26,18 +26,30 @@ document.addEventListener('DOMContentLoaded', () => {
 
             // Validate Input
             if (!/^\d{8,}$/.test(phone)) {
-                showModal('Invalid Phonenumber', 'Please enter a valid phone number (at least 8 digits).', 'error');
+                showModal('Утасны дугаар буруу', 'Зөв утасны дугаар оруулна уу (дор хаяж 8 оронтой).', 'error');
                 return;
             }
 
             // Mock Authentication
-            const users = JSON.parse(localStorage.getItem('users') || '[]');
+            let users = [];
+            try {
+                users = JSON.parse(localStorage.getItem('users') || '[]');
+            } catch (err) {
+                console.error('LocalStorage corrupted, resetting...', err);
+                localStorage.removeItem('users');
+                localStorage.removeItem('teachers');
+                localStorage.removeItem('classes');
+                alert('System data corrupted. Resetting data...');
+                window.location.reload();
+                return;
+            }
+
             const user = users.find(u => u.phone === phone && u.password === password && u.role === currentRole);
 
             if (user) {
                 // Success
                 setCurrentUser(user);
-                showToast(`Welcome back, ${user.name}!`, 'success');
+                showToast(`Тавтай морил, ${user.name}!`, 'success');
 
                 setTimeout(() => {
                     if (user.role === 'student') {
@@ -47,8 +59,17 @@ document.addEventListener('DOMContentLoaded', () => {
                     }
                 }, 1000);
             } else {
-                // Failure
-                showModal('Login Failed', 'Invalid phone number or password, or incorrect role selected.', 'error');
+                // Failure - Specific Feedback
+                const exists = users.find(u => u.phone === phone);
+                if (!exists) {
+                    showModal('Нэвтрэх амжилтгүй', 'Бүртгэлгүй утасны дугаар байна.', 'error');
+                } else if (exists.password !== password) {
+                    showModal('Нэвтрэх амжилтгүй', 'Нууц үг буруу байна.', 'error');
+                } else if (exists.role !== currentRole) {
+                    showModal('Нэвтрэх амжилтгүй', `Та '${exists.role === 'student' ? 'Сурагч' : 'Багш'}' эрхтэй хэрэглэгч байна. Дүрээ зөв сонгоно уу.`, 'warning');
+                } else {
+                    showModal('Нэвтрэх амжилтгүй', 'Мэдээлэл буруу байна.', 'error');
+                }
             }
         });
     }
@@ -66,19 +87,19 @@ document.addEventListener('DOMContentLoaded', () => {
 
             // Validation
             if (password !== confirmPassword) {
-                showModal('Password Mismatch', 'Passwords do not match.', 'error');
+                showModal('Нууц үг таарахгүй байна', 'Нууц үгс таарахгүй байна.', 'error');
                 return;
             }
 
             if (!/^\d{8,}$/.test(phone)) {
-                showModal('Invalid Phone', 'Please enter a valid phone number.', 'error');
+                showModal('Утасны дугаар буруу', 'Зөв утасны дугаар оруулна уу.', 'error');
                 return;
             }
 
             // Check existing
             const users = JSON.parse(localStorage.getItem('users') || '[]');
             if (users.find(u => u.phone === phone)) {
-                showModal('Account Exists', 'This phone number is already registered.', 'warning');
+                showModal('Бүртгэлтэй байна', 'Энэ утасны дугаар аль хэдийн бүртгэлтэй байна.', 'warning');
                 return;
             }
 
@@ -97,7 +118,7 @@ document.addEventListener('DOMContentLoaded', () => {
             users.push(newUser);
             localStorage.setItem('users', JSON.stringify(users));
 
-            showModal('Registration Successful', 'Account created! Please log in.', 'success', () => {
+            showModal('Бүртгэл амжилттай', 'Бүртгэл үүслээ! Нэвтэрнэ үү.', 'success', () => {
                 window.location.href = 'login.html';
             });
         });

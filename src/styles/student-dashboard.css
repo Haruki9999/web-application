@@ -76,6 +76,10 @@ body {
     padding: 0.75rem 0;
 }
 
+.sidebar:not(.active) .nav-link span {
+    display: none;
+}
+
 .nav-link:hover,
 .nav-link.active {
     background: #e0e7ff;
@@ -202,6 +206,9 @@ body {
     border-radius: var(--radius-lg);
     overflow: hidden;
     transition: all 0.3s;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
 }
 
 .course-card:hover {
@@ -209,13 +216,60 @@ body {
     box-shadow: var(--shadow-lg);
 }
 
+.course-body {
+    padding: 1.5rem;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
 .course-header {
     padding: 1.5rem;
     border-bottom: 1px solid #f1f5f9;
 }
 
-.course-body {
-    padding: 1.5rem;
+/* Dark Mode Overrides */
+html.dark body {
+    background-color: var(--color-dark-blue);
+}
+
+html.dark .sidebar {
+    background: var(--color-indigo);
+    border-right-color: var(--color-purple-blue);
+}
+
+html.dark .sidebar-header {
+    border-bottom-color: var(--color-purple-blue);
+}
+
+html.dark .nav-link {
+    color: var(--color-lavender);
+}
+
+html.dark .nav-link:hover,
+html.dark .nav-link.active {
+    background: var(--color-purple-blue);
+    color: var(--color-white);
+}
+
+html.dark .stat-card,
+html.dark .progress-card,
+html.dark .course-card {
+    background: var(--color-indigo);
+    border-color: var(--color-purple-blue);
+}
+
+html.dark .progress-bar-container {
+    background: var(--color-purple-blue);
+}
+
+html.dark .sidebar-footer {
+    border-top-color: var(--color-purple-blue);
+}
+
+html.dark .course-header {
+    border-bottom-color: var(--color-purple-blue);
 }
 
 /* Responsive */

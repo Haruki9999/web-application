@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login - Pi Math Center</title>
+    <title>Нэвтрэх - Pi Math Center</title>
     <link rel="stylesheet" href="styles/base.css">
     <link rel="stylesheet" href="styles/login.css">
     <link rel="stylesheet" href="styles/modal.css">
@@ -15,43 +15,43 @@
         <div class="auth-container">
             <div class="auth-header">
                 <a href="index.html" class="auth-logo">Pi Math Center</a>
-                <h2>Welcome Back</h2>
-                <p style="color: var(--text-muted);">Please sign in to continue</p>
+                <h2>Тавтай морил</h2>
+                <p style="color: var(--text-muted);">Үргэлжлүүлэхийн тулд нэвтэрнэ үү</p>
             </div>
 
             <!-- Role Selector -->
             <div class="role-selector" id="roleSelector">
-                <button class="role-option active" data-role="student" type="button">Student</button>
-                <button class="role-option" data-role="teacher" type="button">Teacher</button>
+                <button class="role-option active" data-role="student" type="button">Сурагч</button>
+                <button class="role-option" data-role="teacher" type="button">Багш</button>
             </div>
 
             <form id="loginForm">
                 <div class="form-group">
-                    <label class="form-label">Phone Number</label>
-                    <input type="tel" id="phone" class="form-input" placeholder="e.g. 99112233" required
-                        pattern="[0-9]{8,}" title="Please enter a valid phone number (digits only)">
+                    <label class="form-label">Утасны дугаар</label>
+                    <input type="tel" id="phone" class="form-input" placeholder="Ж.нь: 99112233" required
+                        pattern="[0-9]{8,}" title="Зөв утасны дугаар оруулна уу (зөвхөн тоо)">
                 </div>
 
                 <!-- Hidden Password Field for Mock Auth Simplicity - User asked for Phone Login, usually implies OTP or Phone+Pass. I will assume Password is still needed for security mock, or just Phone if strictly asked. 
                      Request said: "Login using phone number". I will add a password field but maybe auto-fill for demo or simpler auth. Let's keep password for stricter auth feel. -->
                 <div class="form-group">
-                    <label class="form-label">Password</label>
-                    <input type="password" id="password" class="form-input" placeholder="Enter your password" required>
+                    <label class="form-label">Нууц үг</label>
+                    <input type="password" id="password" class="form-input" placeholder="Нууц үгээ оруулна уу" required>
                 </div>
 
                 <button type="submit" class="btn btn-primary"
                     style="width: 100%; justify-content: center; margin-top: 1rem;">
-                    Login
+                    Нэвтрэх
                 </button>
             </form>
 
             <div class="form-footer">
-                <p>New student? <a href="register.html">Create an Account</a></p>
+                <p>Шинэ сурагч уу? <a href="register.html">Бүртгүүлэх</a></p>
                 <div
                     style="margin-top: 2rem; padding: 1rem; background: #f8fafc; border-radius: var(--radius-md); font-size: 0.8rem; text-align: left;">
-                    <strong>Demo Credentials:</strong><br>
-                    Student: 88888888 / 123456<br>
-                    Teacher: 99999999 / 123456
+                    <strong>Туршилтын эрх:</strong><br>
+                    Сурагч: 88888888 / 123456<br>
+                    Багш: 99999999 / 123456
                 </div>
             </div>
         </div>
